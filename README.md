@@ -27,18 +27,30 @@
   </a>
 </div>
 
+## 📑 Table of Contents
+- [Notice](#eyes-notice)
+- [Highlights](#rocket-highlights)
+- [Abstract](#bookmark-abstract)
+- [Framework](#mag-framework)
+- [Benchmarks](#bar_chart-benchmarks)
+- [Getting Started](#checkered_flag-getting-starteded)
+- [Demo](#computer-demo)
+- [TODO](#white_check_mark-todo)
+- [Acknowledge](#blush-acknowledge)
+- [Citation](#pushpin-citation)
+
 ## :eyes: Notice
 
-X2SAM is under active development, and we will continue to update the code and documentation. Please check [TODO](#white_check_mark-todo) to get our development schedule.
+> **Note:** X2SAM is under active development, and we will continue to update the code and documentation. Please check [TODO](#white_check_mark-todo) to get our development schedule.
 
-We recommend that everyone use English to communicate in issues, as this helps developers from around the world discuss, share experiences, and answer questions together.
+We strongly recommend that everyone uses **English** to communicate in issues. This helps developers from around the world discuss, share experiences, and answer questions together. 
 
 *If you have any questions or would like to collaborate, please feel free to open an issue or reach out to me at `wanghao9610@gmail.com`.*
 
 ## :boom: Updates
-- **`2026-03-20`**: We create the X2SAM github repo.
+- **`[2026-03-20`**: We create the X2SAM github repo.
 
-## :rocket: Introduction
+## :rocket: Highlights
 
 This repository provides the official PyTorch implementation, pre-trained models, training, evaluation, visualization, and demo code of X2SAM:
 * TODO
@@ -51,11 +63,14 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 ## :bookmark: Abstract
 
-This is the abstract of X2SAM.
+> This is the abstract of X2SAM.
 
-## :mag: Overview
+## :mag: Framework
 
-<!-- <img src="docs/srcs/images/framework.png" width="800"> -->
+<div align="center">
+  <!-- <img src="docs/srcs/images/framework.png" width="800" alt="X2SAM Framework"> -->
+  <p><em>Figure 1: The overall architecture and pipeline of X2SAM.</em></p>
+</div>
 
 ## :bar_chart: Benchmarks
 
@@ -65,7 +80,7 @@ This is the abstract of X2SAM.
 We provide a detailed project structure for X-SAM. Please follow this structure to organize the project.
 
 <details open>
-<summary>📁 Structure (Click to collapse)</summary>
+<summary><b>📁 Project Structure (Click to collapse)</b></summary>
 
 ```bash
 
@@ -73,43 +88,52 @@ We provide a detailed project structure for X-SAM. Please follow this structure 
 </details>
 
 ### 2. Enviroment
+```
 
+```
 
 ### 3. Dataset
+Please refer to [DATASET.md](docs/DATASET.md) for detailed instructions on data preparation.
 
 
 ### 4. Model
+Download our pre-trained models from [HuggingFace](https://huggingface.co/hao9610/X2SAM) and place them in the `inits` directory.
 
 
 ### 5. Training
 
-Coming soon...
+*⏳ Coming soon...*
 
 ### 6. Evaluation
 
 #### Image and Video Segmentation Benchmarks Evaluation
 
-Coming soon...
+*⏳ Coming soon...*
 
 #### Image and Video Chat Benchmarks Evaluation
 
-Coming soon...
+*⏳ Coming soon...*
 
 
 ## :computer: Demo
 
 ### Local Demo
 <details open>
-<summary>🏞️ / 🎥 Inference(Click to collapse)</summary>
+<summary><b>🏞️ / 🎥 Inference(Click to collapse)</b></summary>
 
+```bash
+
+```
 </details>
 
 ### Web Demo 
-</details>
 
 <details open>
 <summary>🛠️ Deployment (Click to collapse)</summary>
 
+```bash
+
+```
 </details>
 
 ## :white_check_mark: TODO
@@ -120,7 +144,7 @@ Coming soon...
 - [ ] Release the evaluation code.
 
 ## :blush: Acknowledge
-This project has referenced some excellent open-sourced repos ([xtuner](https://github.com/InternLM/xtuner), [VLMEvalKit](https://github.com/open-compass/VLMEvalKit), [X-SAM](https://github.com/wanghao9610/X-SAM)). Thanks for their wonderful works and contributions to the community.
+This project has referenced some excellent open-sourced repos ([xtuner](https://github.com/InternLM/xtuner), [VLMEvalKit](https://github.com/open-compass/VLMEvalKit), [X-SAM](https://github.com/wanghao9610/X-SAM)). Thanks for their wonderful works and contributions to the community!
 
 
 ## :pushpin: Citation
