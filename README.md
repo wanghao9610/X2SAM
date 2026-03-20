@@ -27,18 +27,6 @@
   </a>
 </div>
 
-## 📑 Table of Contents
-- [Notice](#eyes-notice)
-- [Highlights](#rocket-highlights)
-- [Abstract](#bookmark-abstract)
-- [Framework](#mag-framework)
-- [Benchmarks](#bar_chart-benchmarks)
-- [Getting Started](#checkered_flag-getting-starteded)
-- [Demo](#computer-demo)
-- [TODO](#white_check_mark-todo)
-- [Acknowledge](#blush-acknowledge)
-- [Citation](#pushpin-citation)
-
 ## :eyes: Notice
 
 > **Note:** X2SAM is under active development, and we will continue to update the code and documentation. Please check [TODO](#white_check_mark-todo) to get our development schedule.
