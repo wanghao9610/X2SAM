@@ -48,7 +48,7 @@ We strongly recommend that everyone uses **English** to communicate in issues. T
 *If you have any questions or would like to collaborate, please feel free to open an issue or reach out to me at `wanghao9610@gmail.com`.*
 
 ## :boom: Updates
-- **`[2026-03-20`**: We create the X2SAM github repo.
+- **`2026-03-20`**: We create the X2SAM github repo.
 
 ## :rocket: Highlights
 
