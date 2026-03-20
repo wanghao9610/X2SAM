@@ -68,7 +68,6 @@ We provide a detailed project structure for X-SAM. Please follow this structure 
 <summary>📁 Structure (Click to collapse)</summary>
 
 ```bash
-Project Structure
 
 ```
 </details>
@@ -114,6 +113,11 @@ Coming soon...
 </details>
 
 ## :white_check_mark: TODO
+
+- [ ] Release the paper on arXiv.
+- [ ] Release the demo website.
+- [ ] Release the pre-trained models.
+- [ ] Release the evaluation code.
 
 ## :blush: Acknowledge
 This project has referenced some excellent open-sourced repos ([xtuner](https://github.com/InternLM/xtuner), [VLMEvalKit](https://github.com/open-compass/VLMEvalKit), [X-SAM](https://github.com/wanghao9610/X-SAM)). Thanks for their wonderful works and contributions to the community.
