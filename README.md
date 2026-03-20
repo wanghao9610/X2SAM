@@ -69,7 +69,7 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 <div align="center">
   <!-- <img src="docs/srcs/images/framework.png" width="800" alt="X2SAM Framework"> -->
-  <p><em>Figure 1: The overall architecture and pipeline of X2SAM.</em></p>
+  <p><em>Figure 1: The overview of X2SAM.</em></p>
 </div>
 
 ## :bar_chart: Benchmarks
