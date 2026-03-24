@@ -102,18 +102,18 @@
             line-height: 1.1;
             margin-bottom: 1rem;
             text-align: center;
-            background: linear-gradient(135deg, #059669 100%, #10b981 100%);
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: fadeInUp 0.8s ease-out;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
         }
 
         .publication-subtitle {
             font-weight: 600;
             font-size: clamp(1.2rem, 3vw, 1.8rem) !important;
             text-align: center;
-            background: linear-gradient(135deg, #059669 100%, #10b981 100%);
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -755,7 +755,7 @@
             <div class="card-enhanced">
                 <h2 class="title is-3"><i class="fas fa-project-diagram"></i> Overview</h2>
                 <div class="image-wrapper">
-                    <img src="../srcs/images/framework.png" alt="X2SAM Framework Architecture">
+                    <img src="srcs/images/framework.png" alt="X2SAM Framework Architecture">
                 </div>
                 <div class="caption">
                     <strong>Fig. 1. The Overview of X2SAM.</strong> X2SAM comprises dual encoders, dual projectors, a
@@ -789,7 +789,7 @@
                 </div>
 
                 <div class="image-wrapper" style="box-shadow: none; border: none; padding: 0;">
-                    <img src="../srcs/benchmarks/overall.png" alt="Benchmark Results Overview">
+                    <img src="srcs/benchmarks/overall.png" alt="Benchmark Results Overview">
                 </div>
 
                 <details class="more-results-section">
@@ -801,46 +801,46 @@
                         <div class="caption" style="margin-top: 0;"><strong>Tab. 2. Comparison of Referring
                                 Segmentation.</strong>
                             Evaluated by (M)LLMs.</div>
-                        <div class="image-wrapper"><img src="../srcs/benchmarks/refseg.png"
+                        <div class="image-wrapper"><img src="srcs/benchmarks/refseg.png"
                                 alt="Referring Segmentation"></div>
 
                         <div class="caption"><strong>Tab. 3. Comparison of GCG Segmentation.</strong> &dagger; indicates
                             pretraining
                             with the GranD dataset.</div>
-                        <div class="image-wrapper"><img src="../srcs/benchmarks/gcgseg.png" alt="GCG Segmentation">
+                        <div class="image-wrapper"><img src="srcs/benchmarks/gcgseg.png" alt="GCG Segmentation">
                         </div>
 
                         <div class="caption"><strong>Tab. 4. Comparison of VGD Segmentation.</strong> &dagger; indicates
                             evaluation
                             results following X2SAM setting.</div>
-                        <div class="image-wrapper"><img src="../srcs/benchmarks/vgdseg.png" alt="VGD Segmentation">
+                        <div class="image-wrapper"><img src="srcs/benchmarks/vgdseg.png" alt="VGD Segmentation">
                         </div>
 
                         <div class="columns">
                             <div class="column">
                                 <div class="caption"><strong>Tab. 5. Generic Segmentation.</strong></div>
-                                <div class="image-wrapper"><img src="../srcs/benchmarks/genseg.png"
+                                <div class="image-wrapper"><img src="srcs/benchmarks/genseg.png"
                                         alt="Generic Segmentation"></div>
                             </div>
                             <div class="column">
                                 <div class="caption"><strong>Tab. 6. OV Segmentation (A150-OV).</strong></div>
-                                <div class="image-wrapper"><img src="../srcs/benchmarks/ovseg.png"
+                                <div class="image-wrapper"><img src="srcs/benchmarks/ovseg.png"
                                         alt="OV Segmentation"></div>
                             </div>
                         </div>
 
                         <div class="caption"><strong>Tab. 7. Comparison of Reasoning Segmentation.</strong></div>
-                        <div class="image-wrapper"><img src="../srcs/benchmarks/reaseg.png"
+                        <div class="image-wrapper"><img src="srcs/benchmarks/reaseg.png"
                                 alt="Reasoning Segmentation"></div>
 
                         <div class="caption"><strong>Tab. 8. Comparison of Interactive Segmentation.</strong></div>
-                        <div class="image-wrapper"><img src="../srcs/benchmarks/intseg.png"
+                        <div class="image-wrapper"><img src="srcs/benchmarks/intseg.png"
                                 alt="Interactive Segmentation"></div>
 
                         <div class="caption"><strong>Tab. 9. Image-level Benchmarks.</strong> MME, MMBench, SEED-Bench,
                             POPE, and
                             AI2D.</div>
-                        <div class="image-wrapper"><img src="../srcs/benchmarks/imgconv.png"
+                        <div class="image-wrapper"><img src="srcs/benchmarks/imgconv.png"
                                 alt="Image-level Benchmarks"></div>
                     </div>
                 </details>
