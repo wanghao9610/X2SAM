@@ -182,9 +182,6 @@ datas
     └── ytvis_vgd
         ├── annotations
         └── youtube_vis2019
-            ├── annotations
-            ├── train
-            └── valid
 ```
 
 ## HFD Downloader Setting
