@@ -81,7 +81,7 @@ We provide a detailed project structure for X-SAM. Please follow this structure 
 ```
 
 ### 3. Dataset
-Please refer to [DATASET.md](docs/DATASET.md) for detailed instructions on data preparation.
+Please refer to [datasets.md](docs/mds/datasets.md) for detailed instructions on data preparation.
 
 
 ### 4. Model
