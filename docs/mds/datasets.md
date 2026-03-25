@@ -187,6 +187,15 @@ datas
             └── valid
 ```
 
+## HFD Downloader Setting
+
+We provide a custom downloader [`hfd`](../srcs/tools/hfd.sh) for downloading datasets from Hugging Face. You can use it to download datasets from Hugging Face.
+
+```bash
+chmod +x $root_dir/srcs/tools/hfd.sh
+alias hfd="$root_dir/srcs/tools/hfd.sh"
+```
+
 ## Image Segmentation Datasets
 
 ### 1. Image Generic Segmentation Datasets
@@ -276,7 +285,20 @@ datas
 
     unset temp_data_dir
     ```
-* GRefCOCO Datasets for Image Referring Segmentation
+* gRefCOCO Datasets for Image Referring Segmentation
+
+    Please refer to the following steps to download and process gRefCOCO datasets.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/img_refseg/grefcoco
+    export temp_data_dir=$root_dir/datas/img_refseg/grefcoco
+    cd $temp_data_dir
+    hfd gRefCOCO/gRefCOCO --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
+    mv $temp_data_dir/gRefCOCO/* $temp_data_dir
+    rm -rf $temp_data_dir/gRefCOCO
+
+    unset temp_data_dir
+    ```
 
 ### 4. Image Reasoning Segmentation Datasets
 
