@@ -387,11 +387,37 @@ datas
 ### 1. Video Generic Segmentation Datasets
 * VIPSeg Dataset for Video Panoptic Segmentation
 
-    Please refer to the [VIPSeg Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md#vipseg-dataset-a-large-scale-video-panoptic-segmentation-dataset) the dataset then [change VIPSeg to 720P and COCO format](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md#change-vipseg-to-720p-and-coco-format).
+    Please refer to the [VIPSeg Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download](https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ) the dataset, then refer to the following steps to process the dataset.
+    ```bash
+    TODO
+    cd $root_dir
+    mkdir -p datas/vid_genseg/vipseg
+    export temp_data_dir=$root_dir/datas/vid_genseg/vipseg
+    # download dataset
+    wget https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ -O $temp_data_dir/vipseg.zip
+    # unzip dataset
+    unzip $temp_data_dir/vipseg.zip -d $temp_data_dir
+    rm $temp_data_dir/vipseg.zip
+
+    unset temp_data_dir
+    ```
 
 * VSPW Dataset for Video Semantic Segmentation
 
-    Please refer to the [VSPW Dataset](https://github.com/VSPW-dataset/VSPW-dataset-download/README.md) to [download](https://github.com/VSPW-dataset/VSPW-dataset-download?tab=readme-ov-file#vspw-dataset-download) VSPW 480P dataset.
+    Please refer to the [VSPW Dataset](https://github.com/VSPW-dataset/VSPW-dataset-download/README.md) to [download](https://github.com/VSPW-dataset/VSPW-dataset-download?tab=readme-ov-file#vspw-dataset-download) VSPW 480P dataset, then refer to the following steps to process the dataset.
+    ```bash
+    TODO
+    cd $root_dir
+    mkdir -p datas/vid_genseg/vspw
+    export temp_data_dir=$root_dir/datas/vid_genseg/vspw
+    # download dataset
+    wget https://github.com/VSPW-dataset/VSPW-dataset-download?tab=readme-ov-file#vspw-dataset-download -O $temp_data_dir/vspw.zip
+    # unzip dataset
+    unzip $temp_data_dir/vspw.zip -d $temp_data_dir
+    rm $temp_data_dir/vspw.zip
+
+    unset temp_data_dir
+    ```
 
 * YouTube-VIS 2019 Dataset for Video Instance Segmentation
 
@@ -419,27 +445,157 @@ datas
 ### 2. Video Open-Vocabulary Segmentation Datasets
 * YouTube-VIS 2021 Dataset for Video Open-Vocabulary Segmentation
 
-    Please refer to the [YouTube-VIS 2021 Dataset](https://codalab.lisn.upsaclay.fr/competitions/7680#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1RAc7ETOeeV5nT2nbKMxG7QpjmgC4QHHF), then unzip them into $root_dir/datas/vid_ovseg/youtube_vis2021.
+    Please refer to the [YouTube-VIS 2021 Dataset](https://codalab.lisn.upsaclay.fr/competitions/7680#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1RAc7ETOeeV5nT2nbKMxG7QpjmgC4QHHF), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_ovseg/youtube_vis2021
+    export temp_data_dir=$root_dir/datas/vid_ovseg/youtube_vis2021
+    unzip train.zip -d $temp_data_dir/train
+    unzip val.zip -d $temp_data_dir/val
+    unzip test.zip -d $temp_data_dir/test
+
+    unset temp_data_dir
+    ```
 
 ### 3. Video Referring Segmentation Datasets
 
 * Youtube-RefVOS 2021 Dataset for Video Referring Segmentation
 
-    Please refer to the [Youtube-RefVOS 2021 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1J45ubR8Y24wQ6dzKOTkfpd9GS_F9A2kb), then unzip them into $root_dir/datas/vid_refseg/youtube_rvos2021.
+    Please refer to the [Youtube-RefVOS 2021 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1J45ubR8Y24wQ6dzKOTkfpd9GS_F9A2kb), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_refseg/youtube_rvos2021
+    export temp_data_dir=$root_dir/datas/vid_refseg/youtube_rvos2021
+    unzip train.zip -d $temp_data_dir/train
+    unzip val.zip -d $temp_data_dir/val
+    unzip meta_expressions.zip -d $temp_data_dir/meta_expressions
+
+    unset temp_data_dir
+    ```
 
 * DAVIS-RefVOS 2017 Dataset for Video Referring Segmentation
 
-    Please refer to the [DAVIS 2017 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://data.vision.ee.ethz.ch/csergi/share/davis/DAVIS-2017-trainval-480p.zip) and [download the referring annotations](https://www.mpi-inf.mpg.de/fileadmin/inf/d2/khoreva/davis_text_annotations.zip), then unzip them into $root_dir/datas/vid_refseg/davis_rvos2017.
+    Please refer to the [DAVIS 2017 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://data.vision.ee.ethz.ch/csergi/share/davis/DAVIS-2017-trainval-480p.zip) and [download the referring annotations](https://www.mpi-inf.mpg.de/fileadmin/inf/d2/khoreva/davis_text_annotations.zip), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_refseg/davis_rvos2017
+    export temp_data_dir=$root_dir/datas/vid_refseg/davis_rvos2017
+    unzip DAVIS-2017-trainval-480p.zip -d $temp_data_dir/DAVIS-2017-trainval-480p
+    unzip davis_text_annotations.zip -d $temp_data_dir/davis_text_annotations
+    mv $temp_data_dir/DAVIS-2017-trainval-480p/DAVIS/* $temp_data_dir
+    rm -rf $temp_data_dir/DAVIS-2017-trainval-480p
+
+    unset temp_data_dir
+    ```
 
 ### 4. Video Reasoning Segmentation Datasets
 
 * ReVOS Dataset for Video Reasoning Segmentation
 
+    Please refer to the [ReVOS Dataset](https://github.com/cilinyan/VISA) to [download the dataset](https://mailsjlueducn-my.sharepoint.com/:f:/g/personal/yancl9918_mails_jlu_edu_cn/Ek3rFeIbNZtAv8kxVxr5n6sB6g3kbIThTscrq8cNt0zvgA?e=ZeuVzH), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_reaseg/revos
+    export temp_data_dir=$root_dir/datas/vid_reaseg/revos
+    mkdir -p $temp_data_dir/annotations
+    # download dataset and put them in $temp_data_dir
+    unzip JPEGImages.zip -d $temp_data_dir/JPEGImages
+    mv *.json $temp_data_dir/annotations
+
+    unset temp_data_dir
+    ```
+
 ### 5. Video GCG Segmentation Datasets
+
+* VideoGLaMM Dataset for Video GCG Segmentation
+
+    Please refer to the [VideoGLaMM Dataset](https://github.com/VideoGLaMM/VideoGLaMM) to [download the dataset](https://github.com/VideoGLaMM/VideoGLaMM), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_gcgseg/videoglamm
+    export temp_data_dir=$root_dir/datas/vid_gcgseg/videoglamm
+    unzip VideoGLaMM.zip -d $temp_data_dir/VideoGLaMM
+    rm $temp_data_dir/VideoGLaMM.zip
+
+    unset temp_data_dir
+    ```
 
 ### 6. Video Object Segmentation Datasets
 
+* YouTube-VOS 2019 Dataset for Video Object Segmentation
+
+    Please refer to the [YouTube-VOS 2019 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1XwjQ-eysmOb7JdmJAwfVOBZX-aMbHccC), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_objseg/youtube_vos2019
+    export temp_data_dir=$root_dir/datas/vid_objseg/youtube_vos2019
+    unzip train.zip -d $temp_data_dir/train
+    unzip val.zip -d $temp_data_dir/val
+
+    unset temp_data_dir
+    ```
+
 ### 7. Video VGD Segmentation Datasets
 
-## Image Chat & Video Chat Datasets
+* VIPSeg-VGD Dataset for Video VGD Segmentation
 
+    TODO
+
+    Please refer to the [VIPSeg-VGD Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download the dataset](https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_vgdseg/vipseg_vgd
+    export temp_data_dir=$root_dir/datas/vid_vgdseg/vipseg_vgd
+    unzip VIPSeg-VGD.zip -d $temp_data_dir/VIPSeg-VGD
+    rm $temp_data_dir/VIPSeg-VGD.zip
+
+    unset temp_data_dir
+    ```
+
+* YouTube-VIS 2019-VGD Dataset for Video VGD Segmentation
+
+    TODO
+
+    Please refer to the [YouTube-VIS 2019-VGD Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download the dataset](https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_vgdseg/youtube_vis2019_vgd
+    export temp_data_dir=$root_dir/datas/vid_vgdseg/youtube_vis2019_vgd
+    unzip YouTube-VIS 2019-VGD.zip -d $temp_data_dir/YouTube-VIS 2019-VGD
+    rm $temp_data_dir/YouTube-VIS 2019-VGD.zip
+
+    unset temp_data_dir
+    ```
+
+## Image Chat & Video Chat Datasets
+TODO
+
+* LLaVA-Instruct Dataset for Image Chat
+
+    Please refer to the [LLaVA-Instruct Dataset](https://github.com/haotian-liu/LLaVA-Instruct) to [download the dataset](https://github.com/haotian-liu/LLaVA-Instruct), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_chat/llava_instruct
+    export temp_data_dir=$root_dir/datas/vid_chat/llava_instruct
+    unzip LLaVA-Instruct.zip -d $temp_data_dir/LLaVA-Instruct
+    rm $temp_data_dir/LLaVA-Instruct.zip
+
+    unset temp_data_dir
+    ```
+
+* VideoChatGPT Dataset for Video Chat
+
+    Please refer to the [VideoChatGPT Dataset](https://github.com/VideoChatGPT/VideoChatGPT) to [download the dataset](https://github.com/VideoChatGPT/VideoChatGPT), then refer to the following steps to process the dataset.
+    ```bash
+    cd $root_dir
+    mkdir -p datas/vid_chat/videochatgpt
+    export temp_data_dir=$root_dir/datas/vid_chat/videochatgpt
+    unzip VideoChatGPT.zip -d $temp_data_dir/VideoChatGPT
+    rm $temp_data_dir/VideoChatGPT.zip
+
+    unset temp_data_dir
+    ```
+
+* Benchmark Datasets for Image Chat & Video Chat
+
+    `VLMEvalKit` will automatically download the benchmark datasets for image chat and video chat.
