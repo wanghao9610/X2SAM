@@ -77,7 +77,7 @@ This repository provides the official PyTorch implementation, pre-trained models
 We provide a detailed project structure for X-SAM. Please follow this structure to organize the project.
 
 <details open>
-<summary><b>📁 Project Structure (Click to collapse)</b></summary>
+<summary><b>📁 Project (Click to collapse)</b></summary>
 
 ```bash
 
