@@ -47,6 +47,15 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 * TODO
 
+## :book: Table of Contents
+- [Abstract](#bookmark-abstract)
+- [Framework](#mag-framework)
+- [Benchmarks](#bar_chart-benchmarks)
+- [Quickstart](#checkered_flag-quickstart)
+- [Demo](#computer-demo)
+- [TODO](#white_check_mark-todo)
+- [Acknowledge](#blush-acknowledge)
+- [Citation](#pushpin-citation)
 
 
 ## :bookmark: Abstract
@@ -62,7 +71,7 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 ## :bar_chart: Benchmarks
 
-## :checkered_flag: Getting Started
+## :checkered_flag: Quickstart
 
 ### 1. Structure
 We provide a detailed project structure for X-SAM. Please follow this structure to organize the project.
