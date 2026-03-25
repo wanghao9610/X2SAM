@@ -509,13 +509,50 @@ datas
 
 * VideoGLaMM Dataset for Video GCG Segmentation
 
-    Please refer to the [VideoGLaMM Dataset](https://github.com/VideoGLaMM/VideoGLaMM) to [download the dataset](https://github.com/VideoGLaMM/VideoGLaMM), then refer to the following steps to process the dataset.
+    Please refer to the [VideoGLaMM Dataset](https://github.com/mbzuai-oryx/VideoGLaMM) to [download the dataset](https://github.com/mbzuai-oryx/VideoGLaMM/blob/main/Dataset.md), then refer to the following steps to process the dataset.
+    
+    `NOTE`: As the original donwload link is not available for long time downloading, we download them and upload it to [Baidu Pan](https://github.com/mbzuai-oryx/VideoGLaMM)(access code: xsam).
     ```bash
     cd $root_dir
-    mkdir -p datas/vid_gcgseg/videoglamm
-    export temp_data_dir=$root_dir/datas/vid_gcgseg/videoglamm
-    unzip VideoGLaMM.zip -d $temp_data_dir/VideoGLaMM
-    rm $temp_data_dir/VideoGLaMM.zip
+    mkdir -p datas/vid_gcgseg/VideoGLaMM
+    export temp_data_dir=$root_dir/datas/vid_gcgseg/VideoGLaMM
+
+    # anet_gcg
+    cd $temp_data_dir
+    unzip activitynet_entities_gcg.zip -d $temp_data_dir
+    mv activitynet_entities_gcg $temp_data_dir/anet_gcg
+
+    # mevis_gcg
+    cd $temp_data_dir
+    unzip mevis_gcg.zip -d $temp_data_dir
+    hfd FudanCVL/MeViS --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
+    mv MeViS $temp_data_dir/mevis   # download mevis dataset
+    unzip hcstvg_gcg.zip -d $temp_data_dir
+    unzip ytvos_gcg.zip -d $temp_data_dir
+    ln -s $root_dir/datas/vid_refseg/youtube_rvos2021 $temp_data_dir/youtube_rvos2021
+
+    # video_gcg
+    cd $temp_data_dir
+    unzip burst_ytvis_gcg.zip -d $temp_data_dir
+    ln -s $root_dir/datas/vid_genseg/youtube_vis2019 $temp_data_dir/video_gcg/yt19
+    cd video_gcg
+    mkdir -p $temp_data_dir/video_gcg/burst
+    hfd chengyenhsieh/TAO-Amodal --hf_username YOUR_NAME --hf_token YOUR_TOKEN --tool aria2c -x 16 --save_dir ./ --dataset --include frames     # download burst dataset
+    mv TAO-Amodal/frames/* $temp_data_dir/video_gcg/burst
+    rm -rf TAO-Amodal
+    find . -maxdepth 1 -name "$temp_data_dir/video_gcg/burst/train/*.zip" -print0 | xargs -0 -P $(nproc) -I {} unzip -q {} -d $temp_data_dir/video_gcg/burst/train
+    find . -maxdepth 1 -name "$temp_data_dir/video_gcg/burst/val/*.zip" -print0 | xargs -0 -P $(nproc) -I {} unzip -q {} -d $temp_data_dir/video_gcg/burst/val
+    rm -rf $temp_data_dir/video_gcg/burst/train/*.zip
+    rm -rf $temp_data_dir/video_gcg/burst/val/*.zip
+    
+    # vidstg_gcg
+    unzip vidstg_gcg.zip -d $temp_data_dir
+    unzip videoGLaMM_processed.zip -d $temp_data_dir
+    mv $temp_data_dir/processed $temp_data_dir
+
+    # hcstvg_gcg
+    cd $temp_data_dir
+    unzip hcstvg_gcg.zip -d $temp_data_dir
 
     unset temp_data_dir
     ```
@@ -539,63 +576,106 @@ datas
 
 * VIPSeg-VGD Dataset for Video VGD Segmentation
 
-    TODO
-
-    Please refer to the [VIPSeg-VGD Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download the dataset](https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ), then refer to the following steps to process the dataset.
+    Please refer to the following steps to download and process the dataset.
     ```bash
     cd $root_dir
-    mkdir -p datas/vid_vgdseg/vipseg_vgd
+    mkdir -p datas/vid_vgdseg/vipseg_vgd/annotations
     export temp_data_dir=$root_dir/datas/vid_vgdseg/vipseg_vgd
-    unzip VIPSeg-VGD.zip -d $temp_data_dir/VIPSeg-VGD
-    rm $temp_data_dir/VIPSeg-VGD.zip
+    cd $temp_data_dir
+    hfd hao9610/VideoVGD --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
+    mv VideoVGD/vid_vgd_vipseg*.json $temp_data_dir/annotations
+    ln -s $root_dir/datas/vid_genseg/VIPSeg_720P $temp_data_dir/VIPSeg_720P
 
     unset temp_data_dir
     ```
 
-* YouTube-VIS 2019-VGD Dataset for Video VGD Segmentation
+* YTVIS-VGD Dataset for Video VGD Segmentation
 
-    TODO
-
-    Please refer to the [YouTube-VIS 2019-VGD Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download the dataset](https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ), then refer to the following steps to process the dataset.
+    Please refer to the following steps to download and process the dataset.
     ```bash
     cd $root_dir
-    mkdir -p datas/vid_vgdseg/youtube_vis2019_vgd
-    export temp_data_dir=$root_dir/datas/vid_vgdseg/youtube_vis2019_vgd
-    unzip YouTube-VIS 2019-VGD.zip -d $temp_data_dir/YouTube-VIS 2019-VGD
-    rm $temp_data_dir/YouTube-VIS 2019-VGD.zip
+    mkdir -p datas/vid_vgdseg/ytvis_vgd
+    export temp_data_dir=$root_dir/datas/vid_vgdseg/ytvis_vgd
+    cd $temp_data_dir
+    mv VideoVGD/vid_vgd_yt19*.json $temp_data_dir/annotations
+    ln -s $root_dir/datas/vid_genseg/youtube_vis2019 $temp_data_dir/youtube_vis2019
+    rm $temp_data_dir/ytvis_vgd.zip
 
     unset temp_data_dir
     ```
 
 ## Image Chat & Video Chat Datasets
-TODO
 
 * LLaVA-Instruct Dataset for Image Chat
 
-    Please refer to the [LLaVA-Instruct Dataset](https://github.com/haotian-liu/LLaVA-Instruct) to [download the dataset](https://github.com/haotian-liu/LLaVA-Instruct), then refer to the following steps to process the dataset.
+    Please refer to the [LLaVA Dataset](https://github.com/haotian-liu/LLaVA/blob/main/docs/Data.md) to download the dataset, then refer to the following steps to process the dataset.
     ```bash
     cd $root_dir
-    mkdir -p datas/vid_chat/llava_instruct
-    export temp_data_dir=$root_dir/datas/vid_chat/llava_instruct
-    unzip LLaVA-Instruct.zip -d $temp_data_dir/LLaVA-Instruct
-    rm $temp_data_dir/LLaVA-Instruct.zip
+    mkdir -p datas/img_chat/llava
+    export temp_data_dir=$root_dir/datas/img_chat/llava
+    hfd liuhaotian/LLaVA-Instruct-150K --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
+    hfd liuhaotian/LLaVA-Pretrain --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
+
+    mkdir $temp_data_dir/llava_images
+    # Please prepare the GQA, OCR_VQA, TEXTVQA, VG datasets and put them in $temp_data_dir as below structure
+    # llava_images
+    # ├── coco
+    # ├── gqa
+    # ├── ocr_vqa
+    # ├── textvqa
+    # └── vg
+    
+    # COCO Dataset
+    ln -s $root_dir/datas/img_genseg/coco2017 $temp_data_dir/llava_images/coco
+
+    # GQA Dataset
+    cd $temp_data_dir/llava_images
+    mkdir $temp_data_dir/llava_images/gqa
+    cd $temp_data_dir/llava_images/gqa
+    wget https://downloads.cs.stanford.edu/nlp/data/gqa/images.zip
+    unzip images.zip
+    rm images.zip
+
+    # OCR_VQA Dataset
+    cd $temp_data_dir/llava_images
+    hfd ej2/llava-ocr-vqa --tools aria2c -x 8 --save_dir $temp_data_dir/llava_images --dataset
+    tar -xvf $temp_data_dir/llava_images/llava-ocr-vqa/ocr_vqa.tar -C $temp_data_dir/llava_images/ocr_vqa
+
+    # TEXTVQA Dataset
+    cd $temp_data_dir/llava_images
+    wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
+    unzip train_val_images.zip -d $temp_data_dir/llava_images/textvqa/train_images
+    rm train_val_images.zip
+
+    # VG Dataset
+    cd $temp_data_dir/llava_images
+    wget https://cs.stanford.edu/people/rak248/VG_100K_2/images.zip -O $temp_data_dir/llava_images/vg/images.zip
+    wget https://cs.stanford.edu/people/rak248/VG_100K_2/images2.zip -O $temp_data_dir/llava_images/vg/images2.zip
+    unzip $temp_data_dir/llava_images/vg/images.zip -d $temp_data_dir/llava_images/vg
+    unzip $temp_data_dir/llava_images/vg/images2.zip -d $temp_data_dir/llava_images/vg
+    rm $temp_data_dir/llava_images/vg/images.zip
+    rm $temp_data_dir/llava_images/vg/images2.zip
 
     unset temp_data_dir
     ```
 
 * VideoChatGPT Dataset for Video Chat
 
-    Please refer to the [VideoChatGPT Dataset](https://github.com/VideoChatGPT/VideoChatGPT) to [download the dataset](https://github.com/VideoChatGPT/VideoChatGPT), then refer to the following steps to process the dataset.
+    Please refer to the [VideoChatGPT](https://github.com/mbzuai-oryx/Video-ChatGPT) to [download the dataset](https://mbzuaiac-my.sharepoint.com/personal/hanoona_bangalath_mbzuai_ac_ae/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fhanoona%5Fbangalath%5Fmbzuai%5Fac%5Fae%2FDocuments%2FVideo%2DChatGPT%2FData%5FCode%5FModel%5FRelease%2FData%2Ftraining%5Fvideos&viewid=7813d070%2D5dd9%2D4b3b%2D873e%2De519f40b7340), then refer to the following steps to process the dataset.
+
     ```bash
     cd $root_dir
-    mkdir -p datas/vid_chat/videochatgpt
-    export temp_data_dir=$root_dir/datas/vid_chat/videochatgpt
-    unzip VideoChatGPT.zip -d $temp_data_dir/VideoChatGPT
-    rm $temp_data_dir/VideoChatGPT.zip
+    mkdir -p datas/vid_chat/VideoChatGPT
+    export temp_data_dir=$root_dir/datas/vid_chat/VideoChatGPT
+    hfd MBZUAI/VideoInstruct-100K --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
+    mv VideoInstruct-100K/VideoInstruct100K.json $temp_data_dir
+    rm -rf $temp_data_dir/VideoInstruct-100K
+    mkdir -p $temp_data_dir/ActivityNet/train
+    find . -maxdepth 1 -name "training_videos/*.tar" -print0 | xargs -0 -P $(nproc) -I {} tar -xvf {} -d $temp_data_dir/ActivityNet/train/
 
     unset temp_data_dir
     ```
 
-* Benchmark Datasets for Image Chat & Video Chat
+* Image Chat & Video Chat Benchmark Datasets
 
-    `VLMEvalKit` will automatically download the benchmark datasets for image chat and video chat.
+    `VLMEvalKit` will automatically download the image chat and video chat benchmark datasets for evaluation.
