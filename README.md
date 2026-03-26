@@ -136,9 +136,11 @@ Download our pre-trained models from [HuggingFace](https://huggingface.co/hao961
 ## :white_check_mark: TODO
 
 - [ ] Release the paper on arXiv.
-- [ ] Release the demo website.
 - [ ] Release the pre-trained models.
+- [ ] Release the demo website.
+- [ ] Release the demo instructions.
 - [ ] Release the evaluation code.
+- [ ] Release the training code.
 
 ## :blush: Acknowledge
 This project has referenced some excellent open-sourced repos ([xtuner](https://github.com/InternLM/xtuner), [VLMEvalKit](https://github.com/open-compass/VLMEvalKit), [X-SAM](https://github.com/wanghao9610/X-SAM)). Thanks for their wonderful works and contributions to the community!
