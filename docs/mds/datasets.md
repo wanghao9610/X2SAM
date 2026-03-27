@@ -678,7 +678,7 @@ alias hfd="$root_dir/srcs/tools/hfd.sh"
     unset temp_data_dir
     ```
 
-* VideoChatGPT Dataset for Video Chat
+* VideoInstruct100K Dataset for Video Chat
 
     Please refer to the [VideoChatGPT](https://github.com/mbzuai-oryx/Video-ChatGPT) to [download the dataset](https://mbzuaiac-my.sharepoint.com/personal/hanoona_bangalath_mbzuai_ac_ae/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fhanoona%5Fbangalath%5Fmbzuai%5Fac%5Fae%2FDocuments%2FVideo%2DChatGPT%2FData%5FCode%5FModel%5FRelease%2FData%2Ftraining%5Fvideos&viewid=7813d070%2D5dd9%2D4b3b%2D873e%2De519f40b7340), then refer to the following steps to process the dataset.
 
