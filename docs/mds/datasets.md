@@ -1,6 +1,6 @@
 # :bookmark_tabs: Datasets
 
-## File Structure
+## Structure
 
 ```
 datas
@@ -530,7 +530,7 @@ alias hfd="$root_dir/srcs/tools/hfd.sh"
 
     Please refer to the [VideoGLaMM Dataset](https://github.com/mbzuai-oryx/VideoGLaMM) to [download the dataset](https://github.com/mbzuai-oryx/VideoGLaMM/blob/main/Dataset.md), then refer to the following steps to process the dataset.
     
-    `NOTE`: As the original donwload link is not available for long time downloading, we download them and upload it to [Baidu Pan](https://github.com/mbzuai-oryx/VideoGLaMM)(access code: xsam).
+    `NOTE`: As the original donwload link is not available for long time downloading, we download them and upload it to [Baidu Pan](https://pan.baidu.com/s/1_mQOqdI6j67R6MG8Xc3ZZA)(access code: xsam).
     ```bash
     cd $root_dir
     mkdir -p datas/vid_gcgseg/VideoGLaMM
