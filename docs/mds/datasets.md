@@ -15,7 +15,7 @@ datas
 │       ├── annotations
 │       └── images
 ├── img_genseg
-│   └── coco
+│   └── coco2017
 │       ├── annotations
 │       ├── panoptic_semseg_train2017
 │       ├── panoptic_semseg_val2017
@@ -24,27 +24,30 @@ datas
 │       ├── stuff_train2017_pixelmaps
 │       ├── stuff_val2017_pixelmaps
 │       ├── test2017
-│       ├── train2014
+│       ├── train2014 -> ../coco2014/train2014
 │       ├── train2017
-│       ├── val2014
+│       ├── val2014 -> ../coco2014/val2014
 │       └── val2017
 ├── img_intseg
 │   └── coco_int
 │       ├── annotations
-│       └── coco2017
+│       └── coco2017 -> ../coco2017
 ├── img_ovseg
-│   ├── ade20k
-│   │   ├── ade20k_panoptic_train
-│   │   ├── ade20k_panoptic_val
-│   │   ├── annotations
-│   │   ├── annotations_detectron2
-│   │   ├── annotations_instance
-│   │   └── images
-│   └── pascal_ctx
-│       ├── annotations_ctx459
-│       ├── annotations_ctx59
+│   └── ade20k
+│       ├── ade20k_instance_catid_mapping.txt
+│       ├── ade20k_instance_imgCatIds.json
+│       ├── ade20k_instance_train.json
+│       ├── ade20k_instance_val.json
+│       ├── ade20k_panoptic_train
+│       ├── ade20k_panoptic_train.json
+│       ├── ade20k_panoptic_val
+│       ├── ade20k_panoptic_val.json
+│       ├── annotations
+│       ├── annotations_detectron2
+│       ├── annotations_instance
 │       ├── images
-│       └── labels
+│       ├── objectInfo150.txt
+│       └── sceneCategories.txt
 ├── img_reaseg
 │   └── lisa
 │       ├── explanatory
@@ -52,136 +55,162 @@ datas
 │       ├── train
 │       └── val
 ├── img_refseg
-│   ├── annotations
-│   ├── grefcoco
-│   ├── images
-│   │   ├── saiapr_tc-12
-│   │   ├── train2014
-│   │   └── val2014
-│   ├── refclef
-│   ├── refcoco
-│   ├── refcocog
-│   ├── refcocop
-│   └── train2014
-├── img_sam
-│   └── SA1B
+│   └── refcocos
+│       ├── annotations
+│       ├── grefcoco
+│       ├── images
+│       ├── refclef
+│       ├── refcoco
+│       ├── refcoco+
+│       ├── refcocog
+│       ├── refcocop -> refcoco+
+│       └── train2014 -> ../coco2014/train2014
 ├── img_vgdseg
 │   └── coco_vgd
 │       ├── annotations
-│       └── coco2017
+│       └── coco2017 -> ../coco2017
 ├── LMUData
+│   ├── AI2D_TEST.tsv
 │   ├── datasets--lmms-lab--Video-MME
 │   │   ├── subtitle
 │   │   ├── video
-│   │   └── videomme
+│   │   ├── videomme
+│   │   └── Video-MME.tsv
 │   ├── datasets--lmms-lab--VideoMMMU
 │   │   ├── Adaptation
-│   │   ├── Comprehension
 │   │   ├── images
 │   │   ├── Perception
+│   │   ├── VideoMMMU.tsv
 │   │   └── videos
 │   ├── datasets--longvideobench--LongVideoBench
+│   │   ├── LongVideoBench.tsv
+│   │   ├── lvb_test_wo_gt.json
+│   │   ├── lvb_val.json
 │   │   ├── subtitles
 │   │   └── videos
 │   ├── datasets--MLVU--MVLU
 │   │   ├── MLVU
+│   │   ├── MLVU_MCQ.tsv
+│   │   ├── MLVU_OpenEnded.tsv
 │   │   └── MLVU_Test
 │   ├── datasets--opencompass--MMBench-Video
+│   │   ├── MMBench-Video_a.json
+│   │   ├── MMBench-Video_q.json
+│   │   ├── MMBench-Video.tsv
+│   │   ├── README.md
 │   │   ├── video
 │   │   └── video_pkl
 │   ├── datasets--OpenGVLab--MVBench
 │   │   ├── json
+│   │   ├── MVBench.tsv
 │   │   └── video
-│   └── images
-│       ├── AI2D_TEST
-│       ├── GQA_TestDev_Balanced
-│       ├── LongVideoBench
-│       ├── MLVU_MCQ
-│       ├── MLVU_OpenEnded
-│       ├── MMBench
-│       ├── MMBench_V11
-│       ├── MMBench-Video
-│       ├── MME
-│       ├── MVBench
-│       ├── POPE
-│       ├── ScienceQA_TEST
-│       ├── ScienceQA_VAL
-│       ├── SEEDBench_IMG
-│       ├── Video-MME
-│       └── VideoMMMU
+│   ├── GQA_TestDev_Balanced.tsv
+│   ├── images
+│   │   ├── AI2D_TEST
+│   │   ├── GQA_TestDev_Balanced
+│   │   ├── LongVideoBench
+│   │   ├── MLVU_MCQ
+│   │   ├── MLVU_OpenEnded
+│   │   ├── MMBench
+│   │   ├── MMBench_V11
+│   │   ├── MMBench-Video
+│   │   ├── MME
+│   │   ├── MVBench
+│   │   ├── POPE
+│   │   ├── ScienceQA_TEST
+│   │   ├── ScienceQA_VAL
+│   │   ├── SEEDBench_IMG
+│   │   ├── Video-MME
+│   │   └── VideoMMMU
+│   ├── MMBench_DEV_EN.tsv
+│   ├── MMBench_DEV_EN_V11.tsv
+│   ├── MME.tsv
+│   ├── POPE_local.tsv
+│   ├── POPE.tsv
+│   ├── ScienceQA_TEST.tsv
+│   ├── ScienceQA_VAL.tsv
+│   └── SEEDBench_IMG.tsv
 ├── vid_chat
-│   └── VideoChatGPT
-│       └── ActivityNet
+│   └── video_chatgpt
+│       ├── ActivityNet
+│       │   └── train
+│       │       ├── v_00Dk03Jr70M.mp4
+│       │       ├── ...
+│       │       └── v_zzz_3yWpTXo.mp4
+│       ├── videochatgpt_train.json
+│       └── VideoInstruct100K.json
 ├── vid_gcgseg
-│   └── VideoGLaMM
-│       ├── anet_gcg
+│   └── video_glamm
+│       ├── activitynet_entities_gcg
 │       ├── burst
 │       ├── hcstvg_gcg
-│       ├── mevis
+│       ├── mevis -> ../mevis
 │       ├── mevis_gcg
 │       ├── processed
 │       ├── video_gcg
 │       ├── vidstg
 │       ├── vidstg_gcg
-│       ├── youtube_rvos2021
-│       ├── youtube_vis2019
-│       ├── ytvis
-│       ├── ytvos_gcg
-│       └── ziped
+│       ├── ytrvos21
+│       ├── ytvis19
+│       └── ytvos_gcg
 ├── vid_genseg
-│   ├── VIPSeg_720P
+│   ├── vipseg_720p
 │   │   ├── images
 │   │   ├── panomasks
-│   │   └── panomasksRGB
-│   ├── VSPW_480p
+│   │   ├── panomasksRGB
+│   │   ├── panoptic_gt_VIPSeg.json
+│   │   ├── panoptic_gt_VIPSeg_train.json
+│   │   ├── panoptic_gt_VIPSeg_val.json
+│   │   ├── panoVIPSeg_categories.json
+│   │   ├── test.txt
+│   │   ├── train.txt
+│   │   └── val.txt
+│   ├── vspw_480p
 │   │   ├── annotations
-│   │   ├── data
+│   │   ├── data.txt
 │   │   ├── images
-│   │   └── semmasks
-│   ├── youtube_vis2019
-│   │   ├── annotations
-│   │   ├── train
-│   │   └── valid
-│   └── youtube_vis2021
-│       ├── test
-│       ├── train
-│       └── valid
+│   │   ├── label_num_dic_final.json
+│   │   ├── semmasks
+│   │   ├── test.txt
+│   │   ├── train.txt
+│   │   └── val.txt
+│   └── ytvis19
+│       ├── train
+│       └── valid
 ├── vid_objseg
-│   └── youtube_vos2019
+│   └── ytvos19
 │       ├── annotations
 │       ├── test
 │       ├── train
 │       └── valid
 ├── vid_ovseg
-│   └── youtube_vis2021
-│       ├── annotations
+│   └── ytvis21
+│       ├── test
 │       ├── train
 │       └── valid
 ├── vid_reaseg
-│   ├── ReasonVOS
-│   │   ├── Annotations
-│   │   └── JPEGImages
-│   └── ReVOS
+│   └── revos
 │       ├── annotations
 │       └── JPEGImages
 ├── vid_refseg
-│   ├── davis_rvos2017
-│   │   ├── Annotations
+│   ├── davis17
+│   │   ├── davis_supervised
 │   │   ├── davis_text_annotations
-│   │   ├── JPEGImages
-│   │   └── meta_expressions
-│   └── youtube_rvos2021
-│       ├── Annotations
+│   │   ├── davis_unsupervised
+│   │   ├── meta_expressions
+│   │   ├── vid_refseg_davis17_train.json
+│   │   └── vid_refseg_davis17_val.json
+│   └── ytrvos21
 │       ├── meta_expressions
 │       ├── train
 │       └── valid
 └── vid_vgdseg
     ├── vipseg_vgd
     │   ├── annotations
-    │   └── VIPSeg_720P
+    │   └── vipseg_720p
     └── ytvis_vgd
         ├── annotations
-        └── youtube_vis2019
+        └── ytvis19
 ```
 
 ## HFD Downloader Setting
