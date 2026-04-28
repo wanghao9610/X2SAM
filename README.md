@@ -217,7 +217,11 @@ bash runs/gpu_run.sh x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1
 
 ```bash
 cd "$PROJ_HOME"
-python x2sam/tools/explore.py x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py --output-dir "wkdrs/dataset_exploration" --subset train --max-samples 100
+python x2sam/tools/explore.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --output-dir "wkdrs/dataset_exploration" \
+  --subset train \
+  --max-samples 100
 ```
 
 </details>
@@ -227,7 +231,9 @@ python x2sam/tools/explore.py x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_
 
 ```bash
 cd "$PROJ_HOME"
-python x2sam/tools/pth_to_hf.py --work-dir "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora" --tag-dir "last_checkpoint"
+python x2sam/tools/pth_to_hf.py \
+  --work-dir "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora" \
+  --tag-dir "last_checkpoint"
 ```
 
 </details>
@@ -311,10 +317,13 @@ If you find X2SAM and X-SAM are helpful for your research or applications, pleas
   year={2026}
 }
 
-@article{wang2025xsam,
-  title={X-SAM: From Segment Anything to Any Segmentation},
-  author={Wang, Hao and Qiao, Limeng and Jie, Zequn and Huang, Zhijian and Feng, Chengjian and Zheng, Qingfang and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
-  journal={arXiv preprint arXiv:2508.04655},
-  year={2025}
-}
+@inproceedings{wang2026xsam,
+    title={X-SAM: From segment anything to any segmentation},
+    author={Wang, Hao and Qiao, Limeng and Jie, Zequn and Huang, Zhijian and Feng, Chengjian and Zheng, Qingfang and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
+    booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+    volume={40},
+    number={31},
+    pages={26187--26196},
+    year={2026}
+  }
 ```

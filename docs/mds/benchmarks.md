@@ -1,4 +1,4 @@
-# :bar_chart Benchmarks
+# :bar_chart: Benchmarks
 
 ## Overall
 

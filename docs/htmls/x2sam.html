@@ -768,8 +768,10 @@
             <div class="card-enhanced">
                 <h2 class="title is-3"><i class="fas fa-chart-bar"></i> Benchmarks</h2>
                 <div class="caption" style="margin-top: 0; margin-bottom: 1.5rem;">
-                    <strong>Tab. 1. Comparison of state-of-the-art segmentation methods across image and video
-                        segmentation benchmarks.</strong> X2SAM achieves strong video segmentation performance while remaining competitive on image segmentation benchmarks and preserving general image/video chat abilities.
+                    Table 1. Comparison of state-of-the-art segmentation methods across image and video segmentation
+                    benchmarks, ranging from non-MLLM-based to MLLM-based, and from specialists to generalists. "x"
+                    denotes unsupported. "--" indicates unreported. Best results are in <b>bold</b>, second-best are
+                    <u>underlined</u>.
                 </div>
 
                 <div class="image-wrapper" style="box-shadow: none; border: none; padding: 0;">
@@ -782,45 +784,48 @@
                         <i class="fas fa-chevron-down more-results-icon"></i>
                     </summary>
                     <div class="more-results-content">
-                        <div class="caption" style="margin-top: 0;"><strong>Tab. 2. Comparison of Referring
-                                Segmentation.</strong>Referring segmentation results across image and video benchmarks.</div>
-                        <div class="image-wrapper"><img src="srcs/images/refseg.png" alt="Referring Segmentation">
-                        </div>
-
-                        <div class="caption"><strong>Tab. 3. Comparison of GCG Segmentation.</strong> Grounded
-                            conversation generation segmentation results.</div>
-                        <div class="image-wrapper"><img src="srcs/images/gcgseg.png" alt="GCG Segmentation">
-                        </div>
-
-                        <div class="caption"><strong>Tab. 4. Comparison of VGD Segmentation.</strong> Visual grounded
-                            segmentation results, including the proposed video visual grounded setting.</div>
-                        <div class="image-wrapper"><img src="srcs/images/vgdseg.png" alt="VGD Segmentation">
-                        </div>
-
-                        <div class="columns">
-                            <div class="column">
-                                <div class="caption"><strong>Tab. 5. Generic Segmentation.</strong></div>
-                                <div class="image-wrapper"><img src="srcs/images/genseg.png" alt="Generic Segmentation">
-                                </div>
-                            </div>
-                            <div class="column">
-                                <div class="caption"><strong>Tab. 6. OV Segmentation (A150-OV).</strong></div>
-                                <div class="image-wrapper"><img src="srcs/images/ovseg.png" alt="OV Segmentation">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="caption"><strong>Tab. 7. Comparison of Reasoning Segmentation.</strong></div>
+                        <div class="caption" style="margin-top: 0;">Table 2. Comparison across image and video reasoning
+                            segmentation benchmarks.</div>
                         <div class="image-wrapper"><img src="srcs/images/reaseg.png" alt="Reasoning Segmentation">
                         </div>
 
-                        <div class="caption"><strong>Tab. 8. Comparison of Interactive Segmentation.</strong></div>
-                        <div class="image-wrapper"><img src="srcs/images/intseg.png" alt="Interactive Segmentation">
+                        <div class="caption">Table 3. Comparison on out-of-domain tasks, including image generalized
+                            referring segmentation, image and video open-vocabulary segmentation benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/oodseg.png" alt="Out-of-Domain Segmentation">
                         </div>
 
-                        <div class="caption"><strong>Tab. 9. Image-level Benchmarks.</strong> General image and video
-                            chat ability evaluation.</div>
-                        <div class="image-wrapper"><img src="srcs/images/imgconv.png" alt="Image-level Benchmarks">
+                        <div class="caption">Table 4. Comparison across image and video visual grounded segmentation
+                            benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/vgdseg.png" alt="VGD Segmentation">
+                        </div>
+
+                        <div class="caption">Table 5. Comparison across image and video generic segmentation benchmarks.
+                        </div>
+                        <div class="image-wrapper"><img src="srcs/images/genseg.png" alt="Generic Segmentation">
+                        </div>
+
+                        <div class="caption">Table 6. Comparison across image and video referring segmentation
+                            benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/refseg.png" alt="Referring Segmentation">
+                        </div>
+
+                        <div class="caption">Table 7. Comparison across image and video grounded conversation generation
+                            segmentation benchmarks. Grayed values means the method is reported in the original paper,
+                            * means the method is re-evaluated in this work.</div>
+                        <div class="image-wrapper"><img src="srcs/images/gcgseg.png" alt="GCG Segmentation">
+                        </div>
+
+                        <div class="caption">Table 8. Comparison on object-centric segmentation tasks, including image
+                            interactive segmentation (I-Int.) and video object segmentation (V-Obj.) benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/objseg.png" alt="Object-Centric Segmentation">
+                        </div>
+
+                        <div class="caption">Table 9. Comparison across image chat benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/imgchat.png" alt="Image Chat">
+                        </div>
+
+                        <div class="caption">Table 10. Comparison across video chat benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/vidchat.png" alt="Video Chat">
                         </div>
                     </div>
                 </details>
@@ -867,12 +872,23 @@
                         <div class="mac-btn mac-min"></div>
                         <div class="mac-btn mac-max"></div>
                     </div>
-                    <pre><code>@article{wang2025x2sam,
-  title={X2SAM: Any Segmentation in Images and Videos},
-  author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Wan, Guanglu and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
-  journal={arXiv preprint arXiv:2603.00000},
-  year={2026}
-}</code></pre>
+                    <pre><code>@article{wang2026x2sam,
+                                        title={X2SAM: Any Segmentation in Images and Videos},
+                                        author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Wan, Guanglu and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
+                                        journal={arXiv preprint arXiv:2603.00000},
+                                        year={2026}
+                                }
+                                
+                                @inproceedings{wang2026xsam,
+                                    title={X-SAM: From segment anything to any segmentation},
+                                    author={Wang, Hao and Qiao, Limeng and Jie, Zequn and Huang, Zhijian and Feng, Chengjian and Zheng, Qingfang and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
+                                    booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+                                    volume={40},
+                                    number={31},
+                                    pages={26187--26196},
+                                    year={2026}
+                                  }
+                    </code></pre>
                 </div>
             </div>
         </div>
