@@ -334,7 +334,7 @@ html, body {
 }
 
 .output-section .mask-panel {
-    flex: 1 1 auto !important;
+    flex: 0 0 auto !important;
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
@@ -349,13 +349,24 @@ html, body {
 
 .output-section .mask-panel .mask-media,
 .output-section .mask-panel .mask-media > .block,
+.output-section .mask-panel .mask-media [data-testid="image"],
+.output-section .mask-panel .mask-media [data-testid="video"],
 .output-section .mask-panel .mask-media .image-container,
 .output-section .mask-panel .mask-media .video-container,
 .output-section .mask-panel .mask-media .wrap {
     flex: 1 1 auto !important;
     height: 100% !important;
+    width: 100% !important;
     max-height: none !important;
     min-height: 320px !important;
+}
+
+.output-section .mask-panel .mask-media .image-container,
+.output-section .mask-panel .mask-media .video-container,
+.output-section .mask-panel .mask-media .wrap {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .output-section .mask-panel .mask-media img,
