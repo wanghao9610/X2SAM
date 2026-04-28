@@ -49,7 +49,7 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 * X2SAM proposes the Video Visual Grounded (V-VGD) segmentation benchmark and adopts a unified joint training strategy over heterogeneous image and video datasets, achieving strong video segmentation performance while remaining competitive on image segmentation and preserving general image/video chat ability.
 
-✨ X2SAM provides awesome implementation for any segmentation tasks in images and videos, and we provide a unified training and evaluation pipeline for all the segmentation tasks. Hope you enjoy it!
+✨ X2SAM offers a powerful and comprehensive solution for any segmentation task across both images and videos, featuring a unified pipeline for training and evaluation on all supported benchmarks. Whether you're new to segmentation MLLMs or looking to advance your research, X2SAM is an excellent starting point. We hope you enjoy exploring and using X2SAM!
 
 ## :book: Table of Contents
 - [Abstract](#bookmark-abstract)
