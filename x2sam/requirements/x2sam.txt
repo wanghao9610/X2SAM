@@ -1,0 +1,11 @@
+aria2
+av
+pycocotools
+git+https://github.com/cocodataset/panopticapi.git
+textwrap3
+tabulate
+scikit-learn
+pycocoevalcap
+mmcv-lite==2.2.0
+moviepy==1.0.3
+gradio==5.41.1

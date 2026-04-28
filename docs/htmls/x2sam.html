@@ -622,12 +622,13 @@
             <h2 class="publication-subtitle">Any Segmentation in Images and Videos</h2>
 
             <div class="authors">
-                <span class="author-block"><a href="https://github.com/wanghao9610" target="_blank"
+                <span class="author-block"><a href="https://wanghao9610.github.io" target="_blank"
                         rel="noopener noreferrer">Hao
                         Wang<sup>1,2</sup></a></span>
                 <span class="author-block"><a href="https://scholar.google.com/citations?user=3PFZAg0AAAAJ&hl=en"
                         target="_blank" rel="noopener noreferrer">Limeng Qiao<sup>3</sup></a></span>
-                <span class="author-block"><a href="https://scholar.google.com/citations?user=I0aKo_4AAAAJ&hl" target="_blank" rel="noopener noreferrer">Chi
+                <span class="author-block"><a href="https://scholar.google.com/citations?user=I0aKo_4AAAAJ&hl"
+                        target="_blank" rel="noopener noreferrer">Chi
                         Zhang<sup>3</sup></a></span>
                 <span class="author-block"><a href="https://scholar.google.com/citations?user=NRG_hpYAAAAJ&hl"
                         target="_blank" rel="noopener noreferrer">Guanglu Wan<sup>3</sup></a></span>
@@ -637,7 +638,7 @@
                 <span class="author-block"><a href="https://scholar.google.com/citations?user=c3iwWRcAAAAJ&hl=en"
                         target="_blank" rel="noopener noreferrer">Xiangyuan Lan<sup>2📧</sup></a></span>
                 <span class="author-block"><a href="https://scholar.google.com/citations?user=voxznZAAAAAJ&hl=en"
-                        target="_blank" rel="noopener noreferrer">Xiaodan Liang<sup>1,2📧</sup></a></span>
+                        target="_blank" rel="noopener noreferrer">Xiaodan Liang<sup>1📧</sup></a></span>
             </div>
 
             <div class="affiliations">
@@ -659,7 +660,7 @@
                     <span class="icon"><i class="fas fa-file-pdf"></i></span>
                     <span>Paper</span>
                 </a>
-                <a href="http://47.115.200.157:7861" class="button is-glass" target="_blank" rel="noopener noreferrer">
+                <a href="#demo" class="button is-glass">
                     <span class="icon"><i class="fas fa-gamepad"></i></span>
                     <span>Demo</span>
                 </a>
@@ -685,30 +686,27 @@
                     <div class="highlight-item">
                         <i class="fas fa-check-circle highlight-icon"></i>
                         <div class="highlight-text">
-                            X2SAM introduces a unified multimodal large language model (MLLM) framework, extending the
-                            segmentation
-                            paradigm from <i>segment anything</i> to <i>any segmentation</i>, thereby enhancing
-                            pixel-level perceptual
-                            understanding.
+                            X2SAM introduces a unified segmentation MLLM framework that extends
+                            <i>any-segmentation</i> capabilities from images to videos, supporting generic,
+                            open-vocabulary, referring, reasoning, grounded conversation generation, interactive, and
+                            visual grounded segmentation in one model.
                         </div>
                     </div>
                     <div class="highlight-item">
                         <i class="fas fa-check-circle highlight-icon"></i>
                         <div class="highlight-text">
-                            X2SAM proposes a novel <i>Visual GrounDed (VGD)</i> segmentation task, which segments all
-                            instance objects
-                            using interactive visual prompts, empowering the model with visually grounded, pixel-wise
-                            interpretative
-                            capabilities.
+                            X2SAM supports both conversational instructions and visual prompts through a unified
+                            interface, and couples an LLM with a Mask Memory module to store guided vision features for
+                            temporally consistent video mask generation.
                         </div>
                     </div>
                     <div class="highlight-item">
                         <i class="fas fa-check-circle highlight-icon"></i>
                         <div class="highlight-text">
-                            X2SAM presents a unified training strategy enabling co-training across multiple datasets and
-                            achieves
-                            <i>state-of-the-art performance</i> on various image segmentation benchmarks with a single
-                            model.
+                            X2SAM proposes the Video Visual Grounded (V-VGD) segmentation benchmark and adopts a unified
+                            joint training strategy over heterogeneous image and video datasets, achieving strong video
+                            segmentation performance while remaining competitive on image segmentation and preserving
+                            general image/video chat ability.
                         </div>
                     </div>
                 </div>
@@ -721,33 +719,25 @@
             <div class="card-enhanced">
                 <h2 class="title is-3"><i class="fas fa-book-open"></i> Abstract</h2>
                 <div class="abstract-content has-text-justified">
-                    <p>Large Language Models (LLMs) demonstrate strong capabilities in broad knowledge representation,
-                        yet they
-                        are inherently deficient in pixel-level perceptual understanding. Although the Segment Anything
-                        Model (SAM)
-                        represents a significant advancement in visual-prompt-driven image segmentation, it exhibits
-                        notable
-                        limitations in multi-mask prediction and category-specific segmentation tasks, and it cannot
-                        integrate all
-                        segmentation tasks within a unified model architecture.</p>
-                    <p>To address these limitations, we present <strong>X2SAM</strong>, a streamlined Multimodal Large
-                        Language
-                        Model (MLLM) framework that extends the segmentation paradigm from <i>segment anything</i> to
-                        <i>any
-                            segmentation</i>. Specifically, we introduce a novel unified framework that enables more
-                        advanced
-                        pixel-level perceptual comprehension for MLLMs. Furthermore, we propose a new segmentation task,
-                        termed
-                        Visual GrounDed (VGD) segmentation, which segments all instance objects with interactive visual
-                        prompts and
-                        empowers MLLMs with visual grounded, pixel-wise interpretative capabilities. To enable effective
-                        training on
-                        diverse data sources, we present a unified training strategy that supports co-training across
-                        multiple
-                        datasets. Experimental results demonstrate that X2SAM achieves state-of-the-art performance on a
-                        wide range
-                        of image segmentation benchmarks, highlighting its efficiency for multimodal, pixel-level visual
-                        understanding.
+                    <p>Multimodal Large Language Models (MLLMs) have demonstrated strong image-level visual
+                        understanding
+                        and reasoning, yet their pixel-level perception across both images and videos remains limited.
+                        Foundation segmentation models such as the SAM series produce high-quality masks, but they rely
+                        on low-level visual prompts and cannot natively interpret complex conversational instructions.
+                        Existing segmentation MLLMs narrow this gap, but are usually specialized for either images or
+                        videos and rarely support both textual and visual prompts in one interface.</p>
+                    <p>We introduce <strong>X2SAM</strong>, a unified segmentation MLLM that extends any-segmentation
+                        capabilities from images to videos. Given conversational instructions and visual prompts, X2SAM
+                        couples an LLM with a Mask Memory module that stores guided vision features for temporally
+                        consistent video mask generation. The same formulation supports generic, open-vocabulary,
+                        referring, reasoning, grounded conversation generation, interactive, and visual grounded
+                        segmentation across image and video inputs. We further introduce the Video Visual Grounded
+                        (V-VGD) segmentation benchmark, which evaluates whether a model can segment object tracks in
+                        videos from interactive visual prompts. With a unified joint training strategy over
+                        heterogeneous
+                        image and video datasets, X2SAM delivers strong video segmentation performance, remains
+                        competitive on image segmentation benchmarks, and preserves general image and video chat
+                        ability.
                     </p>
                 </div>
             </div>
@@ -762,17 +752,12 @@
                     <img src="srcs/images/framework.png" alt="X2SAM Framework Architecture">
                 </div>
                 <div class="caption">
-                    <strong>Fig. 1. The Overview of X2SAM.</strong> X2SAM comprises dual encoders, dual projectors, a
-                    language
-                    model, a segmentation connector, and a segmentation decoder. The dual encoders process the image and
-                    project
-                    features to match text embedding dimensions, which are then input to the language model with
-                    tokenized text
-                    for instruction-guided understanding. The SAM features are connected to the segmentation decoder,
-                    which uses
-                    the LLM's <code
-                        style="background: #e2e8f0; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: monospace;">&lt;SEG&gt;</code>
-                    token to generate segmentation masks.
+                    <strong>Fig. 1. Overview of X2SAM.</strong> The Vision Encoder extracts global visual
+                    representations, while the Mask Encoder captures fine-grained visual features. The Large Language
+                    Model generates the language response and produces the latent condition embedding, which guides the
+                    Mask Decoder in generating the segmentation mask. The Mask Memory module stores guided vision
+                    features for each video frame, and the Region Sampler extracts region-of-interest embeddings from
+                    both images and videos.
                 </div>
             </div>
         </div>
@@ -783,17 +768,12 @@
             <div class="card-enhanced">
                 <h2 class="title is-3"><i class="fas fa-chart-bar"></i> Benchmarks</h2>
                 <div class="caption" style="margin-top: 0; margin-bottom: 1.5rem;">
-                    <strong>Tab. 1. Comprehensive Performance Comparison.</strong> We compare X2SAM to
-                    segmentation-specific
-                    models (<span style="color: gray;">Gray</span>) and MLLMs. <span
-                        title="Unsupported tasks">&#10007;</span>
-                    denotes unsupported tasks. "-" indicates unreported results. Best results are in <b>bold</b>,
-                    second-best are
-                    <u>underlined</u>.
+                    <strong>Tab. 1. Comparison of state-of-the-art segmentation methods across image and video
+                        segmentation benchmarks.</strong> X2SAM achieves strong video segmentation performance while remaining competitive on image segmentation benchmarks and preserving general image/video chat abilities.
                 </div>
 
                 <div class="image-wrapper" style="box-shadow: none; border: none; padding: 0;">
-                    <img src="srcs/benchmarks/overall.png" alt="Benchmark Results Overview">
+                    <img src="srcs/images/overall.png" alt="Benchmark Results Overview">
                 </div>
 
                 <details class="more-results-section">
@@ -803,48 +783,44 @@
                     </summary>
                     <div class="more-results-content">
                         <div class="caption" style="margin-top: 0;"><strong>Tab. 2. Comparison of Referring
-                                Segmentation.</strong>
-                            Evaluated by (M)LLMs.</div>
-                        <div class="image-wrapper"><img src="srcs/benchmarks/refseg.png" alt="Referring Segmentation">
+                                Segmentation.</strong>Referring segmentation results across image and video benchmarks.</div>
+                        <div class="image-wrapper"><img src="srcs/images/refseg.png" alt="Referring Segmentation">
                         </div>
 
-                        <div class="caption"><strong>Tab. 3. Comparison of GCG Segmentation.</strong> &dagger; indicates
-                            pretraining
-                            with the GranD dataset.</div>
-                        <div class="image-wrapper"><img src="srcs/benchmarks/gcgseg.png" alt="GCG Segmentation">
+                        <div class="caption"><strong>Tab. 3. Comparison of GCG Segmentation.</strong> Grounded
+                            conversation generation segmentation results.</div>
+                        <div class="image-wrapper"><img src="srcs/images/gcgseg.png" alt="GCG Segmentation">
                         </div>
 
-                        <div class="caption"><strong>Tab. 4. Comparison of VGD Segmentation.</strong> &dagger; indicates
-                            evaluation
-                            results following X2SAM setting.</div>
-                        <div class="image-wrapper"><img src="srcs/benchmarks/vgdseg.png" alt="VGD Segmentation">
+                        <div class="caption"><strong>Tab. 4. Comparison of VGD Segmentation.</strong> Visual grounded
+                            segmentation results, including the proposed video visual grounded setting.</div>
+                        <div class="image-wrapper"><img src="srcs/images/vgdseg.png" alt="VGD Segmentation">
                         </div>
 
                         <div class="columns">
                             <div class="column">
                                 <div class="caption"><strong>Tab. 5. Generic Segmentation.</strong></div>
-                                <div class="image-wrapper"><img src="srcs/benchmarks/genseg.png"
-                                        alt="Generic Segmentation"></div>
+                                <div class="image-wrapper"><img src="srcs/images/genseg.png" alt="Generic Segmentation">
+                                </div>
                             </div>
                             <div class="column">
                                 <div class="caption"><strong>Tab. 6. OV Segmentation (A150-OV).</strong></div>
-                                <div class="image-wrapper"><img src="srcs/benchmarks/ovseg.png" alt="OV Segmentation">
+                                <div class="image-wrapper"><img src="srcs/images/ovseg.png" alt="OV Segmentation">
                                 </div>
                             </div>
                         </div>
 
                         <div class="caption"><strong>Tab. 7. Comparison of Reasoning Segmentation.</strong></div>
-                        <div class="image-wrapper"><img src="srcs/benchmarks/reaseg.png" alt="Reasoning Segmentation">
+                        <div class="image-wrapper"><img src="srcs/images/reaseg.png" alt="Reasoning Segmentation">
                         </div>
 
                         <div class="caption"><strong>Tab. 8. Comparison of Interactive Segmentation.</strong></div>
-                        <div class="image-wrapper"><img src="srcs/benchmarks/intseg.png" alt="Interactive Segmentation">
+                        <div class="image-wrapper"><img src="srcs/images/intseg.png" alt="Interactive Segmentation">
                         </div>
 
-                        <div class="caption"><strong>Tab. 9. Image-level Benchmarks.</strong> MME, MMBench, SEED-Bench,
-                            POPE, and
-                            AI2D.</div>
-                        <div class="image-wrapper"><img src="srcs/benchmarks/imgconv.png" alt="Image-level Benchmarks">
+                        <div class="caption"><strong>Tab. 9. Image-level Benchmarks.</strong> General image and video
+                            chat ability evaluation.</div>
+                        <div class="image-wrapper"><img src="srcs/images/imgconv.png" alt="Image-level Benchmarks">
                         </div>
                     </div>
                 </details>

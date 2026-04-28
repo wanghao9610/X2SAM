@@ -1,0 +1,59 @@
+IGNORE_INDEX = -100
+IMAGE_TOKEN_INDEX = -200
+VIDEO_TOKEN_INDEX = -300
+REGION_TOKEN_INDEX = -400
+PLACEHOLDER_TOKEN_INDEX = -1000
+DEFAULT_PAD_TOKEN_INDEX = 0
+DEFAULT_IMAGE_TOKEN = "<image>"
+
+DEFAULT_SEG_TOKEN = "<SEG>"
+DEFAULT_CLS_TOKEN = "<CLS>"
+DEFAULT_PSTART_TOKEN = "<p>"
+DEFAULT_PEND_TOKEN = "</p>"
+DEFAULT_VIDEO_TOKEN = "<video>"
+DEFAULT_REGION_TOKEN = "<region>"
+DEFAULT_VISION_START_TOKEN = "<|vision_start|>"
+DEFAULT_VISION_END_TOKEN = "<|vision_end|>"
+DEFAULT_PLACEHOLDER_TOKEN = "<|placeholder|>"
+
+DEFAULT_IMG_TASKS = [
+    "img_chat",
+    "img_sam",
+    "img_genseg",
+    "img_refseg",
+    "img_reaseg",
+    "img_gcgseg",
+    "img_ovseg",
+    "img_intseg",
+    "img_vgdseg",
+]
+DEFAULT_VID_TASKS = [
+    "vid_chat",
+    "vid_sam",
+    "vid_genseg",
+    "vid_refseg",
+    "vid_reaseg",
+    "vid_gcgseg",
+    "vid_ovseg",
+    "vid_intseg",
+    "vid_vgdseg",
+    "vid_objseg",
+]
+DEFAULT_SPECIAL_TOKENS = [
+    DEFAULT_SEG_TOKEN,
+    DEFAULT_CLS_TOKEN,
+    DEFAULT_PSTART_TOKEN,
+    DEFAULT_PEND_TOKEN,
+    DEFAULT_REGION_TOKEN,
+    DEFAULT_VIDEO_TOKEN,
+    DEFAULT_VISION_START_TOKEN,
+    DEFAULT_VISION_END_TOKEN,
+]
+DEFAULT_TASKS = DEFAULT_IMG_TASKS + DEFAULT_VID_TASKS
+TOKEN2INDEX = {
+    DEFAULT_IMAGE_TOKEN: IMAGE_TOKEN_INDEX,
+    DEFAULT_VIDEO_TOKEN: VIDEO_TOKEN_INDEX,
+    DEFAULT_REGION_TOKEN: REGION_TOKEN_INDEX,
+    DEFAULT_PLACEHOLDER_TOKEN: PLACEHOLDER_TOKEN_INDEX,
+}
+INDEX2TOKEN = {v: k for k, v in TOKEN2INDEX.items()}
