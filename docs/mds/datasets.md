@@ -224,7 +224,7 @@ datas
 
 ## HFD Downloader Setting
 
-We provide a custom downloader [`hfd`](../srcs/tools/hfd.sh) for downloading datasets from Hugging Face. You can use it to download datasets from Hugging Face.
+We provide a custom downloader [`hfd`](../srcs/tools/hfd.sh) for downloading datasets, you can use it to download datasets from Hugging Face.
 
 ```bash
 chmod +x $PROJ_HOME/srcs/tools/hfd.sh
