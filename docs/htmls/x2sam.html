@@ -372,8 +372,9 @@
         .bibtex-wrapper {
             background: #f1f5f9;
             border-radius: var(--radius-md);
-            padding: 1rem;
+            padding: 0;
             position: relative;
+            overflow: hidden;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
         }
@@ -381,9 +382,9 @@
         .bibtex-header {
             display: flex;
             gap: 8px;
-            padding: 0.5rem 1rem 1rem;
+            padding: 1rem 1.25rem;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.55);
         }
 
         .mac-btn {
@@ -406,12 +407,20 @@
 
         .bibtex-wrapper pre {
             background: transparent;
-            padding: 0 1rem 1rem;
+            padding: 1.25rem;
             color: #0f172a;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
+            line-height: 1.65;
             overflow-x: auto;
             margin: 0;
+            text-align: left;
+            white-space: pre;
+        }
+
+        .bibtex-wrapper code {
+            display: block;
+            min-width: max-content;
         }
 
         .demo-container {
@@ -872,22 +881,21 @@
                         <div class="mac-btn mac-max"></div>
                     </div>
                     <pre><code>@article{wang2026x2sam,
-                                        title={X2SAM: Any Segmentation in Images and Videos},
-                                        author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Wan, Guanglu and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
-                                        journal={arXiv preprint arXiv:2603.00000},
-                                        year={2026}
-                                }
+  title={X2SAM: Any Segmentation in Images and Videos},
+  author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Wan, Guanglu and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
+  journal={arXiv preprint arXiv:2603.00000},
+  year={2026}
+}
 
-                                @inproceedings{wang2026xsam,
-                                    title={X-SAM: From segment anything to any segmentation},
-                                    author={Wang, Hao and Qiao, Limeng and Jie, Zequn and Huang, Zhijian and Feng, Chengjian and Zheng, Qingfang and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
-                                    booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-                                    volume={40},
-                                    number={31},
-                                    pages={26187--26196},
-                                    year={2026}
-                                  }
-                    </code></pre>
+@inproceedings{wang2026xsam,
+  title={X-SAM: From segment anything to any segmentation},
+  author={Wang, Hao and Qiao, Limeng and Jie, Zequn and Huang, Zhijian and Feng, Chengjian and Zheng, Qingfang and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={40},
+  number={31},
+  pages={26187--26196},
+  year={2026}
+}</code></pre>
                 </div>
             </div>
         </div>
