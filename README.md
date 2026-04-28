@@ -268,6 +268,13 @@ python x2sam/x2sam/demo/demo.py \
   --image/--video INPUT_IMAGE/INPUT_VIDEO/INPUT_DIR \
   --prompt INPUT_PROMPT \
   --vprompt-masks INPUT_VPROMPT_MASKS \
+```
+</details>
+
+<details Close>
+<summary><b>🏞️ / 🎥 Examples</b></summary>
+
+```bash
 
 # Example: img_chat
 python x2sam/x2sam/demo/demo.py \
@@ -275,7 +282,25 @@ python x2sam/x2sam/demo/demo.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
   --task-name img_chat \
   --image x2sam/x2sam/demo/sample.jpg \
-  --prompt "What is unusal about this image?" \
+  --prompt "What is unusal about this image?"
+
+# Example: img_genseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_genseg \
+  --image x2sam/x2sam/demo/sample.jpg \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you generate segmentation masks for this image based on the specified categories: <p>person</p>, <p>bicycle</p>, <p>car</p>, <p>motorcycle</p>, <p>airplane</p>, <p>bus</p>, <p>train</p>, <p>truck</p>, <p>boat</p>, <p>traffic light</p>, <p>fire hydrant</p>, <p>stop sign</p>, <p>parking meter</p>, <p>bench</p>, <p>bird</p>, <p>cat</p>, <p>dog</p>, <p>horse</p>, <p>sheep</p>, <p>cow</p>, <p>elephant</p>, <p>bear</p>, <p>zebra</p>, <p>giraffe</p>, <p>backpack</p>, <p>umbrella</p>, <p>handbag</p>, <p>tie</p>, <p>suitcase</p>, <p>frisbee</p>, <p>skis</p>, <p>snowboard</p>, <p>sports ball</p>, <p>kite</p>, <p>baseball bat</p>, <p>baseball glove</p>, <p>skateboard</p>, <p>surfboard</p>, <p>tennis racket</p>, <p>bottle</p>, <p>wine glass</p>, <p>cup</p>, <p>fork</p>, <p>knife</p>, <p>spoon</p>, <p>bowl</p>, <p>banana</p>, <p>apple</p>, <p>sandwich</p>, <p>orange</p>, <p>broccoli</p>, <p>carrot</p>, <p>hot dog</p>, <p>pizza</p>, <p>donut</p>, <p>cake</p>, <p>chair</p>, <p>couch</p>, <p>potted plant</p>, <p>bed</p>, <p>dining table</p>, <p>toilet</p>, <p>tv</p>, <p>laptop</p>, <p>mouse</p>, <p>remote</p>, <p>keyboard</p>, <p>cell phone</p>, <p>microwave</p>, <p>oven</p>, <p>toaster</p>, <p>sink</p>, <p>refrigerator</p>, <p>book</p>, <p>clock</p>, <p>vase</p>, <p>scissors</p>, <p>teddy bear</p>, <p>hair drier</p>, <p>toothbrush</p>, <p>banner</p>, <p>blanket</p>, <p>bridge</p>, <p>cardboard</p>, <p>counter</p>, <p>curtain</p>, <p>door</p>, <p>floor wood</p>, <p>flower</p>, <p>fruit</p>, <p>gravel</p>, <p>house</p>, <p>light</p>, <p>mirror</p>, <p>net</p>, <p>pillow</p>, <p>platform</p>, <p>playingfield</p>, <p>railroad</p>, <p>river</p>, <p>road</p>, <p>roof</p>, <p>sand</p>, <p>sea</p>, <p>shelf</p>, <p>snow</p>, <p>stairs</p>, <p>tent</p>, <p>towel</p>, <p>wall brick</p>, <p>wall stone</p>, <p>wall tile</p>, <p>wall wood</p>, <p>water</p>, <p>window blind</p>, <p>window</p>, <p>tree</p>, <p>fence</p>, <p>ceiling</p>, <p>sky</p>, <p>cabinet</p>, <p>table</p>, <p>floor</p>, <p>pavement</p>, <p>mountain</p>, <p>grass</p>, <p>dirt</p>, <p>paper</p>, <p>food</p>, <p>building</p>, <p>rock</p>, <p>wall</p>, <p>rug</p>? Please output the segmentation mask."
+
+# Example: img_refseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_refseg \
+  --image x2sam/x2sam/demo/sample.jpg \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you segment <p>the ironing man on the car</p> in this image? Please output the corresponding segmentation mask."
 
 # Example: img_reaseg
 python x2sam/x2sam/demo/demo.py \
@@ -286,6 +311,70 @@ python x2sam/x2sam/demo/demo.py \
   --output-dir "wkdrs/demo_outputs" \
   --prompt "<p>What can be used to warm clothes?</p> Please output the corresponding segmentation mask."
 
+# Example: img_gcgseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_gcgseg \
+  --image x2sam/x2sam/demo/sample.jpg \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you provide a brief description of the this image? Respond with interleaved segmentation masks for the corresponding phrases."
+
+# Example: img_intseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_intseg \
+  --image x2sam/x2sam/demo/sample.jpg \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you segment the <p><region></p> in this image? Please output the corresponding segmentation mask." \
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png"
+
+# Example: img_vgdseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_vgdseg \
+  --image x2sam/x2sam/demo/sample.jpg \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png"
+
+# Example: vid_chat
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_chat \
+  --video x2sam/x2sam/demo/sample.mp4 \
+  --prompt "Please describe this video in detail."
+
+# Example: vid_genseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_genseg \
+  --video x2sam/x2sam/demo/sample.mp4 \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Could you provide segmentation masks for this video according to the specified categories: <p>wall</p>, <p>ceiling</p>, <p>door</p>, <p>stair</p>, <p>ladder</p>, <p>escalator</p>, <p>playground slide</p>, <p>handrail or fence</p>, <p>window</p>, <p>rail</p>, <p>goal</p>, <p>pillar</p>, <p>pole</p>, <p>floor</p>, <p>ground</p>, <p>grass</p>, <p>sand</p>, <p>athletic field</p>, <p>road</p>, <p>path</p>, <p>crosswalk</p>, <p>building</p>, <p>house</p>, <p>bridge</p>, <p>tower</p>, <p>windmill</p>, <p>well or well lid</p>, <p>other construction</p>, <p>sky</p>, <p>mountain</p>, <p>stone</p>, <p>wood</p>, <p>ice</p>, <p>snowfield</p>, <p>grandstand</p>, <p>sea</p>, <p>river</p>, <p>lake</p>, <p>waterfall</p>, <p>water</p>, <p>billboard or bulletin board</p>, <p>sculpture</p>, <p>pipeline</p>, <p>flag</p>, <p>parasol or umbrella</p>, <p>cushion or carpet</p>, <p>tent</p>, <p>roadblock</p>, <p>car</p>, <p>bus</p>, <p>truck</p>, <p>bicycle</p>, <p>motorcycle</p>, <p>wheeled machine</p>, <p>ship or boat</p>, <p>raft</p>, <p>airplane</p>, <p>tyre</p>, <p>traffic light</p>, <p>lamp</p>, <p>person</p>, <p>cat</p>, <p>dog</p>, <p>horse</p>, <p>cattle</p>, <p>other animal</p>, <p>tree</p>, <p>flower</p>, <p>other plant</p>, <p>toy</p>, <p>ball net</p>, <p>backboard</p>, <p>skateboard</p>, <p>bat</p>, <p>ball</p>, <p>cupboard or showcase or storage rack</p>, <p>box</p>, <p>traveling case or trolley case</p>, <p>basket</p>, <p>bag or package</p>, <p>trash can</p>, <p>cage</p>, <p>plate</p>, <p>tub or bowl or pot</p>, <p>bottle or cup</p>, <p>barrel</p>, <p>fishbowl</p>, <p>bed</p>, <p>pillow</p>, <p>table or desk</p>, <p>chair or seat</p>, <p>bench</p>, <p>sofa</p>, <p>shelf</p>, <p>bathtub</p>, <p>gun</p>, <p>commode</p>, <p>roaster</p>, <p>other machine</p>, <p>refrigerator</p>, <p>washing machine</p>, <p>microwave oven</p>, <p>fan</p>, <p>curtain</p>, <p>textiles</p>, <p>clothes</p>, <p>painting or poster</p>, <p>mirror</p>, <p>flower pot or vase</p>, <p>clock</p>, <p>book</p>, <p>tool</p>, <p>blackboard</p>, <p>tissue</p>, <p>screen or television</p>, <p>computer</p>, <p>printer</p>, <p>mobile phone</p>, <p>keyboard</p>, <p>other electronic product</p>, <p>fruit</p>, <p>food</p>, <p>instrument</p>, <p>train</p>? Please respond with the segmentation masks."
+
+# Example: vid_refseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_refseg \
+  --video x2sam/x2sam/demo/sample.mp4 \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you segment <p>the jumping boy on the bed</p> in this video? Please output the corresponding segmentation mask."
+
+# Example: vid_reaseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_reaseg \
+  --video x2sam/x2sam/demo/sample.mp4 \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "<p>What are the two kids playing on in this video?</p> Please output the corresponding segmentation mask."
+
 # Example: vid_gcgseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
@@ -295,6 +384,16 @@ python x2sam/x2sam/demo/demo.py \
   --output-dir "wkdrs/demo_outputs" \
   --prompt "Can you provide a brief description of this video? Respond with interleaved segmentation masks for the corresponding phrases."
 
+# Example: vid_objseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_objseg \
+  --video x2sam/x2sam/demo/sample.mp4 \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you segment the <p><region></p> in this video? Please output the corresponding segmentation mask." \
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/videos/vpmasks/vid_vpmask0.png"
+
 # Example: vid_vgdseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
@@ -303,8 +402,9 @@ python x2sam/x2sam/demo/demo.py \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
   --prompt "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
-  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png"
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/videos/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/videos/vpmasks/vid_vpmask1.png"
 ```
+
 </details>
 
 ### Web Demo
