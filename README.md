@@ -265,7 +265,7 @@ python x2sam/x2sam/demo/demo.py \
   --prompt INPUT_PROMPT \
   --vprompt-masks INPUT_VPROMPT_MASKS \
 
-# img_vgdseg
+# example: img_vgdseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
@@ -274,7 +274,7 @@ python x2sam/x2sam/demo/demo.py \
   --prompt "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png"
 
-# vid_vgdseg
+# example: vid_vgdseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
