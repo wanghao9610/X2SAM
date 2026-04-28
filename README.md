@@ -301,7 +301,7 @@ python x2sam/x2sam/demo/demo.py \
   --task-name img_refseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment <p>the ironing man on the car</p> in this image? Please output the corresponding segmentation mask."
+  --prompt "the ironing man on the car"
 
 # Example: img_reaseg
 python x2sam/x2sam/demo/demo.py \
@@ -310,7 +310,7 @@ python x2sam/x2sam/demo/demo.py \
   --task-name img_reaseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "<p>What can be used to warm clothes?</p> Please output the corresponding segmentation mask."
+  --prompt "What can be used to warm clothes?"
 
 # Example: img_gcgseg
 python x2sam/x2sam/demo/demo.py \
@@ -328,7 +328,6 @@ python x2sam/x2sam/demo/demo.py \
   --task-name img_intseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment the <p><region></p> in this image? Please output the corresponding segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png"
 
 # Example: img_vgdseg
@@ -338,7 +337,6 @@ python x2sam/x2sam/demo/demo.py \
   --task-name img_vgdseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png"
 
 # Example: vid_chat
@@ -366,7 +364,7 @@ python x2sam/x2sam/demo/demo.py \
   --task-name vid_refseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment <p>the jumping boy on the bed</p> in this video? Please output the corresponding segmentation mask."
+  --prompt "the jumping boy on the bed"
 
 # Example: vid_reaseg
 python x2sam/x2sam/demo/demo.py \
@@ -375,7 +373,7 @@ python x2sam/x2sam/demo/demo.py \
   --task-name vid_reaseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "<p>What are the two kids playing on in this video?</p> Please output the corresponding segmentation mask."
+  --prompt "What are the two kids playing on in this video?"
 
 # Example: vid_gcgseg
 python x2sam/x2sam/demo/demo.py \
@@ -393,7 +391,6 @@ python x2sam/x2sam/demo/demo.py \
   --task-name vid_objseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment the <p><region></p> in this video? Please output the corresponding segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png"
 
 # Example: vid_vgdseg
@@ -403,7 +400,6 @@ python x2sam/x2sam/demo/demo.py \
   --task-name vid_vgdseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png"
 ```
 
