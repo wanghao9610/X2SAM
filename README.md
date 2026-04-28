@@ -273,15 +273,14 @@ python x2sam/x2sam/demo/demo.py \
   --image x2sam/x2sam/demo/sample.jpg \
   --prompt "What is unusal about this image?" \
 
-# Example: img_vgdseg
+# Example: img_reaseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
-  --task-name img_vgdseg \
+  --task-name img_reaseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
-  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png"
+  --prompt "<p>What can be used to warm clothes?</p> Please output the corresponding segmentation mask."
 
 # Example: vid_gcgseg
 python x2sam/x2sam/demo/demo.py \
