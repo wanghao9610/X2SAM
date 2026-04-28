@@ -185,7 +185,9 @@ Please refer to [models.md](docs/mds/models.md) for detailed instructions on mod
 
 ```bash
 cd "$PROJ_HOME"
-bash runs/gpu_run.sh x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py "train segeval vlmeval visualize"
+bash runs/gpu_run.sh \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  "train segeval vlmeval visualize"
 ```
 
 ### 6. Evaluation
@@ -194,21 +196,27 @@ bash runs/gpu_run.sh x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1
 
 ```bash
 cd "$PROJ_HOME"
-bash runs/gpu_run.sh x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py "segeval"
+bash runs/gpu_run.sh \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  "segeval"
 ```
 
 #### Image and Video Chat Benchmarks
 
 ```bash
 cd "$PROJ_HOME"
-bash runs/gpu_run.sh x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py "vlmeval"
+bash runs/gpu_run.sh \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  "vlmeval"
 ```
 
 ### 7. Visualization
 
 ```bash
 cd "$PROJ_HOME"
-bash runs/gpu_run.sh x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py "visualize"
+bash runs/gpu_run.sh \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  "visualize"
 ```
 
 ### 8. Tools
