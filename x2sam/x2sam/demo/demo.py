@@ -90,8 +90,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--work-dir", type=str, required=False, help="directory to save logs and visualizations")
     parser.add_argument("--output-dir", type=str, required=False, help="directory to save output images")
     parser.add_argument("--prompt", type=str, required=False, default="", help="user prompt for the task name")
-    parser.add_argument("--taskname", type=str, required=True, help="task name (e.g., segmentation, referring)")
-    parser.add_argument("--vprompt-masks", type=str, required=False, help="path to vprompt masks")
+    parser.add_argument(
+        "--task-name",
+        type=str,
+        required=True,
+        help="task name (e.g., img_vgdseg, vid_vgdseg)",
+    )
+    parser.add_argument(
+        "--vprompt-masks",
+        nargs="+",
+        required=False,
+        help="paths to vprompt mask files or directories",
+    )
     parser.add_argument("--score-thr", type=float, default=0.5, help="score threshold for the task name")
     parser.add_argument("--num-frames", type=int, required=False, default=16, help="number of frames to sample")
     parser.add_argument("--fps", type=int, required=False, default=None, help="fps to sample")
@@ -993,15 +1003,18 @@ def main():
     # Create demo
     demo = X2SamDemo(cfg, args.pth_model, output_ids_with_output=False)
 
-    if args.vprompt_masks and osp.exists(args.vprompt_masks):
-        if osp.isdir(args.vprompt_masks):
-            vprompt_masks = [
-                load_image(osp.join(args.vprompt_masks, file), mode="L") for file in os.listdir(args.vprompt_masks)
-            ]
+    vprompt_masks = []
+    for vprompt_mask_path in args.vprompt_masks or []:
+        if not osp.exists(vprompt_mask_path):
+            print_log(f"Vprompt mask path not found: {vprompt_mask_path}", logger="current", level=logging.WARNING)
+            continue
+        if osp.isdir(vprompt_mask_path):
+            vprompt_masks.extend(
+                load_image(osp.join(vprompt_mask_path, file), mode="L") for file in sorted(os.listdir(vprompt_mask_path))
+            )
         else:
-            vprompt_masks = [load_image(args.vprompt_masks, mode="L")]
-    else:
-        vprompt_masks = None
+            vprompt_masks.append(load_image(vprompt_mask_path, mode="L"))
+    vprompt_masks = vprompt_masks or None
 
     if args.image and osp.isdir(args.image):
         output_dir = args.image + "_vis" if args.output_dir is None else args.output_dir

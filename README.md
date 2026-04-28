@@ -258,25 +258,28 @@ cd "$PROJ_HOME"
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name TASK_NAME \
   --image/--video INPUT_IMAGE/INPUT_VIDEO/INPUT_DIR \
   --prompt INPUT_PROMPT \
-  --task_name TASK_NAME
+  --vprompt-masks INPUT_VPROMPT_MASKS \
 
-# img_reaseg
-python x2sam/x2sam/tools/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
-  --image x2sam/x2sam/demo/sample.jpg \
-  --prompt "What can be used to warm clothes?" \
-  --task_name img_reaseg
-
-# vid_reaseg
+# img_vgdseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_vgdseg
+  --image x2sam/x2sam/demo/sample.jpg \
+  --prompt "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png"
+
+# vid_vgdseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_vgdseg
   --video x2sam/x2sam/demo/sample.mp4 \
-  --prompt "What are the two kids playing on in this video?" \
-  --task_name vid_reaseg
+  --prompt "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png"
 ```
 </details>
 
