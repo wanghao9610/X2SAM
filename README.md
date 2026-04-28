@@ -319,7 +319,6 @@ python x2sam/x2sam/demo/demo.py \
   --task-name img_gcgseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you provide a brief description of the this image? Respond with interleaved segmentation masks for the corresponding phrases."
 
 # Example: img_intseg
 python x2sam/x2sam/demo/demo.py \
@@ -382,7 +381,6 @@ python x2sam/x2sam/demo/demo.py \
   --task-name vid_gcgseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "Can you provide a brief description of this video? Respond with interleaved segmentation masks for the corresponding phrases."
 
 # Example: vid_objseg
 python x2sam/x2sam/demo/demo.py \
