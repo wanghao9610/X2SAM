@@ -392,7 +392,7 @@ python x2sam/x2sam/demo/demo.py \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
   --prompt "Can you segment the <p><region></p> in this video? Please output the corresponding segmentation mask." \
-  --vprompt-masks "x2sam/x2sam/configs/x2sam/videos/vpmasks/vid_vpmask0.png"
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png"
 
 # Example: vid_vgdseg
 python x2sam/x2sam/demo/demo.py \
@@ -402,7 +402,7 @@ python x2sam/x2sam/demo/demo.py \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
   --prompt "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
-  --vprompt-masks "x2sam/x2sam/configs/x2sam/videos/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/videos/vpmasks/vid_vpmask1.png"
+  --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png"
 ```
 
 </details>

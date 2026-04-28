@@ -189,10 +189,10 @@ video_vprompt_masks = [
     (None,),
     (None,),
     (None,),
-    (code_dir + "x2sam/configs/x2sam/videos/vpmasks/vid_vpmask0.png",),
+    (code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png",),
     (
-        code_dir + "x2sam/configs/x2sam/videos/vpmasks/vid_vpmask0.png",
-        code_dir + "x2sam/configs/x2sam/videos/vpmasks/vid_vpmask1.png",
+        code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png",
+        code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png",
     ),
 ]
 video_vprompt_indices = [None, None, None, None, None, 0, 0]
