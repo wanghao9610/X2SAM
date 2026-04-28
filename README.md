@@ -221,6 +221,7 @@ bash runs/gpu_run.sh \
 ### 8. Tools
 <details close>
 <summary><b>Dataset Exploration</b></summary>
+We provide a tool for dataset exploration, you can use it to explore the dataset and get the visualizations of the dataset.
 
 ```bash
 cd "$PROJ_HOME"
@@ -235,6 +236,7 @@ python x2sam/tools/explore.py \
 
 <details close>
 <summary><b>Model Conversion</b></summary>
+We provide a tool for model conversion, you can use it to convert the model to the Hugging Face checkpoint format.
 
 ```bash
 cd "$PROJ_HOME"
