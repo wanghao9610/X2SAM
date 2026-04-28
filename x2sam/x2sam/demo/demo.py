@@ -1017,7 +1017,8 @@ def main():
     vprompt_masks = vprompt_masks or None
 
     if args.image and osp.isdir(args.image):
-        output_dir = args.image + "_vis" if args.output_dir is None else args.output_dir
+        output_dir = args.image + "_demo" if args.output_dir is None else args.output_dir
+        output_dir = osp.join(output_dir, args.task_name)
         for file in os.listdir(args.image):
             demo.run_on_image(
                 osp.join(args.image, file),
@@ -1029,7 +1030,8 @@ def main():
                 file_prefix=file[:-4],
             )
     elif args.image and osp.isfile(args.image):
-        output_dir = osp.dirname(args.image) + "_vis" if args.output_dir is None else args.output_dir
+        output_dir = osp.dirname(args.image) + "_demo" if args.output_dir is None else args.output_dir
+        output_dir = osp.join(output_dir, args.task_name)
         demo.run_on_image(
             args.image,
             args.prompt,
@@ -1040,7 +1042,8 @@ def main():
             file_prefix=osp.basename(args.image)[:-4],
         )
     elif args.video and osp.isdir(args.video):
-        output_dir = args.video + "_vis" if args.output_dir is None else args.output_dir
+        output_dir = args.video + "_demo" if args.output_dir is None else args.output_dir
+        output_dir = osp.join(output_dir, args.task_name)
         demo.run_on_video(
             args.video,
             args.prompt,
@@ -1053,7 +1056,8 @@ def main():
             file_prefix=osp.basename(osp.normpath(args.video)),
         )
     elif args.video and osp.isfile(args.video):
-        output_dir = osp.dirname(args.video) + "_vis" if args.output_dir is None else args.output_dir
+        output_dir = osp.dirname(args.video) + "_demo" if args.output_dir is None else args.output_dir
+        output_dir = osp.join(output_dir, args.task_name)
         demo.run_on_video(
             args.video,
             args.prompt,

@@ -53,7 +53,7 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 ## :book: Table of Contents
 - [Abstract](#bookmark-abstract)
-- [Framework](#mag-framework)
+- [Overview](#mag-overview)
 - [Benchmarks](#bar_chart-benchmarks)
 - [Quickstart](#checkered_flag-quickstart)
 - [Demo](#computer-demo)
@@ -65,10 +65,10 @@ This repository provides the official PyTorch implementation, pre-trained models
 
 > Multimodal Large Language Models (MLLMs) have demonstrated strong image-level visual understanding and reasoning, yet their pixel-level perception across both images and videos remains limited. Foundation segmentation models such as the SAM series produce high-quality masks, but they rely on low-level visual prompts and cannot natively interpret complex conversational instructions. Existing segmentation MLLMs narrow this gap, but are usually specialized for either images or videos and rarely support both textual and visual prompts in one interface. We introduce X2SAM, a unified segmentation MLLM that extends any-segmentation capabilities from images to videos. Given conversational instructions and visual prompts, X2SAM couples an LLM with a Mask Memory module that stores guided vision features for temporally consistent video mask generation. The same formulation supports generic, open-vocabulary, referring, reasoning, grounded conversation generation, interactive, and visual grounded segmentation across image and video inputs. We further introduce the Video Visual Grounded (V-VGD) segmentation benchmark, which evaluates whether a model can segment object tracks in videos from interactive visual prompts. With a unified joint training strategy over heterogeneous image and video datasets, X2SAM delivers strong video segmentation performance, remains competitive on image segmentation benchmarks, and preserves general image and video chat ability.
 
-## :mag: Framework
+## :mag: Overview
 
 <div align="left">
-  <img src="docs/srcs/images/framework.png" width="800" alt="X2SAM Framework">
+  <img src="docs/srcs/images/framework.png" width="800" alt="X2SAM Overview">
   <p><em>Figure 1: Overview of X2SAM. The Vision Encoder extracts global visual representations, while the Mask Encoder captures fine-grained visual features. The Large Language Model generates the language response and produces the latent condition embedding, which guides the Mask Decoder in generating the segmentation mask. The Mask Memory module stores guided vision features for each video frame, and the Region Sampler extracts region-of-interest embeddings from both images and videos.</em></p>
 </div>
 
@@ -265,27 +265,46 @@ python x2sam/x2sam/demo/demo.py \
   --prompt INPUT_PROMPT \
   --vprompt-masks INPUT_VPROMPT_MASKS \
 
+# Example: img_chat
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name img_chat \
+  --image x2sam/x2sam/demo/sample.jpg \
+  --prompt "What is unusal about this image?" \
+
 # Example: img_vgdseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
-  --task-name img_vgdseg
+  --task-name img_vgdseg \
   --image x2sam/x2sam/demo/sample.jpg \
+  --output-dir "wkdrs/demo_outputs" \
   --prompt "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png"
+
+# Example: vid_gcgseg
+python x2sam/x2sam/demo/demo.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  --task-name vid_gcgseg \
+  --video x2sam/x2sam/demo/sample.mp4 \
+  --output-dir "wkdrs/demo_outputs" \
+  --prompt "Can you provide a brief description of this video? Respond with interleaved segmentation masks for the corresponding phrases."
 
 # Example: vid_vgdseg
 python x2sam/x2sam/demo/demo.py \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
-  --task-name vid_vgdseg
+  --task-name vid_vgdseg \
   --video x2sam/x2sam/demo/sample.mp4 \
+  --output-dir "wkdrs/demo_outputs" \
   --prompt "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask." \
   --vprompt-masks "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png" "x2sam/x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png"
 ```
 </details>
 
-### Web Demo 
+### Web Demo
 
 <details open>
 <summary>🛠️ Deployment</summary>

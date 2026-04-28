@@ -316,7 +316,7 @@ class X2SamModel(BaseModel):
             missing_keys = [k for k in state_dict.keys() if k not in matched_state_dict.keys()]
             print_log(f"Loaded s1_pretrained_pth from {s1_pretrained_pth}", logger="current")
             print_log(
-                f"Matched keys: {len(matched_keys)} / {len(pretrained_state_dict.keys())}\n{matched_keys}",
+                f"Matched keys: {len(matched_keys)} / {len(pretrained_state_dict.keys())}",
                 logger="current",
             )
             if len(mismatched_keys) > 0:
