@@ -37,8 +37,8 @@ We strongly recommend that everyone uses **English** to communicate in issues. T
 
 ## :boom: Updates
 
-- **`2026-04-28`**: 💥 We release all the code of X2SAM, including the training, evaluation, visualization, and demo code. Check out the [Quickstart](#checkered_flag-quickstart) to get started.
-- **`2026-03-20`**: 🫣 We create the X2SAM repository. We will update the paper and code soon, please stay tuned.
+- **`2026-04-28`**: 💥 Official release! We have fully open-sourced X2SAM, including the training, evaluation, visualization, and demo code. Check out the [Quickstart](#checkered_flag-quickstart) to get hands-on.
+- **`2026-03-20`**: 🫣 The X2SAM repository is now live. Paper and code updates are coming soon—stay tuned!
 
 ## :rocket: Highlights
 
