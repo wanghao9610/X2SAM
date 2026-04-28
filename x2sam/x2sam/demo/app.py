@@ -1892,16 +1892,16 @@ class GradioApp:
                         )
 
             # Video Instruction
-            gr.HTML(
-                """
-                <div class="video-help-card">
-                    <div class="video-instruction">
-                        <span><strong>Video Instruction</strong><br>Need help with interactive video prompting? Open the short walkthrough.</span>
-                        <a href="https://github.com/user-attachments/assets/1a21cf21-c0bb-42cd-91c8-290324b68618" target="_blank" rel="noopener noreferrer">👉Watch Tutorial👈</a>
-                    </div>
-                </div>
-                """
-            )
+            # gr.HTML(
+            #     """
+            #     <div class="video-help-card">
+            #         <div class="video-instruction">
+            #             <span><strong>Video Instruction</strong><br>Need help with interactive video prompting? Open the short walkthrough.</span>
+            #             <a href="https://github.com/user-attachments/assets/1a21cf21-c0bb-42cd-91c8-290324b68618" target="_blank" rel="noopener noreferrer">👉Watch Tutorial👈</a>
+            #         </div>
+            #     </div>
+            #     """
+            # )
 
             # Examples
             if examples:
