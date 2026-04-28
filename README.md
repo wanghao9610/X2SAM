@@ -156,6 +156,10 @@ conda activate x2sam
 # 3) Install X2SAM dependencies
 cd "$PROJ_HOME/x2sam"
 pip install -r requirements.txt
+
+# 4) Compile Deformable-Attention
+cd "$PROJ_HOME/x2sam/x2sam/model/ops"
+bash make.sh
 ```
 
 #### Optional: set CUDA_HOME
