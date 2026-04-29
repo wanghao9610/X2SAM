@@ -919,13 +919,13 @@ class X2SamDemo:
                 print_log(f"Error in {task_name} prediction: {e}\n{traceback.format_exc()}", logger="current")
                 return None, None, None
 
-        output_ids = mlm_outputs.sequences
-        generation_output = self.tokenizer.decode(output_ids[0]).strip()
-        generation_output = generation_output.replace("<|im_end|>", "").replace("<p> ", "<p>")
-        if "gcgseg" not in task_name:
-            generation_output = generation_output.replace("<p>", "").replace("</p>", " ").strip()
         mlm_input = self._decode_input_ids(input_ids[0].tolist())
         mlm_input = re.sub(f"({re.escape(DEFAULT_PLACEHOLDER_TOKEN)}\\s*)+", DEFAULT_IMAGE_TOKEN, mlm_input)
+        mlm_input = re.sub(r" {2,}", " ", mlm_input)
+
+        output_ids = mlm_outputs.sequences
+        generation_output = self.tokenizer.decode(output_ids[0]).strip()
+        generation_output = re.sub(r" {2,}", " ", generation_output)
 
         input_phrases = []
         output_phrases = []
