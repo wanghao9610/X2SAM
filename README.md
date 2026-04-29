@@ -13,6 +13,9 @@
   <!-- <a href="" style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/arXiv-2604.000-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
   </a> -->
+  <a href='https://wanghao9610.github.io/X2SAM/' style="margin: 0 2px;">
+    <img src='https://img.shields.io/badge/🌐_Project-Webpage-green?style=flat&logoColor=white' alt='webpage'>
+  </a>
   <a href="https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf" style="margin: 0 2px;">
     <img src="https://img.shields.io/badge/PDF-Paper-red?style=flat&logo=readthedocs&logoColor=green" alt="PDF">
   </a>
@@ -24,9 +27,6 @@
   </a>
   <a href="" style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/Demo-Gradio-gold?style=flat&logo=Gradio&logoColor=red' alt='Demo'>
-  </a>
-  <a href='https://wanghao9610.github.io/X2SAM/' style="margin: 0 2px;">
-    <img src='https://img.shields.io/badge/🌐_Project-Webpage-green?style=flat&logoColor=white' alt='webpage'>
   </a>
 </div>
 
