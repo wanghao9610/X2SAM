@@ -319,7 +319,7 @@ python x2sam/x2sam/demo/demo.py \
   --task-name img_refseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
-  --prompt "the ironing man on the car"
+  --prompt "the ironing man"
 
 # Example: img_reaseg
 python x2sam/x2sam/demo/demo.py \

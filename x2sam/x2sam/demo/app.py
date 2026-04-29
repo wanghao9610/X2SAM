@@ -1292,7 +1292,7 @@ EXAMPLES = {
     ],
     "img_refseg": [
         osp.join(this_dir, "./sample.jpg"),
-        "the ironing man on the car",
+        "the ironing man",
         "img_refseg",
     ],
     "vid_refseg": [
