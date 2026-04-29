@@ -40,8 +40,8 @@ We strongly recommend that everyone uses **English** to communicate in issues. T
 
 ## :boom: Updates
 
-- **`2026-04-28`**: ✨ X2SAM is now fully open-sourced! All training, evaluation, visualization, and demo code has been released. Head over to the [Quickstart](#checkered_flag-quickstart) section to get started.
-- **`2026-04-27`**: 👏 The X2SAM technical report is now available! Check it out [Here](https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf) for comprehensive technical details.
+- **`2026-04-28`**: ✨ X2SAM is now fully open-sourced! All training, evaluation, visualization, and demo code has been released. Head over to the [**Quickstart**](#checkered_flag-quickstart) section to get started.
+- **`2026-04-27`**: 👏 The X2SAM technical report is now available! Check it out [**Here**](https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf) for comprehensive technical details.
 - **`2026-03-20`**: 🫣 The X2SAM repository is now live. Paper and code updates are on the way, stay tuned!
 
 ## :rocket: Highlights
