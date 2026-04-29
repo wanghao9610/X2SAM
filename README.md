@@ -25,7 +25,7 @@
   <a href="https://github.com/wanghao9610/X2SAM" style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/GitHub-Repo-blue?style=flat&logo=GitHub' alt='GitHub'>
   </a>
-  <a href="" style="margin: 0 2px;">
+  <a href="http://121.43.252.12:7860/" style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/Demo-Gradio-gold?style=flat&logo=Gradio&logoColor=red' alt='Demo'>
   </a>
 </div>
