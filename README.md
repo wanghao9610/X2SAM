@@ -455,7 +455,6 @@ Then, you can access the demo website at `http://localhost:7860`.
 ## :blush: Acknowledge
 This project has referenced some excellent open-sourced repos ([xtuner](https://github.com/InternLM/xtuner), [VLMEvalKit](https://github.com/open-compass/VLMEvalKit), [X-SAM](https://github.com/wanghao9610/X-SAM)). Thanks for their wonderful works and contributions to the community!
 
-
 ## :pushpin: Citation
 If you find X2SAM and X-SAM are helpful for your research or applications, please consider giving us a star 🌟 and citing the following papers by the following BibTex entry.
 
