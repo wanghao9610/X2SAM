@@ -451,6 +451,7 @@ Then, you can access the demo website at `http://localhost:7860`.
 - [x] Release the demo instructions.
 - [x] Release the evaluation code.
 - [x] Release the training code.
+- [ ] Release the Ascend NPU intructions.
 
 ## :blush: Acknowledge
 This project has referenced some excellent open-sourced repos ([xtuner](https://github.com/InternLM/xtuner), [VLMEvalKit](https://github.com/open-compass/VLMEvalKit), [X-SAM](https://github.com/wanghao9610/X-SAM)). Thanks for their wonderful works and contributions to the community!
