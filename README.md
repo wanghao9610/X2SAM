@@ -17,7 +17,7 @@
     <img src='https://img.shields.io/badge/🌐_Project-Webpage-green?style=flat&logoColor=white' alt='webpage'>
   </a>
   <a href="https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf" style="margin: 0 2px;">
-    <img src="https://img.shields.io/badge/PDF-Paper-red?style=flat&logo=readthedocs&logoColor=green" alt="PDF">
+    <img src="https://img.shields.io/badge/PDF-Paper-red?style=flat&logo=readthedocs&logoColor=white" alt="PDF">
   </a>
   <a href='https://huggingface.co/hao9610/X2SAM' style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/HuggingFace-ckpts-orange?style=flat&logo=HuggingFace&logoColor=orange' alt='huggingface'>
