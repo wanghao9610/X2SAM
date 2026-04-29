@@ -10,8 +10,11 @@
 </div>
 
 <div align="center" style="display: flex; justify-content: center; align-items: center;">
-  <a href="" style="margin: 0 2px;">
-    <img src='https://img.shields.io/badge/arXiv-2603.000-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
+  <!-- <a href="" style="margin: 0 2px;">
+    <img src='https://img.shields.io/badge/arXiv-2604.000-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
+  </a> -->
+  <a href="https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf" style="margin: 0 2px;">
+    <img src="https://img.shields.io/badge/PDF-Paper-red?style=flat&logo=readthedocs&logoColor=green" alt="PDF">
   </a>
   <a href='https://huggingface.co/hao9610/X2SAM' style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/HuggingFace-ckpts-orange?style=flat&logo=HuggingFace&logoColor=orange' alt='huggingface'>
@@ -37,8 +40,9 @@ We strongly recommend that everyone uses **English** to communicate in issues. T
 
 ## :boom: Updates
 
-- **`2026-04-28`**: ✨ We have fully open-sourced X2SAM, including the training, evaluation, visualization, and demo code. Check out the [Quickstart](#checkered_flag-quickstart) to get hands-on.
-- **`2026-03-20`**: 🫣 The X2SAM repository is now live. Paper and code updates are coming soon—stay tuned!
+- **`2026-04-28`**: ✨ X2SAM is now fully open-sourced! All training, evaluation, visualization, and demo code has been released. Head over to the [Quickstart](#checkered_flag-quickstart) section to get started.
+- **`2026-04-27`**: ✨ The X2SAM technical report is now available! Check it out [here](https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf) for comprehensive technical details.
+- **`2026-03-20`**: 🫣 The X2SAM repository is now live. Paper and code updates are on the way, stay tuned!
 
 ## :rocket: Highlights
 
@@ -427,7 +431,7 @@ Then, you can access the demo website at `http://localhost:7860`.
 
 ## :white_check_mark: TODO
 
-- [x] Release the paper on arXiv.
+- [x] Release the technical report.
 - [x] Release the pre-trained models.
 - [x] Release the demo website.
 - [x] Release the demo instructions.
