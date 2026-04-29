@@ -54,7 +54,7 @@ export OMP_NUM_THREADS=2
 
 # Model Config
 deepspeed_config="x2sam/configs/deepspeed/deepspeed_zero2.json"
-config_file="${1:-x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py}"
+config_file="${1:-x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py}"
 read -r -a modes <<< "${2:-train segeval vlmeval visualize}"
 prefix="${3:-}"
 suffix="${4:-}"

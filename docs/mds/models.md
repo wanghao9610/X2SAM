@@ -25,8 +25,8 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 ```bash
 hfd hao9610/X2SAM --tools aria2c -x 8 --save_dir $PROJ_HOME/inits
 mkdir -p $PROJ_HOME/wkdrs/s1_train $PROJ_HOME/wkdrs/s3_train
-ln -s $PROJ_HOME/inits/X2SAM/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32_s1 $PROJ_HOME/wkdrs/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32_s1
-ln -s $PROJ_HOME/inits/X2SAM/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora $PROJ_HOME/wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora
+ln -s $PROJ_HOME/inits/X2SAM/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32 $PROJ_HOME/wkdrs/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32
+ln -s $PROJ_HOME/inits/X2SAM/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora $PROJ_HOME/wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora
 ```
 
 ## Qwen3VL

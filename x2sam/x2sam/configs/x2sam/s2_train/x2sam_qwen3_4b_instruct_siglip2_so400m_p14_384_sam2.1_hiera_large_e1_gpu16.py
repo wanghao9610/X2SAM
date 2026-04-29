@@ -32,7 +32,7 @@ vision_encoder_name_or_path = init_dir + "siglip2-so400m-patch14-384"
 mask_encoder_name_or_path = init_dir + "sam2.1-hiera-large"
 
 # Specify the pretrained pth
-s1_pretrained_pth = work_dir + "s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32_s1/pytorch_model.bin"
+s1_pretrained_pth = work_dir + "s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32/pytorch_model.bin"
 
 # Prompt
 prompt_template = PROMPT_TEMPLATE.qwen3_instruct

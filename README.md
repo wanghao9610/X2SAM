@@ -203,13 +203,13 @@ cd "$PROJ_HOME"
 # 1) Agnostic Segmentor Training.
 NUM_NODES=4 NODE_RANK=0 GPU_PER_NODE=1 MASTER_ADDR=YOUR_MASTER_ADDR MASTER_PORT=29510 GPU_PER_NODE=8 \
   bash runs/gpu_run.sh \
-  x2sam/x2sam/configs/x2sam/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32_s1.py \
+  x2sam/x2sam/configs/x2sam/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32.py \
   "train"
 
 # 2) Unified Joint Training.
 NUM_NODES=4 NODE_RANK=0 GPU_PER_NODE=1 MASTER_ADDR=YOUR_MASTER_ADDR MASTER_PORT=29510 GPU_PER_NODE=8 \
   bash runs/gpu_run.sh \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
   "train segeval vlmeval visualize"
 ```
 
@@ -220,7 +220,7 @@ NUM_NODES=4 NODE_RANK=0 GPU_PER_NODE=1 MASTER_ADDR=YOUR_MASTER_ADDR MASTER_PORT=
 ```bash
 cd "$PROJ_HOME"
 bash runs/gpu_run.sh \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
   "segeval"
 ```
 
@@ -229,7 +229,7 @@ bash runs/gpu_run.sh \
 ```bash
 cd "$PROJ_HOME"
 bash runs/gpu_run.sh \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
   "vlmeval"
 ```
 
@@ -238,7 +238,7 @@ bash runs/gpu_run.sh \
 ```bash
 cd "$PROJ_HOME"
 bash runs/gpu_run.sh \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
   "visualize"
 ```
 
@@ -250,7 +250,7 @@ We provide a tool for dataset exploration, you can use it to explore the dataset
 ```bash
 cd "$PROJ_HOME"
 python x2sam/tools/explore.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
   --output-dir "wkdrs/dataset_exploration" \
   --subset train \
   --max-samples 100
@@ -265,7 +265,7 @@ We provide a tool for model conversion, you can use it to convert the model to t
 ```bash
 cd "$PROJ_HOME"
 python x2sam/tools/pth_to_hf.py \
-  --work-dir "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora" \
+  --work-dir "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora" \
   --tag-dir "last_checkpoint"
 ```
 
@@ -280,8 +280,8 @@ python x2sam/tools/pth_to_hf.py \
 ```bash
 cd "$PROJ_HOME"
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name TASK_NAME \
   --image/--video INPUT_IMAGE/INPUT_VIDEO/INPUT_DIR \
   --prompt INPUT_PROMPT \
@@ -296,16 +296,16 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: img_chat
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_chat \
   --image x2sam/x2sam/demo/sample.jpg \
   --prompt "What is unusal about this image?"
 
 # Example: img_genseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_genseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
@@ -314,8 +314,8 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: img_refseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_refseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
@@ -323,8 +323,8 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: img_reaseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_reaseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
@@ -332,16 +332,16 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: img_gcgseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_gcgseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
 
 # Example: img_intseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_intseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
@@ -349,8 +349,8 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: img_vgdseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name img_vgdseg \
   --image x2sam/x2sam/demo/sample.jpg \
   --output-dir "wkdrs/demo_outputs" \
@@ -358,16 +358,16 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: vid_chat
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_chat \
   --video x2sam/x2sam/demo/sample.mp4 \
   --prompt "Please describe this video in detail."
 
 # Example: vid_genseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_genseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
@@ -376,8 +376,8 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: vid_refseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_refseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
@@ -385,8 +385,8 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: vid_reaseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_reaseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
@@ -394,16 +394,16 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: vid_gcgseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_gcgseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
 
 # Example: vid_objseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_objseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
@@ -411,8 +411,8 @@ python x2sam/x2sam/demo/demo.py \
 
 # Example: vid_vgdseg
 python x2sam/x2sam/demo/demo.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --task-name vid_vgdseg \
   --video x2sam/x2sam/demo/sample.mp4 \
   --output-dir "wkdrs/demo_outputs" \
@@ -429,8 +429,8 @@ python x2sam/x2sam/demo/demo.py \
 ```bash
 cd "$PROJ_HOME"
 python x2sam/x2sam/demo/app.py \
-  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
-  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora/pytorch_model.bin" \
+  x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
+  --pth_model "wkdrs/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora/pytorch_model.bin" \
   --log-dir "wkdrs/app_logs" \
   --seed 0 \
   --port 7860
