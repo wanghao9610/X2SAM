@@ -1856,9 +1856,9 @@ class GradioApp:
                             label="🔍 Score Threshold",
                         )
                         num_frames = gr.Slider(
-                            minimum=8,
-                            maximum=64,
-                            value=8,
+                            minimum=1,
+                            maximum=32,
+                            value=6,
                             step=1,
                             interactive=True,
                             label="🎞️ Frame Number",
