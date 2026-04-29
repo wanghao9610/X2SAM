@@ -191,7 +191,7 @@ Please refer to [models.md](docs/mds/models.md) for detailed instructions on mod
 
 
 ### 5. Training
-We provide the script for all pipeline: training, evaluation, visualization, and dataset exploration, please refer to [runs/gpu_run.sh](runs/gpu_run.sh) for detailed instructions.
+We provide the script for all pipeline: training, evaluation, visualization, and dataset exploration, please refer to [gpu_run.sh](runs/gpu_run.sh) for detailed instructions.
 ```bash
 cd "$PROJ_HOME"
 
