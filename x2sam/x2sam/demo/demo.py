@@ -788,7 +788,7 @@ class X2SamDemo:
         generation_output = generation_output.replace("<|im_start|>", "").replace("<|im_end|>", "")
         if "gcgseg" not in task_name:
             generation_output = generation_output.replace("<p>", "").replace("</p>", " ")
-        generation_output = re.sub(r" {2,}", " ", generation_output).strip()
+        generation_output = re.sub(r" {2,}", " ", generation_output)
 
         mlm_input = self._decode_input_ids(input_ids[0].tolist())
         mlm_input = re.sub(f"({re.escape(DEFAULT_PLACEHOLDER_TOKEN)}\\s*)+", DEFAULT_IMAGE_TOKEN, mlm_input)

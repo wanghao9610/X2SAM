@@ -1749,6 +1749,10 @@ class GradioApp:
 
         with gr.Blocks(title="X2SAM", css=custom_css, theme=theme) as app:
             # Header
+            # <a href="https://arxiv.org/abs/2603.00000" target="_blank" rel="noopener noreferrer">
+            #     <img class="link-icon" src="https://cdn.simpleicons.org/arxiv/B31B1B" alt="arXiv">
+            #     <span>arXiv</span>
+            # </a>
             gr.HTML(
                 """
                 <div class="main-header">
@@ -1756,17 +1760,13 @@ class GradioApp:
                         <h1 class="publication-title">✨ X2SAM ✨</h1>
                         <h2 class="publication-subtitle">Any Segmentation in Images and Videos</h2>
                         <div class="header-links">
-                            <a href="https://arxiv.org/abs/2603.00000" target="_blank" rel="noopener noreferrer">
-                                <img class="link-icon" src="https://cdn.simpleicons.org/arxiv/B31B1B" alt="arXiv">
-                                <span>arXiv</span>
-                            </a>
-                            <a href="https://arxiv.org/pdf/2603.00000" target="_blank" rel="noopener noreferrer">
-                                <span class="link-emoji" aria-hidden="true">📄</span>
-                                <span>Paper</span>
-                            </a>
                             <a href="https://wanghao9610.github.io/X2SAM/" target="_blank" rel="noopener noreferrer">
                                 <span class="link-emoji" aria-hidden="true">🌐</span>
                                 <span>Project</span>
+                            </a>
+                            <a href="https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf" target="_blank" rel="noopener noreferrer">
+                                <span class="link-emoji" aria-hidden="true">📄</span>
+                                <span>Paper</span>
                             </a>
                             <a href="https://huggingface.co/hao9610/X2SAM" target="_blank" rel="noopener noreferrer">
                                 <img class="link-icon" src="https://cdn.simpleicons.org/huggingface/FF9D00" alt="HuggingFace">
@@ -1858,7 +1858,7 @@ class GradioApp:
                         num_frames = gr.Slider(
                             minimum=8,
                             maximum=64,
-                            value=16,
+                            value=8,
                             step=1,
                             interactive=True,
                             label="🎞️ Frame Number",
