@@ -703,7 +703,8 @@ class X2SamDemo:
             f"{DEFAULT_PEND_TOKEN} ",
             "<|user|>",
             "<|assistant|>",
-            "<|end|>",
+            "<|im_start|>"
+            "<|im_end|>",
         ]
         for ignore_token in ignore_tokens:
             text = text.replace(ignore_token, "")
@@ -784,9 +785,11 @@ class X2SamDemo:
 
         output_ids = mlm_outputs.sequences
         generation_output = self.tokenizer.decode(output_ids[0]).strip()
-        generation_output = generation_output.replace("<|end|>", "").replace("<p> ", "<p>").replace("</p> ", "</p>")
+        generation_output = generation_output.replace("<|im_start|>", "").replace("<|im_end|>", "")
         if "gcgseg" not in task_name:
-            generation_output = generation_output.replace("<p>", "").replace("</p>", "")
+            generation_output = generation_output.replace("<p>", "").replace("</p>", " ")
+        generation_output = re.sub(r" {2,}", " ", generation_output).strip()
+
         mlm_input = self._decode_input_ids(input_ids[0].tolist())
         mlm_input = re.sub(f"({re.escape(DEFAULT_PLACEHOLDER_TOKEN)}\\s*)+", DEFAULT_IMAGE_TOKEN, mlm_input)
 
@@ -920,9 +923,9 @@ class X2SamDemo:
 
         output_ids = mlm_outputs.sequences
         generation_output = self.tokenizer.decode(output_ids[0]).strip()
-        generation_output = generation_output.replace("<|end|>", "").replace("<p> ", "<p>").replace("</p> ", "</p>")
+        generation_output = generation_output.replace("<|im_end|>", "").replace("<p> ", "<p>")
         if "gcgseg" not in task_name:
-            generation_output = generation_output.replace("<p>", "").replace("</p>", "")
+            generation_output = generation_output.replace("<p>", "").replace("</p>", " ").strip()
         mlm_input = self._decode_input_ids(input_ids[0].tolist())
         mlm_input = re.sub(f"({re.escape(DEFAULT_PLACEHOLDER_TOKEN)}\\s*)+", DEFAULT_IMAGE_TOKEN, mlm_input)
 
