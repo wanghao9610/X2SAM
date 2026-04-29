@@ -466,7 +466,7 @@ If you find X2SAM and X-SAM are helpful for your research or applications, pleas
   year={2026}
 }
 
-@inproceedings{wang2026xsam,
+@inproceedings{wang2025xsam,
     title={X-SAM: From segment anything to any segmentation},
     author={Wang, Hao and Qiao, Limeng and Jie, Zequn and Huang, Zhijian and Feng, Chengjian and Zheng, Qingfang and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
     booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
