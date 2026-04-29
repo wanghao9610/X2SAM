@@ -75,6 +75,51 @@ master_port=${MASTER_PORT:-29510}
 #                          PART 3  Run Config                          #
 # #######################################################################
 
+# Retry Config (for node failure recovery)
+# max_retries: max number of retries before giving up
+# retry_wait:  seconds to wait before retrying (allow crashed node to restart)
+# retry_node_delay: extra seconds non-rank-0 nodes sleep per retry (let rank-0 reconnect first)
+max_retries=100
+retry_wait=30
+retry_node_delay=30
+
+# run_with_retry <log_file> <cmd> [args...]
+#   Retries <cmd> up to $max_retries times on failure.
+#   Captures torchrun exit code correctly from the left side of the pipe via PIPESTATUS.
+#   Appends each attempt's output to <log_file> (rank-0 only); pass "" to skip logging.
+run_with_retry() {
+    local log_file="$1"; shift
+    local attempt=1
+    while true; do
+        log_time=$(date "+%Y-%m-%d %H:%M:%S")
+        log_format="[$log_time] [INFO] [$0]"
+        echo -e "$log_format [Attempt $attempt/$max_retries] Starting."
+        if [ -n "$log_file" ] && [ "$node_rank" -eq 0 ]; then
+            "$@" | tee -a "$log_file"
+            exit_code=${PIPESTATUS[0]}
+        else
+            "$@"
+            exit_code=$?
+        fi
+        if [ $exit_code -eq 0 ]; then
+            return 0
+        fi
+        if [ $attempt -ge $max_retries ]; then
+            log_time=$(date "+%Y-%m-%d %H:%M:%S")
+            log_format="[$log_time] [INFO] [$0]"
+            echo -e "$log_format Command failed after $max_retries attempts (exit=$exit_code). Giving up." >&2
+            return $exit_code
+        fi
+        log_time=$(date "+%Y-%m-%d %H:%M:%S")
+        log_format="[$log_time] [INFO] [$0]"
+        echo -e "$log_format Attempt $attempt/$max_retries failed (exit=$exit_code). Waiting ${retry_wait}s for node recovery..." >&2
+        sleep $retry_wait
+        # Stagger non-rank-0 nodes so rank-0 reconnects to the rendezvous first
+        [ "$node_rank" -ne 0 ] && sleep $retry_node_delay
+        attempt=$((attempt + 1))
+    done
+}
+
 # Run
 for mode in "${modes[@]}"
 do  
@@ -102,7 +147,8 @@ do
     # mode: train
     trained_flag=0
     if [ "$mode" = "train" ]; then
-        PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+        run_with_retry "$work_dir/train-${time}.log" \
+            env PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
             torchrun --nnodes="$num_nodes" --node_rank="$node_rank" --master_addr="$master_addr" --master_port="$master_port" --nproc_per_node="$gpu_per_node" \
             "$code_dir/x2sam/tools/train.py" \
             "$config_file" \
@@ -110,7 +156,7 @@ do
             --resume auto \
             --launcher pytorch \
             --deepspeed "$deepspeed_config" \
-            --seed 1024 | { [ "$node_rank" = "0" ] && tee "$work_dir/train-${time}.log" || cat; }
+            --seed 1024
     fi
     if [ -f "$lscp_file" ] || [[ ! " ${modes[*]} " =~ " train " ]]; then
         trained_flag=1
@@ -124,14 +170,16 @@ do
                 --work-dir \
                 "$work_dir"
         fi
-        PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+        run_with_retry "$work_dir/segeval-${time}.log" \
+            env PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
             torchrun --nnodes="$num_nodes" --node_rank="$node_rank" --master_addr="$master_addr" --master_port="$master_port" --nproc_per_node="$gpu_per_node" \
             "$code_dir/x2sam/tools/eval.py" \
             "$config_file" \
             --launcher pytorch \
             --work-dir "$work_dir" \
             --seed 0 \
-            --pth_model latest --rerun | { [ "$node_rank" = "0" ] && tee "$work_dir/segeval-${time}.log" || cat; }
+            --pth_model latest \
+            --rerun # whether to rerun the inference when evaluating.
     fi
     # mode: vlmeval
     if [ "$mode" = "vlmeval" ] && [ "$trained_flag" = 1 ]; then
@@ -149,20 +197,22 @@ do
         if [ -d "$work_dir/pytorch_model" ]; then
             echo -e "$log_format Evaluating VLM: $model_name."
             [ "$node_rank" -ne 0 ] && sleep 30
-            PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+            run_with_retry "$work_dir/vlmeval_image-${time}.log" \
+                env PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
                 torchrun --nnodes="$num_nodes" --node_rank="$node_rank" --master_addr="$master_addr" --master_port="$master_port" --nproc_per_node="$gpu_per_node" \
                 "$code_dir/x2sam/evaluation/vlmeval/run.py" \
                 --data MME MMBench_DEV_EN SEEDBench_IMG POPE GQA_TestDev_Balanced AI2D_TEST ScienceQA_VAL \
                 --model "$vlm_name" \
-                --work-dir "$work_dir/vlmeval_image_results" | { [ "$node_rank" = "0" ] && tee "$work_dir/vlmeval_image-${time}.log" || cat; }
+                --work-dir "$work_dir/vlmeval_image_results"
 
-            PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+            run_with_retry "$work_dir/vlmeval_video-${time}.log" \
+                env PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
                 torchrun --nnodes="$num_nodes" --node_rank="$node_rank" --master_addr="$master_addr" --master_port="$master_port" --nproc_per_node="$gpu_per_node" \
                 "$code_dir/x2sam/evaluation/vlmeval/run.py" \
                 --data Video-MME_64frame MVBench_64frame MLVU_64frame LongVideoBench_64frame \
                 --verbose \
                 --model "$vlm_name" \
-                --work-dir "$work_dir/vlmeval_video_results" | { [ "$node_rank" = "0" ] && tee "$work_dir/vlmeval_video-${time}.log" || cat; }
+                --work-dir "$work_dir/vlmeval_video_results"
         fi
     fi
     # mode: visualize

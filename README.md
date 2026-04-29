@@ -191,10 +191,22 @@ Please refer to [models.md](docs/mds/models.md) for detailed instructions on mod
 
 
 ### 5. Training
-
+We provide the script for all pipeline: training, evaluation, visualization, and dataset exploration, please refer to [runs/gpu_run.sh](runs/gpu_run.sh) for detailed instructions.
 ```bash
 cd "$PROJ_HOME"
-bash runs/gpu_run.sh \
+
+# X2SAM under distributed training on 32 NVIDIA H800(80GB) GPUs, 4 Nodes.
+# Agnostic Segmentor Training.
+# NODE_RANK in order to specify the node rank in distributed training.
+# MASTER_ADDR and MASTER_PORT are the address and port of the master node.
+NUM_NODES=4 NODE_RANK=0 GPU_PER_NODE=1 MASTER_ADDR=YOUR_MASTER_ADDR MASTER_PORT=29510 GPU_PER_NODE=8 \
+  bash runs/gpu_run.sh \
+  x2sam/x2sam/configs/x2sam/s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32_s1.py \
+  "train"
+
+# Unified Joint Training.
+NUM_NODES=4 NODE_RANK=0 GPU_PER_NODE=1 MASTER_ADDR=YOUR_MASTER_ADDR MASTER_PORT=29510 GPU_PER_NODE=8 \
+  bash runs/gpu_run.sh \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_s3_lora.py \
   "train segeval vlmeval visualize"
 ```
