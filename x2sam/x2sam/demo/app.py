@@ -179,29 +179,55 @@ html, body {
     margin: 0 auto;
 }
 
-.main-header h1 {
+.main-header h1,
+.main-header .publication-title {
     margin: 0 0 0.75rem;
     font-size: clamp(2.8rem, 5vw, 4.2rem);
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.04em;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-dark) !important;
     animation: fadeInUp 0.7s ease-out both;
 }
 
 /* ── 4. Subtitle visibility fix ──────────────────────────── */
-.main-header h2 {
+.main-header h2,
+.main-header .publication-subtitle {
     margin: 0 0 2rem;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 600;
     line-height: 1.35;
     letter-spacing: -0.01em;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-dark) !important;
     animation: fadeInUp 0.7s ease-out 0.08s both;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .main-header .publication-title,
+    .main-header .publication-subtitle {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .main-header .publication-title,
+    .main-header .publication-subtitle {
+        background: none !important;
+        color: #10b981 !important;
+        -webkit-text-fill-color: #10b981 !important;
+    }
+}
+
+.dark .main-header .publication-title,
+.dark .main-header .publication-subtitle,
+[data-theme="dark"] .main-header .publication-title,
+[data-theme="dark"] .main-header .publication-subtitle {
+    background: none !important;
+    color: #10b981 !important;
+    -webkit-text-fill-color: #10b981 !important;
 }
 
 .hero-authors,
@@ -1727,8 +1753,8 @@ class GradioApp:
                 """
                 <div class="main-header">
                     <div class="main-header-inner">
-                        <h1>✨ X2SAM ✨</h1>
-                        <h2>Any Segmentation in Images and Videos</h2>
+                        <h1 class="publication-title">✨ X2SAM ✨</h1>
+                        <h2 class="publication-subtitle">Any Segmentation in Images and Videos</h2>
                         <div class="header-links">
                             <a href="https://arxiv.org/abs/2603.00000" target="_blank" rel="noopener noreferrer">
                                 <img class="link-icon" src="https://cdn.simpleicons.org/arxiv/B31B1B" alt="arXiv">
