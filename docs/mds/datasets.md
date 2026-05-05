@@ -239,7 +239,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the following steps to download and process COCO dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_genseg/coco2017
     export temp_data_dir=$PROJ_HOME/datas/img_genseg
     # download coco2017 dataset
@@ -275,7 +275,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the following steps to download and process ADE20K dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_ovseg
     export temp_data_dir=$PROJ_HOME/datas/img_ovseg
     # download dataset
@@ -299,7 +299,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the following steps to download and process RefCOCO/+/g datasets.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_refseg/refcocos/images
     export temp_data_dir=$PROJ_HOME/datas/img_refseg/refcocos
     # download dataset
@@ -323,7 +323,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the following steps to download and process gRefCOCO datasets.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_refseg/refcocos/grefcoco
     export temp_data_dir=$PROJ_HOME/datas/img_refseg/refcocos/grefcoco
     cd $temp_data_dir
@@ -341,7 +341,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     Please refer to the [Lisa Dataset](https://github.com/JIA-Lab-research/LISA) to [download the dataset](https://drive.google.com/drive/folders/125mewyg5Ao6tZ3ZdJ-1-E3n04LGVELqy), then refer to the following steps to process the dataset.
 
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_reaseg/lisa
     export temp_data_dir=$PROJ_HOME/datas/img_reaseg/lisa
     mkdir -p $temp_data_dir/explanatory
@@ -369,7 +369,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 * GranD-f Dataset for Image GCG Segmentation
     Download the [Dataset](https://drive.usercontent.google.com/download?id=1abdxVhrbNQhjJQ8eAcuPrOUBzhGaFsF_&export=download&authuser=0&confirm=t&uuid=bb3fe3db-b08c-48f0-9280-2e56c0910987&at=AN8xHooqlXNOUCiIJYVHFMBLtmVn%3A1754293785835)(GranDf_HA_images.zip) from Google Drive and put it in `$PROJ_HOME/datas/img_gcgseg/grand_f`.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_gcgseg/grand_f/images
     export temp_data_dir=$PROJ_HOME/datas/img_gcgseg/grand_f
     # download dataset
@@ -400,7 +400,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     Please refer to the [COCO-Interactive Dataset](https://drive.usercontent.google.com/download?id=1EcC1tl1OQRgIqqy7KFG7JZz2KHujAQB3&export=download&authuser=0) to [download the dataset](https://drive.usercontent.google.com/download?id=1EcC1tl1OQRgIqqy7KFG7JZz2KHujAQB3&export=download&authuser=0) (PSALM_data.zip), then refer to the following steps to process the dataset.
     
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_intseg/coco_int
     export temp_data_dir=$PROJ_HOME/datas/img_intseg/coco_int
     mkdir -p $temp_data_dir/annotations
@@ -422,7 +422,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     Please refer to the [COCO-VGD Dataset](https://huggingface.co/hao9610/X-SAM/tree/main/vgdseg_annotations) to [download the dataset](https://huggingface.co/hao9610/X-SAM/tree/main/vgdseg_annotations) (vgdseg_annotations), then refer to the following steps to process the dataset.
     
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_vgdseg/coco_vgd
     export temp_data_dir=$PROJ_HOME/datas/img_vgdseg/coco_vgd
     mkdir -p $temp_data_dir/annotations
@@ -445,7 +445,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     Please refer to the [VIPSeg Dataset](https://github.com/VIPSeg-Dataset/VIPSeg-Dataset/blob/main/README.md) to [download](https://drive.google.com/file/d/1B13QUiE82xf7N6nVHclb4ErN-Zuai-sZ) the dataset, then refer to the following steps to process the dataset.
     ```bash
     TODO
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_genseg/vipseg_720p
     export temp_data_dir=$PROJ_HOME/datas/vid_genseg/vipseg_720p
     # download dataset
@@ -462,7 +462,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     Please refer to the [VSPW Dataset](https://github.com/VSPW-dataset/VSPW-dataset-download/README.md) to [download](https://github.com/VSPW-dataset/VSPW-dataset-download?tab=readme-ov-file#vspw-dataset-download) VSPW 480P dataset, then refer to the following steps to process the dataset.
     ```bash
     TODO
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_genseg/vspw_480p
     export temp_data_dir=$PROJ_HOME/datas/vid_genseg/vspw_480p
     # download dataset
@@ -480,7 +480,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     NOTE: `train_all_frames_zip` is only available in [Baidu Pan](https://pan.baidu.com/s/1x4bQ0AuyshS7-ZmE9I0FnQ)(access code: uu4q).
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_genseg/ytvis19
     export temp_data_dir=$PROJ_HOME/datas/vid_genseg/ytvis19
     cd $temp_data_dir/train_all_frames_zip
@@ -502,7 +502,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the [YouTube-VIS 2021 Dataset](https://codalab.lisn.upsaclay.fr/competitions/7680#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1RAc7ETOeeV5nT2nbKMxG7QpjmgC4QHHF), then refer to the following steps to process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_ovseg/ytvis21
     export temp_data_dir=$PROJ_HOME/datas/vid_ovseg/ytvis21
     unzip train.zip -d $temp_data_dir/train
@@ -518,7 +518,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the [Youtube-RefVOS 2021 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1J45ubR8Y24wQ6dzKOTkfpd9GS_F9A2kb), then refer to the following steps to process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_refseg/ytrvos21
     export temp_data_dir=$PROJ_HOME/datas/vid_refseg/ytrvos21
     unzip train.zip -d $temp_data_dir/train
@@ -532,7 +532,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the [DAVIS 2017 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://data.vision.ee.ethz.ch/csergi/share/davis/DAVIS-2017-trainval-480p.zip) and [download the referring annotations](https://www.mpi-inf.mpg.de/fileadmin/inf/d2/khoreva/davis_text_annotations.zip), then refer to the following steps to process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_refseg/davis17
     export temp_data_dir=$PROJ_HOME/datas/vid_refseg/davis17
     unzip DAVIS-2017-trainval-480p.zip -d $temp_data_dir/DAVIS-2017-trainval-480p
@@ -549,7 +549,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the ReasonVOS dataset source to download the dataset, then organize it with the paths used by the training config.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_reaseg/reason_vos
     export temp_data_dir=$PROJ_HOME/datas/vid_reaseg/reason_vos
     # put JPEGImages, Annotations, and meta_expressions.json under $temp_data_dir
@@ -561,7 +561,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the [ReVOS Dataset](https://github.com/cilinyan/VISA) to [download the dataset](https://mailsjlueducn-my.sharepoint.com/:f:/g/personal/yancl9918_mails_jlu_edu_cn/Ek3rFeIbNZtAv8kxVxr5n6sB6g3kbIThTscrq8cNt0zvgA?e=ZeuVzH), then refer to the following steps to process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_reaseg/revos
     export temp_data_dir=$PROJ_HOME/datas/vid_reaseg/revos
     mkdir -p $temp_data_dir/annotations
@@ -580,7 +580,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     
     `NOTE`: As the original donwload link is not available for long time downloading, we download them and upload it to [Baidu Pan](https://pan.baidu.com/s/1_mQOqdI6j67R6MG8Xc3ZZA)(access code: xsam).
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_gcgseg/video_glamm
     export temp_data_dir=$PROJ_HOME/datas/vid_gcgseg/video_glamm
 
@@ -630,7 +630,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the [YouTube-VOS 2019 Dataset](https://competitions.codalab.org/competitions/29139#participate-get_data) to [download the dataset](https://drive.google.com/drive/folders/1XwjQ-eysmOb7JdmJAwfVOBZX-aMbHccC), then refer to the following steps to process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_objseg/ytvos19
     export temp_data_dir=$PROJ_HOME/datas/vid_objseg/ytvos19
     unzip train.zip -d $temp_data_dir/train
@@ -645,7 +645,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the following steps to download and process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_vgdseg/vipseg_vgd/annotations
     export temp_data_dir=$PROJ_HOME/datas/vid_vgdseg/vipseg_vgd
     cd $temp_data_dir
@@ -660,7 +660,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the following steps to download and process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_vgdseg/ytvis_vgd
     export temp_data_dir=$PROJ_HOME/datas/vid_vgdseg/ytvis_vgd
     cd $temp_data_dir
@@ -678,7 +678,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
 
     Please refer to the [LLaVA Dataset](https://github.com/haotian-liu/LLaVA/blob/main/docs/Data.md) to download the dataset, then refer to the following steps to process the dataset.
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/img_chat/llava
     export temp_data_dir=$PROJ_HOME/datas/img_chat/llava
     hfd liuhaotian/LLaVA-Instruct-150K --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
@@ -732,7 +732,7 @@ alias hfd="$PROJ_HOME/srcs/tools/hfd.sh"
     Please refer to the [VideoChatGPT](https://github.com/mbzuai-oryx/Video-ChatGPT) to [download the dataset](https://mbzuaiac-my.sharepoint.com/personal/hanoona_bangalath_mbzuai_ac_ae/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fhanoona%5Fbangalath%5Fmbzuai%5Fac%5Fae%2FDocuments%2FVideo%2DChatGPT%2FData%5FCode%5FModel%5FRelease%2FData%2Ftraining%5Fvideos&viewid=7813d070%2D5dd9%2D4b3b%2D873e%2De519f40b7340), then refer to the following steps to process the dataset.
 
     ```bash
-    cd $PROJ_HOME
+    cd "$PROJ_HOME"
     mkdir -p datas/vid_chat/video_chatgpt
     export temp_data_dir=$PROJ_HOME/datas/vid_chat/video_chatgpt
     hfd MBZUAI/VideoInstruct-100K --tools aria2c -x 8 --save_dir $temp_data_dir --dataset
