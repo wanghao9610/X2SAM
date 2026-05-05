@@ -180,6 +180,10 @@
         }
 
         .button.is-glass {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             background: rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(16, 185, 129, 0.3);
             color: #0f172a;
@@ -205,13 +209,19 @@
 
         .button.is-glass .icon {
             flex-shrink: 0;
-            margin-right: 0.5rem;
+            margin-right: 0;
         }
 
         .button.is-glass .hf-icon {
-            display: block;
+            display: inline-block;
             width: 1.25em;
             height: 1.25em;
+            filter: brightness(0);
+            transition: var(--transition);
+        }
+
+        .button.is-glass:hover .hf-icon {
+            filter: brightness(0) invert(1);
         }
 
         .section {
@@ -571,6 +581,12 @@
             display: block;
             width: 1.4rem;
             height: 1.4rem;
+            filter: brightness(0);
+            transition: var(--transition);
+        }
+
+        .social-icon:hover .hf-icon {
+            filter: brightness(0) invert(1);
         }
 
         .progress-container {
