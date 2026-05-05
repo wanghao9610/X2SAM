@@ -10,9 +10,9 @@
 </div>
 
 <div align="center" style="display: flex; justify-content: center; align-items: center;">
-  <!-- <a href="" style="margin: 0 2px;">
-    <img src='https://img.shields.io/badge/arXiv-2604.000-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
-  </a> -->
+  <a href="https://arxiv.org/abs/2605.00891" style="margin: 0 2px;">
+    <img src='https://img.shields.io/badge/arXiv-2605.00891-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
+  </a>
   <a href='https://wanghao9610.github.io/X2SAM/' style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/🌐_Project-Webpage-green?style=flat&logoColor=white' alt='webpage'>
   </a>
@@ -462,7 +462,7 @@ If you find X2SAM and X-SAM are helpful for your research or applications, pleas
 @article{wang2026x2sam,
   title={X2SAM: Any Segmentation in Images and Videos},
   author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Wan, Guanglu and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
-  journal={arXiv preprint arXiv:2603.00000},
+  journal={arXiv preprint arXiv:2605.00891},
   year={2026}
 }
 
