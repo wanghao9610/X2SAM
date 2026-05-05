@@ -10,11 +10,11 @@
 </div>
 
 <div align="center" style="display: flex; justify-content: center; align-items: center;">
-  <a href="https://arxiv.org/abs/2605.00891" style="margin: 0 2px;">
-    <img src='https://img.shields.io/badge/arXiv-2605.00891-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
-  </a>
   <a href='https://wanghao9610.github.io/X2SAM/' style="margin: 0 2px;">
     <img src='https://img.shields.io/badge/🌐_Project-Webpage-green?style=flat&logoColor=white' alt='webpage'>
+  </a>
+  <a href="https://arxiv.org/abs/2605.00891" style="margin: 0 2px;">
+    <img src='https://img.shields.io/badge/arXiv-2605.00891-red?style=flat&logo=arXiv&logoColor=red' alt='arxiv'>
   </a>
   <a href="https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf" style="margin: 0 2px;">
     <img src="https://img.shields.io/badge/PDF-Paper-red?style=flat&logo=readthedocs&logoColor=white" alt="PDF">
