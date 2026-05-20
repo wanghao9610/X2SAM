@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
+import os
+
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 import argparse
+import gc
 import logging
-import os
 import os.path as osp
 import random
 import re
 import traceback
 import warnings
-from typing import List
+from typing import List, Optional
 
 import cv2
 import numpy as np
@@ -203,6 +206,7 @@ class X2SamDemo:
         self.task_map_fns = self.build_map_fns()
         self.template_map_fns = self.build_template_map_fns()
         self.postprocess_fns = self.build_postprocess_fn()
+        self._last_infer_error = None
 
     def build_template_map_fns(self):
         template_map_fns = {
@@ -746,6 +750,72 @@ class X2SamDemo:
             cv2.imwrite(output_file, cv2.cvtColor(visualized_image, cv2.COLOR_RGB2BGR))
         return visualized_image
 
+    @staticmethod
+    def _is_cuda_oom(exc: Optional[BaseException]) -> bool:
+        if exc is None:
+            return False
+        if isinstance(exc, torch.cuda.OutOfMemoryError):
+            return True
+        msg = str(exc).lower()
+        return "out of memory" in msg or "cuda oom" in msg
+
+    @staticmethod
+    def _dispose_mlm_outputs(mlm_outputs) -> None:
+        """Drop generation hidden states; they can occupy multiple GB on GPU."""
+        if mlm_outputs is None:
+            return
+        for attr in ("hidden_states", "past_key_values", "attentions", "scores"):
+            if hasattr(mlm_outputs, attr):
+                setattr(mlm_outputs, attr, None)
+
+    @staticmethod
+    def _release_gpu_memory(aggressive: bool = False) -> None:
+        """Return cached GPU memory to the driver (also needed after OOM)."""
+        gc.collect()
+        if not torch.cuda.is_available():
+            return
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+        if hasattr(torch.cuda, "ipc_collect"):
+            torch.cuda.ipc_collect()
+        if aggressive:
+            gc.collect()
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+
+    @staticmethod
+    def _tensor_to_cpu(value):
+        if torch.is_tensor(value):
+            return value.detach().cpu()
+        if isinstance(value, dict):
+            return {k: X2SamDemo._tensor_to_cpu(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [X2SamDemo._tensor_to_cpu(v) for v in value]
+        if isinstance(value, tuple):
+            return tuple(X2SamDemo._tensor_to_cpu(v) for v in value)
+        return value
+
+    def _finalize_inference(
+        self,
+        data_dict,
+        data_samples,
+        infer_error=None,
+        mlm_outputs=None,
+    ) -> None:
+        """Release per-request GPU tensors; model weights stay loaded."""
+        if infer_error is not None:
+            self._dispose_mlm_outputs(mlm_outputs)
+        self._clear_inference_buffers(data_dict, data_samples)
+        self._release_gpu_memory(aggressive=self._is_cuda_oom(infer_error))
+
+    @staticmethod
+    def _clear_inference_buffers(data_dict, data_samples):
+        """Drop references to GPU tensors from a failed or finished forward pass."""
+        if isinstance(data_dict, dict):
+            data_dict.clear()
+        if isinstance(data_samples, list):
+            data_samples.clear()
+
     def run_on_image(self, image, prompt, task_name, vprompt_masks=None, **kwargs):
         mode = "tensor" if self.output_ids_with_output else "predict"
         output_dir = kwargs.pop("output_dir", None)
@@ -760,10 +830,13 @@ class X2SamDemo:
         data_dict.update(self._process_image(image))
         data_dict.update(self._process_image_data_dict(data_dict))
         data_dict, data_samples = self._process_input_dict(data_dict)
-        input_ids = data_dict["input_ids"]
+        input_ids = self._tensor_to_cpu(data_dict["input_ids"])
 
         metadata = MetadataCatalog.get(f"{task_name}") if task_name in MetadataCatalog.list() else self.metadata
 
+        mlm_outputs = None
+        seg_outputs = None
+        infer_error = None
         with torch.no_grad():
             try:
                 mlm_outputs, seg_outputs = self.model(
@@ -777,17 +850,29 @@ class X2SamDemo:
                     do_loss=False,
                     **kwargs,
                 )
-                torch.cuda.empty_cache()
-                torch.cuda.synchronize()
             except Exception as e:
+                infer_error = e
+                self._last_infer_error = e
                 print_log(f"Error in {task_name} prediction: {e}\n{traceback.format_exc()}", logger="current")
-                return None, None, None
-                
+            finally:
+                self._finalize_inference(
+                    data_dict,
+                    data_samples,
+                    infer_error=infer_error,
+                    mlm_outputs=mlm_outputs,
+                )
+                if infer_error is not None:
+                    mlm_outputs = None
+                    seg_outputs = None
+
+        if infer_error is not None:
+            return None, None, None
+
         mlm_input = self._decode_input_ids(input_ids[0].tolist())
         mlm_input = re.sub(f"({re.escape(DEFAULT_PLACEHOLDER_TOKEN)}\\s*)+", DEFAULT_IMAGE_TOKEN, mlm_input)
         mlm_input = re.sub(r" {2,}", " ", mlm_input)
 
-        output_ids = mlm_outputs.sequences
+        output_ids = mlm_outputs.sequences.detach().cpu()
         generation_output = self.tokenizer.decode(output_ids[0]).strip()
         generation_output = re.sub(r" {2,}", " ", generation_output)
 
@@ -805,6 +890,10 @@ class X2SamDemo:
         print_log(f"Sample output of {task_name}:\n" f"{mlm_input + generation_output}\n", logger="current")
         self.visualizer.metadata = metadata
 
+        self._dispose_mlm_outputs(mlm_outputs)
+        mlm_outputs = None
+        self._release_gpu_memory()
+
         if seg_outputs is None:
             return mlm_input, generation_output, None
 
@@ -819,7 +908,11 @@ class X2SamDemo:
             )
         except Exception as e:
             print_log(f"Error in {task_name} visualization: {e}\n{traceback.format_exc()}", logger="current")
+            self._release_gpu_memory(aggressive=self._is_cuda_oom(e))
             return mlm_input, generation_output, None
+        finally:
+            seg_outputs = None
+            self._release_gpu_memory()
 
         return mlm_input, generation_output, visualized_image
 
@@ -896,10 +989,13 @@ class X2SamDemo:
         data_dict.update(self._process_video(video))
         data_dict.update(self._process_video_data_dict(data_dict))
         data_dict, data_samples = self._process_input_dict(data_dict)
-        input_ids = data_dict["input_ids"]
+        input_ids = self._tensor_to_cpu(data_dict["input_ids"])
 
         metadata = MetadataCatalog.get(f"{task_name}") if task_name in MetadataCatalog.list() else self.metadata
 
+        mlm_outputs = None
+        seg_outputs = None
+        infer_error = None
         with torch.no_grad():
             try:
                 mlm_outputs, seg_outputs = self.model(
@@ -913,17 +1009,29 @@ class X2SamDemo:
                     do_loss=False,
                     **kwargs,
                 )
-                torch.cuda.empty_cache()
-                torch.cuda.synchronize()
             except Exception as e:
+                infer_error = e
+                self._last_infer_error = e
                 print_log(f"Error in {task_name} prediction: {e}\n{traceback.format_exc()}", logger="current")
-                return None, None, None
+            finally:
+                self._finalize_inference(
+                    data_dict,
+                    data_samples,
+                    infer_error=infer_error,
+                    mlm_outputs=mlm_outputs,
+                )
+                if infer_error is not None:
+                    mlm_outputs = None
+                    seg_outputs = None
+
+        if infer_error is not None:
+            return None, None, None
 
         mlm_input = self._decode_input_ids(input_ids[0].tolist())
         mlm_input = re.sub(f"({re.escape(DEFAULT_PLACEHOLDER_TOKEN)}\\s*)+", DEFAULT_IMAGE_TOKEN, mlm_input)
         mlm_input = re.sub(r" {2,}", " ", mlm_input)
 
-        output_ids = mlm_outputs.sequences
+        output_ids = mlm_outputs.sequences.detach().cpu()
         generation_output = self.tokenizer.decode(output_ids[0]).strip()
         generation_output = re.sub(r" {2,}", " ", generation_output)
 
@@ -941,6 +1049,10 @@ class X2SamDemo:
         print_log(f"Sample output of {task_name}:\n" f"{mlm_input + generation_output}\n", logger="current")
         self.visualizer.metadata = metadata
 
+        self._dispose_mlm_outputs(mlm_outputs)
+        mlm_outputs = None
+        self._release_gpu_memory()
+
         if seg_outputs is None:
             return mlm_input, generation_output, None
 
@@ -956,7 +1068,11 @@ class X2SamDemo:
             )
         except Exception as e:
             print_log(f"Error in {task_name} visualization: {e}\n{traceback.format_exc()}", logger="current")
+            self._release_gpu_memory(aggressive=self._is_cuda_oom(e))
             return mlm_input, generation_output, None
+        finally:
+            seg_outputs = None
+            self._release_gpu_memory()
 
         return mlm_input, generation_output, visualized_video
 

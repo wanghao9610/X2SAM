@@ -167,6 +167,8 @@ do
             echo -e "$log_format Converting $model_name to PT format."
             PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH \
                 python "$code_dir/x2sam/tools/model_tools/ds_zero_to_pytorch.py" \
+                --config \
+                "$config_file" \
                 --work-dir \
                 "$work_dir"
         fi

@@ -3,6 +3,8 @@
 import argparse
 import datetime
 import os
+
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 import os.path as osp
 import time
 import traceback
@@ -1656,10 +1658,17 @@ class GradioApp:
 
             progress(1.0, desc="✅ Complete!")
 
+            last_error = getattr(self.demo, "_last_infer_error", None)
             if llm_success or seg_success:
                 status_message = f"✅ Completed successfully in {inference_time:.2f}s."
+            elif X2SamDemo._is_cuda_oom(last_error):
+                status_message = (
+                    f"❌ GPU out of memory ({inference_time:.2f}s). "
+                    "Lower Frame Number, use a shorter video or smaller image."
+                )
             else:
                 status_message = f"⚠️ Failed in {inference_time:.2f}s."
+            self.demo._last_infer_error = None
 
             return (
                 status_message,
@@ -1678,8 +1687,17 @@ class GradioApp:
             )
 
         except Exception as e:
-            error_msg = f"❌ Error: {str(e)}"
             print(f"Error in gradio_predict: {traceback.format_exc()}")
+            X2SamDemo._release_gpu_memory(aggressive=X2SamDemo._is_cuda_oom(e))
+            if X2SamDemo._is_cuda_oom(e):
+                error_msg = (
+                    "❌ GPU out of memory. Lower Frame Number, use a shorter video (frame number) or smaller image."
+                    "If it still fails, please restart the demo process."
+                )
+            else:
+                error_msg = f"❌ Error: {str(e)}"
+            if hasattr(self.demo, "_last_infer_error"):
+                self.demo._last_infer_error = None
             return error_msg, "", "", gr.update(value=None, height=480), gr.update(value=None)
 
     def create_interface(self):

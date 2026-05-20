@@ -1,4 +1,5 @@
 inits/
 datas/
 wkdrs/
+*.mdc
 __pycache__/

@@ -1233,7 +1233,14 @@ class X2SamModel(BaseModel):
 
         return loss_dict
 
+    def full_state_dict(self, *args, **kwargs):
+        """Return all model parameters, including frozen base modules."""
+        return super().state_dict(*args, **kwargs)
+
     def state_dict(self, *args, **kwargs):
+        if kwargs.pop("full_model", False):
+            return self.full_state_dict(*args, **kwargs)
+
         state_dict = super().state_dict(*args, **kwargs)
         to_return = OrderedDict()
         # Step 1. vision_encoder
