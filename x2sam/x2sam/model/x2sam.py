@@ -393,12 +393,8 @@ class X2SamModel(BaseModel):
         num_new_tokens = self.tokenizer.add_tokens(special_tokens, special_tokens=True)
         if num_new_tokens > 0 and self.llm is not None:
             self.llm.resize_token_embeddings(len(self.tokenizer))
-            if self.use_llm_lora:
-                self.llm.model.lm_head.requires_grad_(True)
-                self.llm.model.model.embed_tokens.requires_grad_(True)
-            else:
-                self.llm.lm_head.requires_grad_(True)
-                self.llm.embed_tokens.requires_grad_(True)
+            self.llm.get_output_embeddings().requires_grad_(True)
+            self.llm.get_input_embeddings().requires_grad_(True)
 
         if num_new_tokens > 0 and self.vlm is not None:
             self.vlm.resize_token_embeddings(len(self.tokenizer))

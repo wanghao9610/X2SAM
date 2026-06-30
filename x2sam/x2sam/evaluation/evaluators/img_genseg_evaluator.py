@@ -42,7 +42,7 @@ class ImgGenSegEvaluator(ImgBaseEvaluator):
         )
         self._show_categories = show_categories
         self._map_labels = map_labels
-
+        
     @ImgBaseEvaluator.metadata.setter
     def metadata(self, value):
         self._metadata = value

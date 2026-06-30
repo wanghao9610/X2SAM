@@ -38,17 +38,19 @@ from x2sam.utils.criteria import StopWordStoppingCriteria
 from x2sam.utils.logging import print_log
 
 
-class EvaluateChatHook(Hook):
+class GenerationChatHook(Hook):
     priority = "LOW"
 
     def __init__(
         self,
         tokenizer,
         image_inputs=None,
+        image_task_names=None,
         video_inputs=None,
+        video_task_names=None,
         special_tokens=None,
-        evaluation_images=None,
-        evaluation_videos=None,
+        generation_images=None,
+        generation_videos=None,
         reference_images=None,
         image_vprompt_masks=None,
         video_vprompt_masks=None,
@@ -73,7 +75,9 @@ class EvaluateChatHook(Hook):
         generation_kwargs={},
     ):
         self.image_inputs = image_inputs
+        self.image_task_names = image_task_names
         self.video_inputs = video_inputs
+        self.video_task_names = video_task_names
         self.image_postprocess_fns = image_postprocess_fns
         self.video_postprocess_fns = video_postprocess_fns
         self.image_token = image_token
@@ -108,34 +112,42 @@ class EvaluateChatHook(Hook):
                     self.video_postprocess_fns[i] = None
         if isinstance(self.image_inputs, str):
             self.image_inputs = [self.image_inputs]
+        if isinstance(self.image_task_names, str):
+            self.image_task_names = [self.image_task_names]
+        if self.image_task_names is not None:
+            assert len(self.image_task_names) == len(self.image_inputs)
         if isinstance(self.video_inputs, str):
             self.video_inputs = [self.video_inputs]
-        self.evaluation_images = evaluation_images
-        self.evaluation_videos = evaluation_videos
+        if isinstance(self.video_task_names, str):
+            self.video_task_names = [self.video_task_names]
+        if self.video_task_names is not None and self.video_inputs is not None:
+            assert len(self.video_task_names) == len(self.video_inputs)
+        self.generation_images = generation_images
+        self.generation_videos = generation_videos
         self.reference_images = reference_images
         self.image_vprompt_masks = image_vprompt_masks
         self.video_vprompt_masks = video_vprompt_masks
         self.video_vprompt_indices = video_vprompt_indices
-        if isinstance(self.evaluation_images, str):
-            self.evaluation_images = [self.evaluation_images]
+        if isinstance(self.generation_images, str):
+            self.generation_images = [self.generation_images]
         if isinstance(self.reference_images, str):
             self.reference_images = [self.reference_images]
         if isinstance(self.image_vprompt_masks, str):
             self.image_vprompt_masks = [(self.image_vprompt_masks,)]
         if isinstance(self.video_vprompt_masks, str):
             self.video_vprompt_masks = [(self.video_vprompt_masks,)]
-        if self.evaluation_images is not None:
-            assert len(self.evaluation_images) in [1, len(self.image_inputs)]
-            if len(self.evaluation_images) == 1:
-                self.evaluation_images = [self.evaluation_images[0]] * len(self.image_inputs)
-            self.evaluation_image_files = self.evaluation_images
-            self.evaluation_images = [load_image(img) for img in self.evaluation_images]
-        if self.evaluation_videos is not None:
-            assert len(self.evaluation_videos) in [1, len(self.video_inputs)]
-            if len(self.evaluation_videos) == 1:
-                self.evaluation_videos = [self.evaluation_videos[0]] * len(self.video_inputs)
-            self.evaluation_video_files = self.evaluation_videos
-            self.evaluation_videos = [load_video(vid, num_frames=num_frames) for vid in self.evaluation_videos]
+        if self.generation_images is not None:
+            assert len(self.generation_images) in [1, len(self.image_inputs)]
+            if len(self.generation_images) == 1:
+                self.generation_images = [self.generation_images[0]] * len(self.image_inputs)
+            self.evaluation_image_files = self.generation_images
+            self.generation_images = [load_image(img) for img in self.generation_images]
+        if self.generation_videos is not None:
+            assert len(self.generation_videos) in [1, len(self.video_inputs)]
+            if len(self.generation_videos) == 1:
+                self.generation_videos = [self.generation_videos[0]] * len(self.video_inputs)
+            self.evaluation_video_files = self.generation_videos
+            self.generation_videos = [load_video(vid, num_frames=num_frames) for vid in self.generation_videos]
         if self.reference_images is not None:
             assert len(self.reference_images) in [1, len(self.image_inputs)]
             if len(self.reference_images) == 1:
@@ -289,27 +301,37 @@ class EvaluateChatHook(Hook):
             phrases.append(phrase)
         return phrases
 
+    @staticmethod
+    def _resolve_sample_identity(sample_file, task_name=None):
+        image_stem = osp.splitext(osp.basename(sample_file))[0]
+        if task_name is not None:
+            return task_name, f"{image_stem}_{task_name}"
+        return image_stem, image_stem
+
     def _eval_images(self, runner, model, device, max_new_tokens=None, save_eval_output=False):
         if save_eval_output:
             eval_outputs = []
             data_names = []
 
-        for (
+        for idx, (
             sample_image,
             sample_input,
             sample_image_file,
             sample_vprompt_mask,
             sample_vprompt_mask_file,
             postprocess_fn,
-        ) in zip(
-            self.evaluation_images,
-            self.image_inputs,
-            self.evaluation_image_files,
-            self.image_vprompt_masks,
-            self.image_vprompt_masks_files,
-            self.image_postprocess_fns,
+        ) in enumerate(
+            zip(
+                self.generation_images,
+                self.image_inputs,
+                self.evaluation_image_files,
+                self.image_vprompt_masks,
+                self.image_vprompt_masks_files,
+                self.image_postprocess_fns,
+            )
         ):
-            data_name = osp.splitext(osp.basename(sample_image_file))[0]
+            task_name = self.image_task_names[idx] if self.image_task_names is not None else None
+            data_name, output_suffix = self._resolve_sample_identity(sample_image_file, task_name)
             image = sample_image
             if self.expand2square:
                 image = expand2square(
@@ -389,14 +411,14 @@ class EvaluateChatHook(Hook):
                 data_dict["extra_pixel_values"] = extra_pixel_values
                 data_dict["vprompt_masks"] = vprompt_masks
 
-            output_suffix = f"{data_name}"
             if vprompt_masks is not None:
-                output_suffix = "+".join(
+                mask_suffix = "+".join(
                     [
                         osp.splitext(osp.basename(vprompt_mask_file))[0]
                         for vprompt_mask_file in sample_vprompt_mask_file
                     ]
                 )
+                output_suffix = f"{output_suffix}+{mask_suffix}"
 
             input_phrases = []
             output_phrases = []
@@ -468,7 +490,7 @@ class EvaluateChatHook(Hook):
             eval_outputs = []
             data_names = []
 
-        for (
+        for idx, (
             sample_video,
             sample_input,
             sample_video_file,
@@ -476,16 +498,19 @@ class EvaluateChatHook(Hook):
             sample_vprompt_index,
             sample_vprompt_mask_file,
             postprocess_fn,
-        ) in zip(
-            self.evaluation_videos,
-            self.video_inputs,
-            self.evaluation_video_files,
-            self.video_vprompt_masks,
-            self.video_vprompt_indices,
-            self.video_vprompt_masks_files,
-            self.video_postprocess_fns,
+        ) in enumerate(
+            zip(
+                self.generation_videos,
+                self.video_inputs,
+                self.evaluation_video_files,
+                self.video_vprompt_masks,
+                self.video_vprompt_indices,
+                self.video_vprompt_masks_files,
+                self.video_postprocess_fns,
+            )
         ):
-            data_name = osp.splitext(osp.basename(sample_video_file))[0]
+            task_name = self.video_task_names[idx] if self.video_task_names is not None else None
+            data_name, output_suffix = self._resolve_sample_identity(sample_video_file, task_name)
             video = sample_video
             if self.expand2square:
                 video = [
@@ -602,14 +627,14 @@ class EvaluateChatHook(Hook):
                 data_dict["extra_pixel_values"] = extra_pixel_values
                 data_dict["vprompt_masks"] = vprompt_masks
 
-            output_suffix = f"{data_name}"
             if vprompt_masks is not None:
-                output_suffix = "+".join(
+                mask_suffix = "+".join(
                     [
                         osp.splitext(osp.basename(vprompt_mask_file))[0]
                         for vprompt_mask_file in sample_vprompt_mask_file
                     ]
                 )
+                output_suffix = f"{output_suffix}+{mask_suffix}"
 
             input_phrases = []
             output_phrases = []
@@ -744,11 +769,11 @@ class EvaluateChatHook(Hook):
         elif model.vlm is not None:
             model.vlm.config.text_config.use_cache = True
         model.eval()
-        if self.evaluation_images is not None:
+        if self.generation_images is not None:
             self._eval_images(runner, model, device, max_new_tokens, save_eval_output)
-        if self.evaluation_videos is not None:
+        if self.generation_videos is not None:
             self._eval_videos(runner, model, device, max_new_tokens, save_eval_output)
-        if self.evaluation_images is None and self.evaluation_videos is None:
+        if self.generation_images is None and self.generation_videos is None:
             self._eval_language(runner, model, device, max_new_tokens, save_eval_output)
 
         # Cast to training mode
@@ -761,7 +786,7 @@ class EvaluateChatHook(Hook):
         model.train()
 
     def before_train(self, runner):
-        runner.logger.info("before_train in EvaluateChatHook.")
+        runner.logger.info("before_train in GenerationChatHook.")
         self._generate_samples(runner, max_new_tokens=50)
 
     def _is_save_checkpoint(self, runner):
@@ -791,17 +816,17 @@ class EvaluateChatHook(Hook):
         if not do_chat:
             return
 
-        runner.logger.info("after_train_iter in EvaluateChatHook.")
+        runner.logger.info("after_train_iter in GenerationChatHook.")
         self._generate_samples(runner, save_eval_output=save_eval_output)
 
     def after_train(self, runner):
-        runner.logger.info("after_train in EvaluateChatHook.")
+        runner.logger.info("after_train in GenerationChatHook.")
         self._generate_samples(runner)
 
     def after_val(self, runner) -> None:
         if self.every_n_iters is not None:
             return
-        runner.logger.info("after_val in EvaluateChatHook.")
+        runner.logger.info("after_val in GenerationChatHook.")
         self._generate_samples(runner)
 
 

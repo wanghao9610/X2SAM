@@ -6,18 +6,34 @@ from x2sam.registry import BUILDER
 
 
 class ConcatDataset(TorchConcatDataset):
-    def __init__(self, datasets, oversample_ratio=0.0, oversample_mult=1.0):
+    def __init__(self, datasets, oversample_ratio=0.0, oversample_mult=1.0, max_sample=None):
         self.oversample_ratio = oversample_ratio
         self.oversample_mult = oversample_mult
+        self.max_sample = max_sample
         datasets_instance = []
         for cfg in datasets:
-            datasets_instance.append(BUILDER.build(cfg))
+            dataset = BUILDER.build(cfg)
+            self._truncate_dataset(dataset)
+            datasets_instance.append(dataset)
 
         dataset_repeats = self.get_dataset_repeats(datasets_instance)
         for dataset, repeat in zip(datasets_instance, dataset_repeats):
             dataset.repeats = repeat * self.oversample_mult
 
         super().__init__(datasets=datasets_instance)
+
+    def _truncate_dataset(self, dataset):
+        if self.max_sample is None:
+            return
+
+        max_sample = int(self.max_sample)
+        if max_sample <= 0:
+            return
+
+        if hasattr(dataset, "data"):
+            dataset.data = dataset.data[:max_sample]
+        if hasattr(dataset, "data_length"):
+            dataset.data_length = min(dataset.data_length, max_sample)
 
     def get_dataset_repeats(self, datasets):
         dataset_lens = [dataset.data_length for dataset in datasets]

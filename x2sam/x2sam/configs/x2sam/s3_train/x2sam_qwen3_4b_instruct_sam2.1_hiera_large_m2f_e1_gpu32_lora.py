@@ -3,6 +3,7 @@ from itertools import chain
 from os import getenv
 
 import torch
+from mmengine.dataset import DefaultSampler
 from mmengine.hooks import CheckpointHook, DistSamplerSeedHook, IterTimerHook, LoggerHook, ParamSchedulerHook
 from mmengine.optim import AmpOptimWrapper, CosineAnnealingLR, LinearLR
 from peft import LoraConfig
@@ -70,8 +71,8 @@ from x2sam.dataset.process_fns import (
 )
 from x2sam.dataset.processors import Qwen3VLImageProcessor, Qwen3VLVideoProcessor, Sam2ImageProcessor
 from x2sam.dataset.samplers import CustomBatchSampler, SourceGroupedSampler
-from x2sam.engine.hooks import DatasetInfoHook, EvaluateChatHook, ModelInfoHook, PTCheckpointHook
-from x2sam.engine.runner import TrainLoop
+from x2sam.engine.hooks import DatasetInfoHook, GenerationChatHook, ModelInfoHook, PTCheckpointHook
+from x2sam.engine.runner import TrainLoop, ValLoop
 from x2sam.evaluation.evaluators import (
     ImgGCGSegEvaluator,
     ImgGenSegEvaluator,
@@ -115,7 +116,7 @@ mask_decoder_name_or_path = init_dir + "mask2former-swin-large-coco-panoptic"
 s1_pretrained_pth = work_dir + "s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32/pytorch_model.bin"
 
 # Prompt
-prompt_template = PROMPT_TEMPLATE.qwen3_vl_instruct
+prompt_template = PROMPT_TEMPLATE.qwen3_instruct
 max_length = int(262144 - 40**2 - 1024)
 
 # Scheduler & Optimizer
@@ -140,71 +141,100 @@ warmup_ratio = 0.03
 save_steps = 2000
 save_total_limit = 2  # Maximum checkpoints to keep (-1 means unlimited)
 
-# Logging
-logging_interval = 10
+# Evaluate
+val_interval = 2000
+val_sample = 100  # Maximum samples per dataset during training evaluation; <=0 means full dataset, which will be very slow
 
-# Evaluate the generation performance during the training
-evaluation_freq = 2000
+# Logging
+log_interval = 10
+
+# Inference
+inf_interval = 2000
 
 SYSTEM = ""
-evaluation_images = [
-    code_dir + "x2sam/configs/x2sam/samples/image.jpg",
+generation_images = [
+    code_dir + "x2sam/configs/x2sam/samples/sample.jpg",
 ]
-evaluation_videos = [
-    code_dir + "x2sam/configs/x2sam/videos/image.mp4",
+generation_videos = [
+    code_dir + "x2sam/configs/x2sam/samples/sample.mp4",
 ]
-image_inputs = [
-    "What is unusal about this image?",
-    "Can you generate segmentation masks for this image based on the specified categories: <p>person</p>, <p>bicycle</p>, <p>car</p>, <p>motorcycle</p>, <p>airplane</p>, <p>bus</p>, <p>train</p>, <p>truck</p>, <p>boat</p>, <p>traffic light</p>, <p>fire hydrant</p>, <p>stop sign</p>, <p>parking meter</p>, <p>bench</p>, <p>bird</p>, <p>cat</p>, <p>dog</p>, <p>horse</p>, <p>sheep</p>, <p>cow</p>, <p>elephant</p>, <p>bear</p>, <p>zebra</p>, <p>giraffe</p>, <p>backpack</p>, <p>umbrella</p>, <p>handbag</p>, <p>tie</p>, <p>suitcase</p>, <p>frisbee</p>, <p>skis</p>, <p>snowboard</p>, <p>sports ball</p>, <p>kite</p>, <p>baseball bat</p>, <p>baseball glove</p>, <p>skateboard</p>, <p>surfboard</p>, <p>tennis racket</p>, <p>bottle</p>, <p>wine glass</p>, <p>cup</p>, <p>fork</p>, <p>knife</p>, <p>spoon</p>, <p>bowl</p>, <p>banana</p>, <p>apple</p>, <p>sandwich</p>, <p>orange</p>, <p>broccoli</p>, <p>carrot</p>, <p>hot dog</p>, <p>pizza</p>, <p>donut</p>, <p>cake</p>, <p>chair</p>, <p>couch</p>, <p>potted plant</p>, <p>bed</p>, <p>dining table</p>, <p>toilet</p>, <p>tv</p>, <p>laptop</p>, <p>mouse</p>, <p>remote</p>, <p>keyboard</p>, <p>cell phone</p>, <p>microwave</p>, <p>oven</p>, <p>toaster</p>, <p>sink</p>, <p>refrigerator</p>, <p>book</p>, <p>clock</p>, <p>vase</p>, <p>scissors</p>, <p>teddy bear</p>, <p>hair drier</p>, <p>toothbrush</p>, <p>banner</p>, <p>blanket</p>, <p>bridge</p>, <p>cardboard</p>, <p>counter</p>, <p>curtain</p>, <p>door</p>, <p>floor wood</p>, <p>flower</p>, <p>fruit</p>, <p>gravel</p>, <p>house</p>, <p>light</p>, <p>mirror</p>, <p>net</p>, <p>pillow</p>, <p>platform</p>, <p>playingfield</p>, <p>railroad</p>, <p>river</p>, <p>road</p>, <p>roof</p>, <p>sand</p>, <p>sea</p>, <p>shelf</p>, <p>snow</p>, <p>stairs</p>, <p>tent</p>, <p>towel</p>, <p>wall brick</p>, <p>wall stone</p>, <p>wall tile</p>, <p>wall wood</p>, <p>water</p>, <p>window blind</p>, <p>window</p>, <p>tree</p>, <p>fence</p>, <p>ceiling</p>, <p>sky</p>, <p>cabinet</p>, <p>table</p>, <p>floor</p>, <p>pavement</p>, <p>mountain</p>, <p>grass</p>, <p>dirt</p>, <p>paper</p>, <p>food</p>, <p>building</p>, <p>rock</p>, <p>wall</p>, <p>rug</p>? Please output the segmentation mask.",
-    "Can you segment <p>the ironing man</p> in this image? Please output the corresponding segmentation mask.",
-    "<p>What can be used to warm clothes?</p> Please output the corresponding segmentation mask.",
-    "Can you provide a brief description of the this image? Respond with interleaved segmentation masks for the corresponding phrases.",
-    "Can you segment the <p><region></p> in this image? Please output the corresponding segmentation mask.",
-    "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask.",
-]
-video_inputs = [
-    "Please describe this video in detail.",
-    "Could you provide segmentation masks for this video according to the specified categories: <p>wall</p>, <p>ceiling</p>, <p>door</p>, <p>stair</p>, <p>ladder</p>, <p>escalator</p>, <p>playground slide</p>, <p>handrail or fence</p>, <p>window</p>, <p>rail</p>, <p>goal</p>, <p>pillar</p>, <p>pole</p>, <p>floor</p>, <p>ground</p>, <p>grass</p>, <p>sand</p>, <p>athletic field</p>, <p>road</p>, <p>path</p>, <p>crosswalk</p>, <p>building</p>, <p>house</p>, <p>bridge</p>, <p>tower</p>, <p>windmill</p>, <p>well or well lid</p>, <p>other construction</p>, <p>sky</p>, <p>mountain</p>, <p>stone</p>, <p>wood</p>, <p>ice</p>, <p>snowfield</p>, <p>grandstand</p>, <p>sea</p>, <p>river</p>, <p>lake</p>, <p>waterfall</p>, <p>water</p>, <p>billboard or bulletin board</p>, <p>sculpture</p>, <p>pipeline</p>, <p>flag</p>, <p>parasol or umbrella</p>, <p>cushion or carpet</p>, <p>tent</p>, <p>roadblock</p>, <p>car</p>, <p>bus</p>, <p>truck</p>, <p>bicycle</p>, <p>motorcycle</p>, <p>wheeled machine</p>, <p>ship or boat</p>, <p>raft</p>, <p>airplane</p>, <p>tyre</p>, <p>traffic light</p>, <p>lamp</p>, <p>person</p>, <p>cat</p>, <p>dog</p>, <p>horse</p>, <p>cattle</p>, <p>other animal</p>, <p>tree</p>, <p>flower</p>, <p>other plant</p>, <p>toy</p>, <p>ball net</p>, <p>backboard</p>, <p>skateboard</p>, <p>bat</p>, <p>ball</p>, <p>cupboard or showcase or storage rack</p>, <p>box</p>, <p>traveling case or trolley case</p>, <p>basket</p>, <p>bag or package</p>, <p>trash can</p>, <p>cage</p>, <p>plate</p>, <p>tub or bowl or pot</p>, <p>bottle or cup</p>, <p>barrel</p>, <p>fishbowl</p>, <p>bed</p>, <p>pillow</p>, <p>table or desk</p>, <p>chair or seat</p>, <p>bench</p>, <p>sofa</p>, <p>shelf</p>, <p>bathtub</p>, <p>gun</p>, <p>commode</p>, <p>roaster</p>, <p>other machine</p>, <p>refrigerator</p>, <p>washing machine</p>, <p>microwave oven</p>, <p>fan</p>, <p>curtain</p>, <p>textiles</p>, <p>clothes</p>, <p>painting or poster</p>, <p>mirror</p>, <p>flower pot or vase</p>, <p>clock</p>, <p>book</p>, <p>tool</p>, <p>blackboard</p>, <p>tissue</p>, <p>screen or television</p>, <p>computer</p>, <p>printer</p>, <p>mobile phone</p>, <p>keyboard</p>, <p>other electronic product</p>, <p>fruit</p>, <p>food</p>, <p>instrument</p>, <p>train</p>? Please respond with the segmentation masks.",
-    "Can you segment <p>the jumping boy on the bed</p> in this video? Please output the corresponding segmentation mask.",
-    "<p>What are the two kids playing on in this video?</p> Please output the corresponding segmentation mask.",
-    "Can you provide a brief description of this video? Respond with interleaved segmentation masks for the corresponding phrases.",
-    "Can you segment the <p><region></p> in this video? Please output the corresponding segmentation mask.",
-    "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask.",
-]
-image_vprompt_masks = [
-    (None,),
-    (None,),
-    (None,),
-    (None,),
-    (None,),
-    (code_dir + "x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png",),
-    (
+generation_image_inputs = {
+    "chat": "What is unusal about this image?",
+    "genseg": "Can you generate segmentation masks for this image based on the specified categories: <p>person</p>, <p>bicycle</p>, <p>car</p>, <p>motorcycle</p>, <p>airplane</p>, <p>bus</p>, <p>train</p>, <p>truck</p>, <p>boat</p>, <p>traffic light</p>, <p>fire hydrant</p>, <p>stop sign</p>, <p>parking meter</p>, <p>bench</p>, <p>bird</p>, <p>cat</p>, <p>dog</p>, <p>horse</p>, <p>sheep</p>, <p>cow</p>, <p>elephant</p>, <p>bear</p>, <p>zebra</p>, <p>giraffe</p>, <p>backpack</p>, <p>umbrella</p>, <p>handbag</p>, <p>tie</p>, <p>suitcase</p>, <p>frisbee</p>, <p>skis</p>, <p>snowboard</p>, <p>sports ball</p>, <p>kite</p>, <p>baseball bat</p>, <p>baseball glove</p>, <p>skateboard</p>, <p>surfboard</p>, <p>tennis racket</p>, <p>bottle</p>, <p>wine glass</p>, <p>cup</p>, <p>fork</p>, <p>knife</p>, <p>spoon</p>, <p>bowl</p>, <p>banana</p>, <p>apple</p>, <p>sandwich</p>, <p>orange</p>, <p>broccoli</p>, <p>carrot</p>, <p>hot dog</p>, <p>pizza</p>, <p>donut</p>, <p>cake</p>, <p>chair</p>, <p>couch</p>, <p>potted plant</p>, <p>bed</p>, <p>dining table</p>, <p>toilet</p>, <p>tv</p>, <p>laptop</p>, <p>mouse</p>, <p>remote</p>, <p>keyboard</p>, <p>cell phone</p>, <p>microwave</p>, <p>oven</p>, <p>toaster</p>, <p>sink</p>, <p>refrigerator</p>, <p>book</p>, <p>clock</p>, <p>vase</p>, <p>scissors</p>, <p>teddy bear</p>, <p>hair drier</p>, <p>toothbrush</p>, <p>banner</p>, <p>blanket</p>, <p>bridge</p>, <p>cardboard</p>, <p>counter</p>, <p>curtain</p>, <p>door</p>, <p>floor wood</p>, <p>flower</p>, <p>fruit</p>, <p>gravel</p>, <p>house</p>, <p>light</p>, <p>mirror</p>, <p>net</p>, <p>pillow</p>, <p>platform</p>, <p>playingfield</p>, <p>railroad</p>, <p>river</p>, <p>road</p>, <p>roof</p>, <p>sand</p>, <p>sea</p>, <p>shelf</p>, <p>snow</p>, <p>stairs</p>, <p>tent</p>, <p>towel</p>, <p>wall brick</p>, <p>wall stone</p>, <p>wall tile</p>, <p>wall wood</p>, <p>water</p>, <p>window blind</p>, <p>window</p>, <p>tree</p>, <p>fence</p>, <p>ceiling</p>, <p>sky</p>, <p>cabinet</p>, <p>table</p>, <p>floor</p>, <p>pavement</p>, <p>mountain</p>, <p>grass</p>, <p>dirt</p>, <p>paper</p>, <p>food</p>, <p>building</p>, <p>rock</p>, <p>wall</p>, <p>rug</p>? Please output the segmentation mask.",
+    "refseg": "Can you segment <p>the ironing man</p> in this image? Please output the corresponding segmentation mask.",
+    "reaseg": "<p>What can be used to warm clothes?</p> Please output the corresponding segmentation mask.",
+    "gcgseg": "Can you provide a brief description of the this image? Respond with interleaved segmentation masks for the corresponding phrases.",
+    "intseg": "Can you segment the <p><region></p> in this image? Please output the corresponding segmentation mask.",
+    "vgdseg": "Can you segment the image based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask.",
+}
+generation_video_inputs = {
+    "chat": "Please describe this video in detail.",
+    "genseg": "Could you provide segmentation masks for this video according to the specified categories: <p>wall</p>, <p>ceiling</p>, <p>door</p>, <p>stair</p>, <p>ladder</p>, <p>escalator</p>, <p>playground slide</p>, <p>handrail or fence</p>, <p>window</p>, <p>rail</p>, <p>goal</p>, <p>pillar</p>, <p>pole</p>, <p>floor</p>, <p>ground</p>, <p>grass</p>, <p>sand</p>, <p>athletic field</p>, <p>road</p>, <p>path</p>, <p>crosswalk</p>, <p>building</p>, <p>house</p>, <p>bridge</p>, <p>tower</p>, <p>windmill</p>, <p>well or well lid</p>, <p>other construction</p>, <p>sky</p>, <p>mountain</p>, <p>stone</p>, <p>wood</p>, <p>ice</p>, <p>snowfield</p>, <p>grandstand</p>, <p>sea</p>, <p>river</p>, <p>lake</p>, <p>waterfall</p>, <p>water</p>, <p>billboard or bulletin board</p>, <p>sculpture</p>, <p>pipeline</p>, <p>flag</p>, <p>parasol or umbrella</p>, <p>cushion or carpet</p>, <p>tent</p>, <p>roadblock</p>, <p>car</p>, <p>bus</p>, <p>truck</p>, <p>bicycle</p>, <p>motorcycle</p>, <p>wheeled machine</p>, <p>ship or boat</p>, <p>raft</p>, <p>airplane</p>, <p>tyre</p>, <p>traffic light</p>, <p>lamp</p>, <p>person</p>, <p>cat</p>, <p>dog</p>, <p>horse</p>, <p>cattle</p>, <p>other animal</p>, <p>tree</p>, <p>flower</p>, <p>other plant</p>, <p>toy</p>, <p>ball net</p>, <p>backboard</p>, <p>skateboard</p>, <p>bat</p>, <p>ball</p>, <p>cupboard or showcase or storage rack</p>, <p>box</p>, <p>traveling case or trolley case</p>, <p>basket</p>, <p>bag or package</p>, <p>trash can</p>, <p>cage</p>, <p>plate</p>, <p>tub or bowl or pot</p>, <p>bottle or cup</p>, <p>barrel</p>, <p>fishbowl</p>, <p>bed</p>, <p>pillow</p>, <p>table or desk</p>, <p>chair or seat</p>, <p>bench</p>, <p>sofa</p>, <p>shelf</p>, <p>bathtub</p>, <p>gun</p>, <p>commode</p>, <p>roaster</p>, <p>other machine</p>, <p>refrigerator</p>, <p>washing machine</p>, <p>microwave oven</p>, <p>fan</p>, <p>curtain</p>, <p>textiles</p>, <p>clothes</p>, <p>painting or poster</p>, <p>mirror</p>, <p>flower pot or vase</p>, <p>clock</p>, <p>book</p>, <p>tool</p>, <p>blackboard</p>, <p>tissue</p>, <p>screen or television</p>, <p>computer</p>, <p>printer</p>, <p>mobile phone</p>, <p>keyboard</p>, <p>other electronic product</p>, <p>fruit</p>, <p>food</p>, <p>instrument</p>, <p>train</p>? Please respond with the segmentation masks.",
+    "refseg": "Can you segment <p>the jumping boy on the bed</p> in this video? Please output the corresponding segmentation mask.",
+    "reaseg": "<p>What are the two kids playing on in this video?</p> Please output the corresponding segmentation mask.",
+    "gcgseg": "Can you provide a brief description of this video? Respond with interleaved segmentation masks for the corresponding phrases.",
+    "objseg": "Can you segment the <p><region></p> in this video? Please output the corresponding segmentation mask.",
+    "vgdseg": "Can you segment the video based on the following regions: <p><region></p>, <p><region></p>? Please output the segmentation mask.",
+}
+image_vprompt_masks = {
+    "chat": (None,),
+    "genseg": (None,),
+    "refseg": (None,),
+    "reaseg": (None,),
+    "gcgseg": (None,),
+    "intseg": (code_dir + "x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png",),
+    "vgdseg": (
         code_dir + "x2sam/configs/x2sam/samples/vpmasks/img_vpmask0.png",
         code_dir + "x2sam/configs/x2sam/samples/vpmasks/img_vpmask1.png",
     ),
-]
-video_vprompt_masks = [
-    (None,),
-    (None,),
-    (None,),
-    (None,),
-    (None,),
-    (code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png",),
-    (
+}
+video_vprompt_masks = {
+    "chat": (None,),
+    "genseg": (None,),
+    "refseg": (None,),
+    "reaseg": (None,),
+    "gcgseg": (None,),
+    "objseg": (code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png",),
+    "vgdseg": (
         code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask0.png",
         code_dir + "x2sam/configs/x2sam/samples/vpmasks/vid_vpmask1.png",
     ),
-]
-video_vprompt_indices = [None, None, None, None, None, 0, 0]
+}
+video_vprompt_indices = {
+    "chat": None,
+    "genseg": None,
+    "refseg": None,
+    "reaseg": None,
+    "gcgseg": None,
+    "objseg": 0,
+    "vgdseg": 0,
+}
+image_postprocess_fn = {
+    "chat": None,
+    "genseg": img_genseg_postprocess_fn,
+    "refseg": img_refseg_postprocess_fn,
+    "reaseg": img_reaseg_postprocess_fn,
+    "gcgseg": img_gcgseg_postprocess_fn,
+    "intseg": img_intseg_postprocess_fn,
+    "vgdseg": img_vgdseg_postprocess_fn,
+}
+video_postprocess_fn = {
+    "chat": None,
+    "genseg": vid_genseg_postprocess_fn,
+    "refseg": vid_refseg_postprocess_fn,
+    "reaseg": vid_reaseg_postprocess_fn,
+    "gcgseg": vid_gcgseg_postprocess_fn,
+    "objseg": vid_objseg_postprocess_fn,
+    "vgdseg": vid_vgdseg_postprocess_fn,
+}
 #######################################################################
 #            PART 2  Model & Tokenizer & Image Processor              #
 #######################################################################
-# TODO: add special tokens via import from x2sam.utils
-special_tokens = ["<SEG>", "<p>", "</p>"]
+special_tokens = ["<SEG>", "<p>", "</p>"]  # special tokens
 # use <image> instead of <|image_pad|>
 image_token = "<|vision_start|><image><|vision_end|>"
 video_token = "<|vision_start|><video><|vision_end|>"
-cond_type = "phrase"  # "phrase" "cls" "all"
+cond_type = "phrase"  # "phrase" or "cls" or "all"
 ignore_value = 255  # value for ignored mask
 ignore_label = -100  # label for ignored class
 background_label = -1  # label for background class
@@ -227,7 +257,10 @@ train_data_type = "all"  # ["image", "video", "all"]
 eval_data_type = "all"  # ["image", "video", "all"]
 train_tasks = ["chat", "genseg", "refseg", "reaseg", "gcgseg", "vgdseg", "objseg"]
 eval_tasks = ["genseg", "ovseg", "refseg", "reaseg", "gcgseg", "vgdseg", "objseg"]
+image_infer_tasks = ["chat", "genseg", "refseg", "reaseg", "gcgseg", "intseg", "vgdseg"]
+video_infer_tasks = ["chat", "genseg", "refseg", "reaseg", "gcgseg", "objseg", "vgdseg"]
 use_infer = True  # False for disable inference during training, True for enable inference during training
+use_eval = True  # False for disable evaluation during training, True for enable evaluation during training
 output_ids_with_output = True  # False for predict mode when inference, True for tensor mode when evaluation
 
 tokenizer = dict(
@@ -1369,6 +1402,14 @@ elif train_data_type == "all":
 else:
     raise ValueError(f"Invalid training type: {train_data_type}")
 
+generation_image_inputs = [generation_image_inputs[task] for task in image_infer_tasks]
+generation_video_inputs = [generation_video_inputs[task] for task in video_infer_tasks]
+image_vprompt_masks = [image_vprompt_masks[task] for task in image_infer_tasks]
+video_vprompt_masks = [video_vprompt_masks[task] for task in video_infer_tasks]
+video_vprompt_indices = [video_vprompt_indices[task] for task in video_infer_tasks]
+image_postprocess_fn = [image_postprocess_fn[task] for task in image_infer_tasks]
+video_postprocess_fn = [video_postprocess_fn[task] for task in video_infer_tasks]
+
 train_dataloader = dict(
     batch_size=batch_size,
     num_workers=dataloader_num_workers,
@@ -2451,7 +2492,7 @@ image_evaluators = {
         ),
         dict(
             type=ImgGenSegEvaluator,
-            data_name="img_genseg_coco_semantic_val",
+            data_name="img_genseg_coco_panoptic_semantic_val",
             distributed=True,
             support_loading=False,
         ),
@@ -2470,7 +2511,7 @@ image_evaluators = {
         ),
         dict(
             type=ImgOVSegEvaluator,
-            data_name="img_ovseg_ade20k_semantic_val",
+            data_name="img_ovseg_ade20k_panoptic_semantic_val",
             distributed=True,
             support_loading=False,
         ),
@@ -3733,21 +3774,38 @@ video_evaluators = {
     ],
 }
 
-val_datasets = []
-val_evaluators = []
 if eval_data_type == "image":
-    val_datasets = list(chain(*[image_val_datasets.get(task, []) for task in eval_tasks]))
-    val_evaluators = list(chain(*[image_evaluators.get(task, []) for task in eval_tasks]))
+    val_datasets = list(chain(*[image_val_datasets.get(task, []) for task in eval_tasks])) if use_eval else None
+    val_evaluator = list(chain(*[image_evaluators.get(task, []) for task in eval_tasks])) if use_eval else None
 elif eval_data_type == "video":
-    val_datasets = list(chain(*[video_val_datasets.get(task, []) for task in eval_tasks]))
-    val_evaluators = list(chain(*[video_evaluators.get(task, []) for task in eval_tasks]))
+    val_datasets = list(chain(*[video_val_datasets.get(task, []) for task in eval_tasks])) if use_eval else None
+    val_evaluator = list(chain(*[video_evaluators.get(task, []) for task in eval_tasks])) if use_eval else None
 else:
-    val_datasets = list(chain(*[image_val_datasets.get(task, []) for task in eval_tasks])) + list(
-        chain(*[video_val_datasets.get(task, []) for task in eval_tasks])
+    val_datasets = (
+        list(chain(*[image_val_datasets.get(task, []) for task in eval_tasks]))
+        + list(chain(*[video_val_datasets.get(task, []) for task in eval_tasks]))
+        if use_eval
+        else None
     )
-    val_evaluators = list(chain(*[image_evaluators.get(task, []) for task in eval_tasks])) + list(
-        chain(*[video_evaluators.get(task, []) for task in eval_tasks])
+    val_evaluator = (
+        list(chain(*[image_evaluators.get(task, []) for task in eval_tasks]))
+        + list(chain(*[video_evaluators.get(task, []) for task in eval_tasks]))
+        if use_eval
+        else None
     )
+
+val_dataloader = (
+    dict(
+        batch_size=1,
+        num_workers=dataloader_num_workers,
+        pin_memory=True,
+        dataset=dict(type=ConcatDataset, datasets=val_datasets, max_sample=val_sample),
+        sampler=dict(type=DefaultSampler, shuffle=False),
+        collate_fn=dict(type=x2sam_collate_fn),
+    )
+    if use_eval
+    else None
+)
 
 vis_datasets = deepcopy(val_datasets)
 for dataset in vis_datasets:
@@ -3815,7 +3873,8 @@ param_scheduler = [
 ]
 
 # train, val, test setting
-train_cfg = dict(type=TrainLoop, max_epochs=max_epochs)
+train_cfg = dict(type=TrainLoop, max_epochs=max_epochs, val_begin=val_interval, val_interval=val_interval)
+val_cfg = dict(type=ValLoop, dataloader=val_dataloader, evaluator=val_evaluator) if use_eval else None
 
 #######################################################################
 #                           PART 5  Runtime                           #
@@ -3838,7 +3897,7 @@ custom_hooks = [
     *(
         [
             dict(
-                type=EvaluateChatHook,
+                type=GenerationChatHook,
                 tokenizer=tokenizer,
                 special_tokens=special_tokens,
                 image_processor=image_processor,
@@ -3847,39 +3906,15 @@ custom_hooks = [
                 video_token=video_token,
                 expand2square=expand2square,
                 use_placeholder=use_placeholder,
-                image_postprocess_fns=(
-                    [
-                        None,
-                        img_genseg_postprocess_fn,
-                        img_refseg_postprocess_fn,
-                        img_reaseg_postprocess_fn,
-                        img_gcgseg_postprocess_fn,
-                        img_intseg_postprocess_fn,
-                        img_vgdseg_postprocess_fn,
-                    ]
-                    if eval_data_type in ["image", "all"]
-                    else None
-                ),
-                video_postprocess_fns=(
-                    [
-                        None,
-                        vid_genseg_postprocess_fn,
-                        vid_refseg_postprocess_fn,
-                        vid_reaseg_postprocess_fn,
-                        vid_gcgseg_postprocess_fn,
-                        vid_objseg_postprocess_fn,
-                        vid_vgdseg_postprocess_fn,
-                    ]
-                    if eval_data_type in ["video", "all"]
-                    else None
-                ),
+                image_postprocess_fns=(image_postprocess_fn if eval_data_type in ["image", "all"] else None),
+                video_postprocess_fns=(video_postprocess_fn if eval_data_type in ["video", "all"] else None),
                 extra_image_processor=extra_image_processor,
                 visualizer=visualizer,
-                every_n_iters=evaluation_freq,
-                image_inputs=image_inputs if eval_data_type in ["image", "all"] else None,
-                video_inputs=video_inputs if eval_data_type in ["video", "all"] else None,
-                evaluation_images=evaluation_images if eval_data_type in ["image", "all"] else None,
-                evaluation_videos=evaluation_videos if eval_data_type in ["video", "all"] else None,
+                every_n_iters=inf_interval,
+                image_inputs=generation_image_inputs if eval_data_type in ["image", "all"] else None,
+                video_inputs=generation_video_inputs if eval_data_type in ["video", "all"] else None,
+                generation_images=generation_images if eval_data_type in ["image", "all"] else None,
+                generation_videos=generation_videos if eval_data_type in ["video", "all"] else None,
                 image_vprompt_masks=image_vprompt_masks if eval_data_type in ["image", "all"] else None,
                 video_vprompt_masks=video_vprompt_masks if eval_data_type in ["video", "all"] else None,
                 video_vprompt_indices=video_vprompt_indices if eval_data_type in ["video", "all"] else None,
@@ -3898,7 +3933,7 @@ default_hooks = dict(
     # record the time of every iteration.
     timer=dict(type=IterTimerHook),
     # print log every 10 iterations.
-    logger=dict(type=LoggerHook, log_metric_by_epoch=False, interval=logging_interval),
+    logger=dict(type=LoggerHook, log_metric_by_epoch=False, interval=log_interval),
     # enable the parameter scheduler.
     param_scheduler=dict(type=ParamSchedulerHook),
     # save checkpoint per `save_steps`.

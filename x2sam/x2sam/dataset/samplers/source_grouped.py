@@ -50,7 +50,7 @@ def get_source_grouped_indices(
         random.shuffle(indices)
         # Sort indices within each source by their sub_lengths
         source_sub_lengths = sub_lengths[source]
-        if source_sub_lengths is not None:
+        if isinstance(source_sub_lengths, (list, tuple)):
             assert len(source_sub_lengths) == length, f"Sub length {len(source_sub_lengths)} != length {length}"
             # Create (index, length) pairs and sort by length
             indexed_lengths = [(idx, source_sub_lengths[idx - start_inds[source]]) for idx in indices]
@@ -129,7 +129,7 @@ class SourceGroupedSampler(Sampler):
         accumulative_counts: int = 1,
         modality_accumulative_counts: Optional[Dict[str, int]] = None,
         length_property="source_length",
-        sub_length_property="source_length",
+        sub_length_property=None,
         mega_batch_mult: Optional[int] = None,
         seed: Optional[int] = None,
         round_up: bool = True,
@@ -158,7 +158,9 @@ class SourceGroupedSampler(Sampler):
             source_accumulative_counts = []
             for sub_dataset in self.dataset.datasets:
                 lengths.append(getattr(sub_dataset, length_property))
-                sub_lengths.append(getattr(sub_dataset, sub_length_property, None))
+                sub_lengths.append(
+                    getattr(sub_dataset, sub_length_property, None) if sub_length_property is not None else None
+                )
                 batch_mults.append(getattr(sub_dataset, "batch_mult", 1))
                 source_modality = self._get_source_modality(getattr(sub_dataset, "task_name", None))
                 source_accumulative_counts.append(
@@ -170,7 +172,9 @@ class SourceGroupedSampler(Sampler):
             self.source_accumulative_counts = source_accumulative_counts
         else:
             self.lengths = [getattr(self.dataset, length_property)]
-            self.sub_lengths = [getattr(self.dataset, sub_length_property, None)]
+            self.sub_lengths = [
+                getattr(self.dataset, sub_length_property, None) if sub_length_property is not None else None
+            ]
             self.batch_mults = [getattr(self.dataset, "batch_mult", 1)]
             source_modality = self._get_source_modality(getattr(self.dataset, "task_name", None))
             self.source_accumulative_counts = [

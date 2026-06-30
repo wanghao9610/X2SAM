@@ -248,7 +248,7 @@ class ImgOVSegDataset(ImgGenSegDataset):
 
         if self.data_mode == "eval" and "instance" in self.data_name:
             base_temp = tempfile.gettempdir()
-            cache_dir = osp.join(base_temp, "x2sam_cache")
+            cache_dir = osp.join(base_temp, "dataset_cache")
             os.makedirs(cache_dir, exist_ok=True)
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
             temp_file = osp.join(cache_dir, f"{self.data_name}.json")

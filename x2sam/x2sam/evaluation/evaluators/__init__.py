@@ -1,3 +1,4 @@
+from .base_evaluator import BaseEvaluator
 from .img_gcgseg_evaluator import ImgGCGSegEvaluator
 from .img_genseg_evaluator import ImgGenSegEvaluator
 from .img_intseg_evaluator import ImgIntSegEvaluator
@@ -14,6 +15,7 @@ from .vid_refseg_evaluator import VidRefSegEvaluator
 from .vid_vgdseg_evaluator import VidVGDSegEvaluator
 
 __all__ = [
+    "BaseEvaluator",
     "ImgGenSegEvaluator",
     "ImgRefSegEvaluator",
     "ImgReaSegEvaluator",

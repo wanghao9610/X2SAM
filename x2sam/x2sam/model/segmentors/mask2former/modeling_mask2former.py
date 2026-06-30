@@ -1401,8 +1401,6 @@ class Mask2FormerPixelDecoderEncoderMultiscaleDeformableAttention(nn.Module):
         self.output_proj = nn.Linear(embed_dim, embed_dim)
 
         self.n_points_list = [self.n_points for _ in range(self.n_levels)]
-        n_points_scale = [1 / n for n in self.n_points_list for _ in range(n)]
-        self.register_buffer("n_points_scale", torch.tensor(n_points_scale))
         attn_implementation = "pytorch_v1" if MSDeformAttnFunction is None else attn_implementation
         self.attn_implementation = attn_implementation
         self.attn_method = attn_method

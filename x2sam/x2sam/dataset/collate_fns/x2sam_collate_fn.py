@@ -63,6 +63,7 @@ def x2sam_collate_fn(
         image_infos = []
         video_infos = []
         task_names = []
+        data_names = []
     if has_cond_id:
         cond_ids = []
     if has_seg_id:
@@ -108,6 +109,7 @@ def x2sam_collate_fn(
             image_infos.append(example.get("image_info", None))
             video_infos.append(example.get("video_info", None))
             task_names.append(example.get("task_name", None))
+            data_names.append(example.get("data_name", None))
         if has_cond_id:
             cond_ids.append(torch.LongTensor(example["cond_ids"]))
         if has_seg_id:
@@ -229,6 +231,7 @@ def x2sam_collate_fn(
         metainfo["image_infos"] = image_infos
         metainfo["video_infos"] = video_infos
         metainfo["task_names"] = task_names
+        metainfo["data_names"] = data_names
 
     if has_cond_id:
         data_dict["cond_ids"] = cond_ids

@@ -93,19 +93,3 @@ class ModelInfoHook(Hook):
             model = runner.model
 
         self.log(runner, model)
-
-    def before_val(self, runner) -> None:
-        if is_model_wrapper(runner.model):
-            model = runner.model.module
-        else:
-            model = runner.model
-
-        self.log(runner, model)
-
-    def before_test(self, runner) -> None:
-        if is_model_wrapper(runner.model):
-            model = runner.model.module
-        else:
-            model = runner.model
-
-        self.log(runner, model)

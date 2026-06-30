@@ -4,11 +4,11 @@
 #######################################################################
 #                          PART 1  Environment                         #
 #######################################################################
-# Logformat
+## Logformat
 log_time=$(date "+%Y-%m-%d %H:%M:%S")
 log_format="[$log_time] [INFO] [$0]"
 
-# CUDA
+## CUDA
 echo -e "$log_format Nvidia-smi : \n$(nvidia-smi)"
 echo -e "$log_format Cuda : \n$(nvcc -V)"
 echo -e "$log_format Conda : \n$(which python)"
@@ -16,11 +16,10 @@ echo -e "$log_format Conda : \n$(which python)"
 #######################################################################
 #                          PART 2  Project Config                      #
 #######################################################################
-# Directory
+## Directory
 PROJ_HOME=${PROJ_HOME:-$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")}
 code_name="x2sam"
 code_dir="$PROJ_HOME/$code_name"
-wksp_dir="/workdir/code"
 data_dir="$PROJ_HOME/datas"
 init_dir="$PROJ_HOME/inits"
 work_dir="$PROJ_HOME/wkdrs"
@@ -44,27 +43,39 @@ export TORCH_NCCL_ASYNC_ERROR_HANDLING=1
 export TOKENIZERS_PARALLELISM=false
 export NCCL_SOCKET_IFNAME=eth0
 
-# export DEBUG_MODE=true  # enable for debugging
-# export DEBUG_ITEM=16  # debug item index
+## Debug
+# export DEBUG_MODE=true
+# export DEBUG_ITEM=256
 # export CUDA_LAUNCH_BLOCKING=1
 # export NCCL_DEBUG=INFO
 
 export MKL_NUM_THREADS=2
 export OMP_NUM_THREADS=2
 
-# Model Config
+## Model Config
 deepspeed_config="x2sam/configs/deepspeed/deepspeed_zero2.json"
 config_file="${1:-x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py}"
 read -r -a modes <<< "${2:-train segeval vlmeval visualize}"
-prefix="${3:-}"
-suffix="${4:-}"
+shift 2
+
+# Optional: [prefix] [suffix] [-- extra...]; skip slot with "-", e.g. ["-" "debug"] or ["prefix" "suffix"] or leave empty
+prefix=""; suffix=""
+for n in 1 2; do
+    [[ $# -eq 0 || "$1" == -- || ( "$1" == -* && "$1" != "-" ) ]] && break
+    [[ "$1" == "-" ]] && { shift; continue; }
+    [[ "$n" == 1 ]] && prefix="$1" || suffix="${1#_}"
+    shift
+done
+[[ "${1:-}" == -- ]] && shift
+
+extra=("$@")
 stage="$(basename "$(dirname "$config_file")")"
-vlm_name="x2sam-qwen3vl-4b-sam2-hiera-large-lora"
 model_name="$(basename "$config_file" .py)"
-work_dir="$work_dir/$stage/${prefix:+$prefix/}$model_name$suffix"
+vlm_name="$(sed -E 's/_e[0-9]+_gpu[0-9]+//; s/_/-/g' <<<"$model_name")"
+work_dir="$work_dir/$stage/${prefix:+$prefix/}$model_name${suffix:+_$suffix}"
 lscp_file="$work_dir/last_checkpoint"
 
-# Distributed Training Config
+## Distributed Training Config
 num_nodes=${NUM_NODES:-1}
 node_rank=${NODE_RANK:-0}
 gpu_per_node=${GPU_PER_NODE:-$(nvidia-smi -L | wc -l)}
@@ -75,18 +86,18 @@ master_port=${MASTER_PORT:-29510}
 #                          PART 3  Run Config                          #
 # #######################################################################
 
-# Retry Config (for node failure recovery)
-# max_retries: max number of retries before giving up
-# retry_wait:  seconds to wait before retrying (allow crashed node to restart)
-# retry_node_delay: extra seconds non-rank-0 nodes sleep per retry (let rank-0 reconnect first)
+## Retry Config (for node failure recovery)
+## max_retries: max number of retries before giving up
+## retry_wait:  seconds to wait before retrying (allow crashed node to restart)
+## retry_node_delay: extra seconds non-rank-0 nodes sleep per retry (let rank-0 reconnect first)
 max_retries=100
 retry_wait=30
 retry_node_delay=30
 
-# run_with_retry <log_file> <cmd> [args...]
-#   Retries <cmd> up to $max_retries times on failure.
-#   Captures torchrun exit code correctly from the left side of the pipe via PIPESTATUS.
-#   Appends each attempt's output to <log_file> (rank-0 only); pass "" to skip logging.
+## run_with_retry <log_file> <cmd> [args...]
+##   Retries <cmd> up to $max_retries times on failure.
+##   Captures torchrun exit code correctly from the left side of the pipe via PIPESTATUS.
+##   Appends each attempt's output to <log_file> (rank-0 only); pass "" to skip logging.
 run_with_retry() {
     local log_file="$1"; shift
     local attempt=1
@@ -120,7 +131,7 @@ run_with_retry() {
     done
 }
 
-# Run
+## Run
 for mode in "${modes[@]}"
 do  
     echo -e "$log_format Mode: $mode."
@@ -134,8 +145,10 @@ do
         find "$work_dir/$code_name" -type d -exec chmod 775 {} +
     fi
     if [ -d "$work_dir" ]; then
-        code_dir="$work_dir/$code_name"
         cp "$(realpath "$0")" "$work_dir"
+        if [ -d "$work_dir/$code_name" ]; then
+            code_dir="$work_dir/$code_name"
+        fi
     fi
     cd "$code_dir"
     export CODE_DIR="$code_dir/"
@@ -144,7 +157,7 @@ do
     [ -f "$config_file" ] || config_file="${config_file#$code_name/}"
     [ -f "$config_file" ] || { echo -e "$log_format Config file not found: $config_file" >&2; exit 1; }
     
-    # mode: train
+    ## mode: train
     trained_flag=0
     if [ "$mode" = "train" ]; then
         run_with_retry "$work_dir/train-${time}.log" \
@@ -156,12 +169,14 @@ do
             --resume auto \
             --launcher pytorch \
             --deepspeed "$deepspeed_config" \
-            --seed 1024
+            --seed 1024 \
+            "${extra[@]}"
     fi
     if [ -f "$lscp_file" ] || [[ ! " ${modes[*]} " =~ " train " ]]; then
         trained_flag=1
     fi
-    # mode: eval
+    
+    ## mode: segeval
     if [ "$mode" = "segeval" ]; then
         if [ "$node_rank" = 0 ] && [ -f "$work_dir/last_checkpoint" ]; then
             echo -e "$log_format Converting $model_name to PT format."
@@ -179,11 +194,12 @@ do
             "$config_file" \
             --launcher pytorch \
             --work-dir "$work_dir" \
-            --seed 0 \
             --pth_model latest \
-            --rerun # whether to rerun the inference when evaluating.
+            --seed 0 \
+            "${extra[@]}"
     fi
-    # mode: vlmeval
+
+    ## mode: vlmeval
     if [ "$mode" = "vlmeval" ] && [ "$trained_flag" = 1 ]; then
         if [ "$node_rank" = 0 ] && [ ! -d "$work_dir/pytorch_model" ]; then
             echo -e "$log_format Converting $model_name to HF format."
@@ -205,19 +221,24 @@ do
                 "$code_dir/x2sam/evaluation/vlmeval/run.py" \
                 --data MME MMBench_DEV_EN SEEDBench_IMG POPE GQA_TestDev_Balanced AI2D_TEST ScienceQA_VAL \
                 --model "$vlm_name" \
-                --work-dir "$work_dir/vlmeval_image_results"
+                --work-dir "$work_dir/vlmeval_image_results" \
+                "${extra[@]}"
 
-            run_with_retry "$work_dir/vlmeval_video-${time}.log" \
-                env PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-                torchrun --nnodes="$num_nodes" --node_rank="$node_rank" --master_addr="$master_addr" --master_port="$master_port" --nproc_per_node="$gpu_per_node" \
-                "$code_dir/x2sam/evaluation/vlmeval/run.py" \
-                --data Video-MME_64frame MVBench_64frame MLVU_64frame LongVideoBench_64frame \
-                --verbose \
-                --model "$vlm_name" \
-                --work-dir "$work_dir/vlmeval_video_results"
+            if [[ "$model_name" == *x2sam* ]]; then
+                run_with_retry "$work_dir/vlmeval_video-${time}.log" \
+                    env PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+                    torchrun --nnodes="$num_nodes" --node_rank="$node_rank" --master_addr="$master_addr" --master_port="$master_port" --nproc_per_node="$gpu_per_node" \
+                    "$code_dir/x2sam/evaluation/vlmeval/run.py" \
+                    --data Video-MME_64frame MVBench_64frame MLVU_64frame LongVideoBench_64frame \
+                    --verbose \
+                    --model "$vlm_name" \
+                    --work-dir "$work_dir/vlmeval_video_results" \
+                    "${extra[@]}"
+            fi
         fi
     fi
-    # mode: visualize
+
+    ## mode: visualize
     if [ "$mode" = "visualize" ]; then
         echo -e "$log_format Visualizing $model_name."
         PYTHONPATH="$(realpath "$code_dir")":$PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
@@ -226,6 +247,10 @@ do
             --work-dir "$work_dir" \
             --pth_model latest \
             --concat-aux-img \
-            --max-samples 400 | { [ "$node_rank" = "0" ] && tee "$work_dir/visualize-${time}.log" || cat; }
+            --max-samples 200 \
+            --seed 0 \
+            "${extra[@]}" | { [ "$node_rank" = "0" ] && tee "$work_dir/visualize-${time}.log" || cat; }
     fi
+
+    rm -rf /tmp/dataset_cache
 done

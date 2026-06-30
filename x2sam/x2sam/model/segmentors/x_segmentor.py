@@ -55,7 +55,6 @@ class ClassPredictor(nn.Module):
         elif self.head_cls_type == "learn":
             # scale with learnable logit_scale
             self.logit_scale = nn.Parameter(torch.tensor([math.log(1 / 0.07)]), requires_grad=True)
-            self.cls_bias = nn.Parameter(torch.tensor([bias_value]), requires_grad=True)
         elif self.head_cls_type == "auto":
             self.cls_bias = nn.Parameter(torch.tensor([bias_value]), requires_grad=True)
         else:
@@ -124,8 +123,13 @@ class XSegmentor(PreTrainedModel):
             self.encoder = encoder.vision_encoder
             self.positional_encoding = None  # TODO
             self.prompt_encoder = encoder.prompt_encoder if use_prompt_encoder else None
+
             self.pixel_decoder = None
-            self.decoder = encoder.mask_decoder
+            self.decoder = encoder.mask_decoder if use_decoder else None
+            
+            self.memory_encoder = None
+            self.memory_attention = None
+            self.no_memory_embedding = None
         # Sam encoder + Mask2Former decoder
         elif isinstance(encoder, SamModel) and isinstance(decoder, Mask2FormerModel):
             self.enc_config = encoder.config.vision_config
@@ -136,8 +140,13 @@ class XSegmentor(PreTrainedModel):
             self.encoder = encoder.vision_encoder
             self.positional_encoding = None  # TODO
             self.prompt_encoder = encoder.prompt_encoder if use_prompt_encoder else None
-            self.pixel_decoder = decoder.pixel_level_module.decoder
-            self.decoder = decoder.transformer_module
+            
+            self.pixel_decoder = decoder.pixel_level_module.decoder if use_decoder else None
+            self.decoder = decoder.transformer_module if use_decoder else None
+            
+            self.memory_encoder = None
+            self.memory_attention = None
+            self.no_memory_embedding = None
         # Mask2Former encoder + Mask2Former decoder
         elif isinstance(encoder, Mask2FormerModel) and decoder is None:
             self.enc_config = encoder.config
@@ -148,8 +157,13 @@ class XSegmentor(PreTrainedModel):
             self.encoder = encoder.pixel_level_module.encoder
             self.positional_encoding = None
             self.prompt_encoder = None
-            self.pixel_decoder = encoder.pixel_level_module.decoder
-            self.decoder = encoder.transformer_module
+
+            self.pixel_decoder = encoder.pixel_level_module.decoder if use_decoder else None
+            self.decoder = encoder.transformer_module if use_decoder else None
+            
+            self.memory_encoder = None
+            self.memory_attention = None
+            self.no_memory_embedding = None
         # Mask2Former encoder + Sam decoder
         elif isinstance(encoder, Mask2FormerModel) and isinstance(decoder, SamModel):
             # TODO: check if this is correct
@@ -160,8 +174,13 @@ class XSegmentor(PreTrainedModel):
             self.encoder = encoder.pixel_level_module
             self.positional_encoding = None
             self.prompt_encoder = None
-            self.pixel_decoder = encoder.pixel_level_module.decoder
-            self.decoder = decoder.mask_decoder
+
+            self.pixel_decoder = encoder.pixel_level_module.decoder if use_decoder else None
+            self.decoder = decoder.mask_decoder if use_decoder else None
+            
+            self.memory_encoder = None
+            self.memory_attention = None
+            self.no_memory_embedding = None
         # Sam2 encoder + Sam2 decoder
         elif isinstance(encoder, Sam2Model) and decoder is None:
             self.enc_config = encoder.config.vision_config
@@ -173,6 +192,7 @@ class XSegmentor(PreTrainedModel):
             self.positional_encoding = encoder.vision_encoder.neck.position_encoding
 
             self.prompt_encoder = encoder.prompt_encoder if use_prompt_encoder else None
+            self.decoder = encoder.mask_decoder if use_decoder else None
             self.pixel_decoder = None
 
             self.num_maskmem = encoder.config.num_maskmem
@@ -180,8 +200,6 @@ class XSegmentor(PreTrainedModel):
             self.memory_encoder = encoder.memory_encoder if use_memory else None
             self.memory_attention = encoder.memory_attention if use_memory else None
             self.no_memory_embedding = encoder.no_memory_embedding if use_memory else None
-
-            self.decoder = encoder.mask_decoder
         # Sam2 encoder + Mask2Former decoder
         elif isinstance(encoder, Sam2Model) and isinstance(decoder, Mask2FormerModel):
             self.enc_config = encoder.config.vision_config
@@ -194,14 +212,13 @@ class XSegmentor(PreTrainedModel):
 
             self.prompt_encoder = encoder.prompt_encoder if use_prompt_encoder else None
             self.pixel_decoder = decoder.pixel_level_module.decoder
+            self.decoder = decoder.transformer_module if use_decoder else None
 
             self.num_maskmem = encoder.config.num_maskmem
             self.maskmem_dim = encoder.config.memory_encoder_output_channels
             self.memory_encoder = encoder.memory_encoder if use_memory else None
             self.memory_attention = encoder.memory_attention if use_memory else None
             self.no_memory_embedding = encoder.no_memory_embedding if use_memory else None
-
-            self.decoder = decoder.transformer_module
         else:
             raise ValueError(f"Unsupported encoder and decoder type: {type(encoder)} and {type(decoder)}")
 
@@ -710,8 +727,10 @@ class XSegmentor(PreTrainedModel):
                     return_dict=return_dict,
                 )
                 # TODO: multi-scale image_embeds
-                image_embeds = [encoder_outputs.last_hidden_state] * 4
+                image_embeds = [encoder_outputs.last_hidden_state] * self.dec_config.num_feature_levels
 
+            if isinstance(image_embeds, (list, tuple)) and image_embeds[0].ndim == 5:
+                image_embeds = tuple(image_embed[0] for image_embed in image_embeds)
             pixel_decoder_outputs = self.pixel_decoder(
                 image_embeds,
                 output_attentions=output_attentions,
@@ -726,6 +745,17 @@ class XSegmentor(PreTrainedModel):
                 cond_lens=cond_lens if self.use_repeat_cond else None,
                 output_attentions=output_attentions,
             )
+            intermediate_hidden_states = (
+                decoder_outputs.intermediate_hidden_states
+                if return_dict
+                else decoder_outputs[0]
+            )
+            masks_queries_logits = (
+                decoder_outputs.masks_queries_logits if return_dict else decoder_outputs[1]
+            )
+            last_hidden_state = decoder_outputs.last_hidden_state if return_dict else decoder_outputs[2]
+            hidden_states = decoder_outputs.hidden_states if return_dict else decoder_outputs[3]
+            attentions = decoder_outputs.attentions if return_dict else decoder_outputs[4]
         # mask2former_enc(swin) + mask2former_dec
         elif isinstance(self.encoder, SwinBackbone) and isinstance(self.decoder, Mask2FormerTransformerModule):
             if image_embeds is None:
@@ -736,6 +766,8 @@ class XSegmentor(PreTrainedModel):
                     return_dict=return_dict,
                 )
                 image_embeds = encoder_outputs.feature_maps
+            if isinstance(image_embeds, (list, tuple)) and image_embeds[0].ndim == 5:
+                image_embeds = tuple(image_embed[0] for image_embed in image_embeds)
             pixel_decoder_outputs = self.pixel_decoder(
                 image_embeds,
                 output_attentions=output_attentions,
@@ -750,6 +782,17 @@ class XSegmentor(PreTrainedModel):
                 cond_lens=cond_lens if self.use_repeat_cond else None,
                 output_attentions=output_attentions,
             )
+            intermediate_hidden_states = (
+                decoder_outputs.intermediate_hidden_states
+                if return_dict
+                else decoder_outputs[0]
+            )
+            masks_queries_logits = (
+                decoder_outputs.masks_queries_logits if return_dict else decoder_outputs[1]
+            )
+            last_hidden_state = decoder_outputs.last_hidden_state if return_dict else decoder_outputs[2]
+            hidden_states = decoder_outputs.hidden_states if return_dict else decoder_outputs[3]
+            attentions = decoder_outputs.attentions if return_dict else decoder_outputs[4]
         # sam2_enc + sam2_dec
         elif isinstance(self.encoder, Sam2VisionModel) and isinstance(self.decoder, Sam2MaskDecoder):
             if image_embeds is None:

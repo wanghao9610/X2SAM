@@ -8,12 +8,14 @@ from torch.optim import AdamW
 from transformers import AutoModelForCausalLM, AutoTokenizer, SiglipImageProcessor, SiglipVisionModel
 
 from x2sam.dataset import ImgChatDataset
-from x2sam.dataset.collate_fns import x2sam_collate_fn
+from x2sam.dataset.collate_fns import xsam_collate_fn
 from x2sam.dataset.map_fns import img_chat_map_fn, template_map_fn_factory
-from x2sam.dataset.processors import Sam2ImageProcessor
-from x2sam.engine.hooks import DatasetInfoHook, EvaluateChatHook, ModelInfoHook, PTCheckpointHook
+from x2sam.dataset.processors import SamImageProcessor
+from x2sam.engine.hooks import DatasetInfoHook, GenerationChatHook, ModelInfoHook, PTCheckpointHook
 from x2sam.engine.runner import TrainLoop
-from x2sam.model import X2SamModel
+from x2sam.model import XSamModel
+from x2sam.model.segmentors import XSegmentor
+from x2sam.model.segmentors.sam import SamModel
 from x2sam.model.utils import frame_transpose_temporal_process_fn, temporal_process_fn_factory
 from x2sam.utils.template import PROMPT_TEMPLATE
 
@@ -27,21 +29,21 @@ init_dir = getenv("INIT_DIR", "./inits/")
 work_dir = getenv("WORK_DIR", "./wkdrs/")
 
 # Model
-llm_name_or_path = init_dir + "Qwen3-4B-Instruct-2507"
+llm_name_or_path = init_dir + "Phi-3-mini-4k-instruct"
 vision_encoder_name_or_path = init_dir + "siglip2-so400m-patch14-384"
-mask_encoder_name_or_path = init_dir + "sam2.1-hiera-large"
+mask_encoder_name_or_path = init_dir + "sam-vit-large"
 
 # Specify the pretrained pth
-s1_pretrained_pth = work_dir + "s1_train/x2sam_sam2.1_hiera_large_m2f_e1_gpu32/pytorch_model.bin"
+s1_pretrained_pth = work_dir + "s1_train/xsam_sam_vit_large_m2f_e36_gpu16/pytorch_model.bin"
 
 # Prompt
-prompt_template = PROMPT_TEMPLATE.qwen3_instruct
-max_length = int(262144 - (384 / 14) ** 2 - 1024)
+prompt_template = PROMPT_TEMPLATE.phi3_chat
+max_length = int(4096 - (384 / 14) ** 2 - 1024)
 
 # Scheduler & Optimizer
 batch_size = 16  # per_device
 accumulative_counts = 1
-dataloader_num_workers = 4
+dataloader_num_workers = 8
 max_epochs = 1
 optim_type = AdamW
 lr = 1e-3
@@ -53,14 +55,16 @@ warmup_ratio = 0.03
 # Save
 save_steps = 2000
 save_total_limit = 2  # Maximum checkpoints to keep (-1 means unlimited)
-# Logging
-logging_interval = 10
 
-# Evaluate the generation performance during the training
-evaluation_freq = 2000
+# Logging
+log_interval = 10
+
+# Inference
+inf_interval = 2000
+
 SYSTEM = ""
-evaluation_images = code_dir + "x2sam/configs/x2sam/images/img_chat.jpg"
-evaluation_inputs = ["Can you describe this image in detail? Please elaborate in your response."]
+generation_images = code_dir + "x2sam/configs/xsam/samples/sample.jpg"
+generation_inputs = ["Can you describe this image in detail? Please elaborate in your response."]
 
 #######################################################################
 #            PART 2  Model & Tokenizer & Image Processor              #
@@ -80,21 +84,25 @@ image_processor = dict(
 )
 
 extra_image_processor = dict(
-    type=Sam2ImageProcessor.from_pretrained,
+    type=SamImageProcessor.from_pretrained,
     pretrained_model_name_or_path=mask_encoder_name_or_path,
     trust_remote_code=True,
     ignore_index=0,
 )
 
 model = dict(
-    type=X2SamModel,
+    type=XSamModel,
     freeze_llm=True,
     freeze_vision_encoder=True,
     freeze_mask_encoder=True,
-    use_dual_encoder=False,
-    tokenizer=tokenizer,
+    use_dual_encoder=True,
     s1_pretrained_pth=s1_pretrained_pth,
+    tokenizer=tokenizer,
     temporal_process_fn=dict(type=temporal_process_fn_factory, fn=frame_transpose_temporal_process_fn),
+    connector_type="conv",
+    extra_select_layers=[6, 12, 18, 24],
+    connector_hidden_dim=512,
+    connector_scale_factor=[4, 2, 1, 0.5],
     llm=dict(
         type=AutoModelForCausalLM.from_pretrained,
         pretrained_model_name_or_path=llm_name_or_path,
@@ -106,6 +114,18 @@ model = dict(
         type=SiglipVisionModel.from_pretrained,
         pretrained_model_name_or_path=vision_encoder_name_or_path,
         torch_dtype=torch.bfloat16,
+    ),
+    segmentor=dict(
+        type=XSegmentor,
+        encoder=dict(
+            type=SamModel.from_pretrained,
+            pretrained_model_name_or_path=mask_encoder_name_or_path,
+            trust_remote_code=True,
+            torch_dtype=torch.bfloat16,
+            attn_implementation="eager",
+        ),
+        torch_dtype=torch.bfloat16,
+        use_decoder=False,
     ),
 )
 
@@ -135,7 +155,7 @@ train_dataloader = dict(
     pin_memory=True,
     dataset=img_chat_llava_dataset,
     sampler=dict(type=DefaultSampler, shuffle=True),
-    collate_fn=dict(type=x2sam_collate_fn),
+    collate_fn=dict(type=xsam_collate_fn),
 )
 
 #######################################################################
@@ -187,13 +207,13 @@ custom_hooks = [
     ),
     dict(type=DatasetInfoHook, tokenizer=tokenizer),
     dict(
-        type=EvaluateChatHook,
+        type=GenerationChatHook,
         tokenizer=tokenizer,
         image_processor=image_processor,
         extra_image_processor=extra_image_processor,
-        every_n_iters=evaluation_freq,
-        image_inputs=evaluation_inputs,
-        evaluation_images=evaluation_images,
+        every_n_iters=inf_interval,
+        image_inputs=generation_inputs,
+        generation_images=generation_images,
         system=SYSTEM,
         prompt_template=prompt_template,
     ),
@@ -205,7 +225,7 @@ default_hooks = dict(
     # record the time of every iteration.
     timer=dict(type=IterTimerHook),
     # print log every 10 iterations.
-    logger=dict(type=LoggerHook, log_metric_by_epoch=False, interval=logging_interval),
+    logger=dict(type=LoggerHook, log_metric_by_epoch=False, interval=log_interval),
     # enable the parameter scheduler.
     param_scheduler=dict(type=ParamSchedulerHook),
     # save checkpoint per `save_steps`.

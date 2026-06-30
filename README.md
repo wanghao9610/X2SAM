@@ -37,6 +37,7 @@ We strongly recommend that everyone uses **English** to communicate in issues. T
 
 ## :boom: Updates
 
+- **`2026-06-30`**: 🔥 X-SAM is now supported in X2SAM! Training configs are available for [X-SAM-Phi3](x2sam/x2sam/configs/xsam/s3_train/xsam_phi3_mini_4k_instruct_siglip2_so400m_p14_384_sam_vit_large_m2f_e1_gpu16.py) and [X-SAM-Qwen3VL](x2sam/x2sam/configs/xsam/s3_train/xsam_qwen3_vl_4b_instruct_sam_vit_large_m2f_e1_gpu16_lora.py).
 - **`2026-06-18`**: 🎉🎉🎉 Congratulations! 🎉🎉🎉 X2SAM has been accepted by ECCV 2026!
 - **`2026-04-28`**: ✨ X2SAM is now fully open-sourced! All training, evaluation, visualization, and demo code has been released. Head over to the [**Quickstart**](#checkered_flag-quickstart) section to get started.
 - **`2026-04-27`**: 👏 The X2SAM technical report is now available! Check it out [**Here**](https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf) for comprehensive technical details.
@@ -162,6 +163,13 @@ pip install -r requirements.txt
 # 4) Compile Deformable-Attention
 cd "$PROJ_HOME/x2sam/x2sam/model/ops"
 bash make.sh
+
+# 5) Setup .env (machine-local paths for tooling; .env is gitignored)
+cd "$PROJ_HOME"
+cp -n .env.example .env
+# CONDA_HOME  — conda installation root
+# PYTHON_HOME — active env root (x2sam); basename is the env name
+sed -i "s|YOUR_CONDA_HOME|$(conda info --base)|; s|YOUR_PYTHON_HOME|${CONDA_PREFIX}|" .env
 ```
 
 #### Optional: set CUDA_HOME
@@ -219,7 +227,8 @@ NUM_NODES=4 NODE_RANK=0 GPU_PER_NODE=1 MASTER_ADDR=YOUR_MASTER_ADDR MASTER_PORT=
 cd "$PROJ_HOME"
 bash runs/gpu_run.sh \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
-  "segeval"
+  "segeval" \
+  --cfg-options model.s1_pretrained_pth=None
 ```
 
 #### Image and Video Chat Benchmarks
@@ -237,7 +246,8 @@ bash runs/gpu_run.sh \
 cd "$PROJ_HOME"
 bash runs/gpu_run.sh \
   x2sam/x2sam/configs/x2sam/s3_train/x2sam_qwen3_vl_4b_sam2.1_hiera_large_m2f_e1_gpu32_lora.py \
-  "visualize"
+  "visualize" \
+  --cfg-options model.s1_pretrained_pth=None
 ```
 
 ### 8. Tools

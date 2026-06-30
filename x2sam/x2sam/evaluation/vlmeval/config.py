@@ -4,38 +4,40 @@ from os import getenv
 import vlmeval.config as vlmeval_config
 
 from .x2sam_chat import X2SamChat
+from .xsam_chat import XSamChat
 
 init_dir = getenv("INIT_DIR", "./inits/")
 
-x2sam_series = {
-    "llava-phi3-siglip2-ft": partial(
-        X2SamChat,
-        x2sam_path=init_dir + "llava-phi3-siglip2-ft",
-        vision_encoder_path=init_dir + "siglip2-so400m-patch14-384",
+xsam_series = {
+    "xsam-phi3-mini-4k-instruct-siglip2-so400m-p14-384-sam-large-m2f": partial(
+        XSamChat,
+        xsam_path=init_dir + "xsam-phi3-mini-4k-instruct-siglip2-so400m-p14-384-sam-large-m2f",
         visual_select_layer=-2,
         visual_select_indx=0,
         prompt_template="phi3_chat",
+        expand2square=False,
+        use_placeholder=False,
+        use_dual_encoder=True,
+        image_token="<image>",
     ),
-    "x2sam-phi3-siglip2-sam-l-mft": partial(
-        X2SamChat,
-        x2sam_path=init_dir + "x2sam-phi3-siglip2-sam-l-mft",
-        visual_select_layer=-2,
-        visual_select_indx=0,
-        prompt_template="phi3_chat",
-    ),
-    "x2sam-qwen3vl-4b-sam2-hiera-large-mft": partial(
-        X2SamChat,
-        x2sam_path=init_dir + "x2sam-qwen3vl-4b-sam2-hiera-large-mft",
+    "xsam-qwen3-vl-4b-sam-large-m2f-lora": partial(
+        XSamChat,
+        xsam_path=init_dir + "xsam-qwen3-vl-4b-sam-large-m2f-lora",
+        vlm_path=init_dir + "Qwen3-VL-4B-Instruct",
         visual_select_layer=-2,
         visual_select_indx=0,
         prompt_template="qwen3_instruct",
         expand2square=False,
+        use_placeholder=True,
         use_dual_encoder=False,
         image_token="<|vision_start|><image><|vision_end|>",
     ),
-    "x2sam-qwen3vl-4b-sam2-hiera-large-lora": partial(
+}
+
+x2sam_series = {
+    "x2sam-qwen3-vl-4b-sam2.1-hiera-large-m2f-lora": partial(
         X2SamChat,
-        x2sam_path=init_dir + "x2sam-qwen3vl-4b-sam2-hiera-large-lora",
+        x2sam_path=init_dir + "x2sam-qwen3-vl-4b-sam2.1-hiera-large-m2f-lora",
         vlm_path=init_dir + "Qwen3-VL-4B-Instruct",
         visual_select_layer=-2,
         visual_select_indx=0,
@@ -48,5 +50,6 @@ x2sam_series = {
     ),
 }
 
+vlmeval_config.supported_VLM.update(xsam_series)
 vlmeval_config.supported_VLM.update(x2sam_series)
 supported_VLM = vlmeval_config.supported_VLM

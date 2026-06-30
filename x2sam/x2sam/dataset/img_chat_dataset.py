@@ -142,6 +142,7 @@ class ImgChatDataset(ImgBaseDataset):
                 data_dict["image_size"] = extra_output["original_sizes"][0]
                 data_dict["scaled_size"] = extra_output["scaled_sizes"][0].tolist()
                 data_dict["task_name"] = self.task_name
+                data_dict["data_name"] = self.data_name
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=True))
         elif self.is_multimodal:
             if hasattr(self.image_processor, "crop_size"):
@@ -174,6 +175,7 @@ class ImgChatDataset(ImgBaseDataset):
                 data_dict["image_info"] = {"image_file": None}
                 data_dict["scaled_size"] = (crop_size["height"], crop_size["width"])
                 data_dict["task_name"] = self.task_name
+                data_dict["data_name"] = self.data_name
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=False))
         else:
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=True))

@@ -309,7 +309,7 @@ def visualize_dataset(
                 pbar.update(1)
 
             input_texts = list(dict((item[1], item) for item in input_texts).values())
-            with open(osp.join(output_dir, "input_texts.txt"), "w") as f:
+            with open(osp.join(output_dir, "input_texts.txt"), "w", encoding="utf-8") as f:
                 for input_text in input_texts:
                     f.write(f"{input_text[0]}: \n {input_text[1]}\n\n")
 

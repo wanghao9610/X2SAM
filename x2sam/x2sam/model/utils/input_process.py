@@ -46,12 +46,14 @@ def prepare_inputs_labels_for_mlm(
 
     if extra_pixel_values is not None and use_dual_encoder:
         extra_pixel_values = extra_temporal_process_fn(extra_pixel_values)
-        pixel_values = tuple(
-            [
-                torch.cat([pixel_value, extra_pixel_value], dim=0)
-                for pixel_value, extra_pixel_value in zip(pixel_values, extra_pixel_values)
-            ]
-        )
+        while pixel_values.dim() < extra_pixel_values.dim():
+            pixel_values = pixel_values.unsqueeze(0)
+        while extra_pixel_values.dim() < pixel_values.dim():
+            extra_pixel_values = extra_pixel_values.unsqueeze(0)
+        cat_dim = 1 if pixel_values.dim() == 3 else 2
+        pixel_values = torch.cat([pixel_values, extra_pixel_values], dim=cat_dim)
+        if pixel_values.dim() == 4 and pixel_values.shape[0] == 1:
+            pixel_values = pixel_values[0]
     if extra_pixel_values is not None and not use_dual_encoder:
         extra_pixel_values = extra_temporal_process_fn(extra_pixel_values)
         pixel_values = tuple(

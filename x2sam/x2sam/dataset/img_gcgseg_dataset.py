@@ -258,13 +258,13 @@ class ImgGCGSegDataset(ImgBaseDataset):
             json_data = json.load(f)
         self._set_metadata()
 
-        if "img_gcgseg_grandf" in self.data_name or "img_gcgseg_psg" in self.data_name:
+        if "grandf" in self.data_name or "psg" in self.data_name:
             rets = self._load_grandf_gcg(json_data)
-        elif "img_gcgseg_refcocog" in self.data_name:
+        elif "refcocog" in self.data_name:
             rets = self._load_refcocog_gcg(json_data)
-        elif "img_gcgseg_flickr" in self.data_name:
+        elif "flickr" in self.data_name:
             rets = self._load_flickr_gcg(json_data)
-        elif "img_gcgseg_val" in self.data_name or "img_gcgseg_test" in self.data_name:
+        elif "val" in self.data_name or "test" in self.data_name:
             rets = self._load_val_gcg(json_data)
         else:
             raise ValueError(f"Invalid dataset name for ImgGCGSegDataset: {self.data_name}")

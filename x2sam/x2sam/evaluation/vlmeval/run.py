@@ -172,7 +172,6 @@ You can launch the evaluation by setting either --data and --model or --config.
 
 
 def main():
-    logger = get_logger("RUN")
     rank, world_size = get_rank_and_world_size()
     args = parse_args()
     use_config, cfg = False, None

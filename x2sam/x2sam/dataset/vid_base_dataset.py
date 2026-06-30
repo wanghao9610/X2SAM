@@ -121,6 +121,7 @@ class VidBaseDataset(BaseDataset):
                 data_dict["scaled_size"] = extra_output["scaled_sizes"].tolist()
                 data_dict["mask_labels"] = extra_output.get("mask_labels", None)
                 data_dict["task_name"] = self.task_name
+                data_dict["data_name"] = self.data_name
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=True))
             data_dict.update(self._get_cond_ids(data_dict))
             data_dict.update(self._get_seg_ids(data_dict))
@@ -154,6 +155,7 @@ class VidBaseDataset(BaseDataset):
                 data_dict["mask_labels"] = torch.zeros(2, 0, crop_size["height"], crop_size["width"])
                 data_dict["class_labels"] = torch.zeros(2, 0)
                 data_dict["task_name"] = self.task_name
+                data_dict["data_name"] = self.data_name
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=False))
             data_dict.update(self._get_cond_ids(data_dict))
             data_dict.update(self._get_seg_ids(data_dict))

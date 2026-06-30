@@ -85,12 +85,12 @@ class DatasetInfoHook(Hook):
             tablefmt="outline",
             colalign=("center", "center", "center", "center", "right", "right"),
         )
-        runner.logger.info(f"Dataset summary:\n{data_table}")
+        runner.logger.info(f"Dataset summary of {mode}:\n{data_table}")
         for ds in dataset:
             if self.tokenizer is None:
                 continue
 
-            runner.logger.info(f"{mode} of {ds.data_name} example:")
+            runner.logger.info(f"Dataset sample of {ds.data_name}:")
             if "chosen_ids" in ds[0]:
                 _log(ds[0]["chosen_ids"], log_prefix="chosen: ")
                 _log(ds[0]["rejected_ids"], log_prefix="rejected: ")
@@ -106,11 +106,3 @@ class DatasetInfoHook(Hook):
         if do_eval:
             eval_dataset = runner.val_dataloader.dataset
             self.log(runner, eval_dataset, mode="eval")
-
-    def before_val(self, runner) -> None:
-        eval_dataset = runner.val_dataloader.dataset
-        self.log(runner, eval_dataset, mode="eval")
-
-    def before_test(self, runner) -> None:
-        test_dataset = runner.test_dataloader.dataset
-        self.log(runner, test_dataset, mode="test")

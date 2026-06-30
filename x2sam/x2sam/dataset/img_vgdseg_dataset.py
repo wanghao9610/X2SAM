@@ -297,7 +297,7 @@ class ImgVGDSegDataset(ImgBaseDataset):
 
         if self.data_mode == "eval":
             base_tmp = tempfile.gettempdir()
-            cache_dir = osp.join(base_tmp, "x2sam_cache")
+            cache_dir = osp.join(base_tmp, "dataset_cache")
             os.makedirs(cache_dir, exist_ok=True)
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
             tmp_file = osp.join(cache_dir, f"{self.data_name}.json")
@@ -401,6 +401,7 @@ class ImgVGDSegDataset(ImgBaseDataset):
                 data_dict["mask_labels"] = extra_output.get("mask_labels", None)
                 data_dict["vprompt_masks"] = extra_output.get("vprompt_masks", None)
                 data_dict["task_name"] = self.task_name
+                data_dict["data_name"] = self.data_name
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=True))
             data_dict.update(self._get_cond_ids(data_dict))
             data_dict.update(self._get_seg_ids(data_dict))
@@ -435,6 +436,7 @@ class ImgVGDSegDataset(ImgBaseDataset):
                 data_dict["vprompt_masks"] = torch.zeros(0, crop_size["height"], crop_size["width"])
                 data_dict["class_labels"] = torch.zeros(0)
                 data_dict["task_name"] = self.task_name
+                data_dict["data_name"] = self.data_name
             data_dict.update(self._get_input_ids(data_dict, use_vision_token=False))
             data_dict.update(self._get_cond_ids(data_dict))
             data_dict.update(self._get_seg_ids(data_dict))

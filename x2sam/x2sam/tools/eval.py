@@ -290,10 +290,10 @@ def main():
 
     # Evaluate on all datasets
     assert len(cfg.val_datasets) == len(
-        cfg.val_evaluators
-    ), f"len(cfg.val_datasets) = {len(cfg.val_datasets)}, len(cfg.val_evaluators) = {len(cfg.val_evaluators)}"
+        cfg.val_evaluator
+    ), f"len(cfg.val_datasets) = {len(cfg.val_datasets)}, len(cfg.val_evaluator) = {len(cfg.val_evaluator)}"
     print_log(f"Evaluating {len(cfg.val_datasets)} datasets...", logger="current")
-    for dataset_cfg, evaluator_cfg in zip(cfg.val_datasets, cfg.val_evaluators):
+    for dataset_cfg, evaluator_cfg in zip(cfg.val_datasets, cfg.val_evaluator):
         try:
             dataset = BUILDER.build(dataset_cfg)
             evaluator = BUILDER.build(evaluator_cfg)

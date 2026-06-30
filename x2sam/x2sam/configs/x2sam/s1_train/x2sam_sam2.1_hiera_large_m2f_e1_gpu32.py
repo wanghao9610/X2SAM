@@ -2,17 +2,18 @@ from copy import deepcopy
 from os import getenv
 
 import torch
+from mmengine.dataset import DefaultSampler
 from mmengine.hooks import CheckpointHook, DistSamplerSeedHook, IterTimerHook, LoggerHook, ParamSchedulerHook
 from mmengine.optim import AmpOptimWrapper, CosineAnnealingLR, LinearLR
 from torch.optim import AdamW
 
-from x2sam.dataset import ImageSamDataset, ImgGenSegDataset
+from x2sam.dataset import ConcatDataset, ImageSamDataset, ImgGenSegDataset
 from x2sam.dataset.collate_fns import x2sam_collate_fn
 from x2sam.dataset.process_fns import img_genseg_postprocess_fn, process_map_fn_factory
 from x2sam.dataset.processors import Sam2ImageProcessor
 from x2sam.dataset.samplers import LengthGroupedSampler
 from x2sam.engine.hooks import DatasetInfoHook, ModelInfoHook, PTCheckpointHook
-from x2sam.engine.runner import TrainLoop
+from x2sam.engine.runner import TrainLoop, ValLoop
 from x2sam.evaluation.evaluators import ImgGenSegEvaluator
 from x2sam.model import X2SamModel
 from x2sam.model.segmentors import XSegmentor
@@ -53,13 +54,15 @@ warmup_ratio = 0.03
 save_steps = 2000
 save_total_limit = 2  # Maximum checkpoints to keep (-1 means unlimited)
 
+# Evaluate
+val_interval = 2000
+
 # Logging
-logging_interval = 10
+log_interval = 10
 
 #######################################################################
 #            PART 2  Model & Tokenizer & Image Processor              #
 #######################################################################
-# TODO: add special tokens via import from x2sam.utils
 use_binary_cls = True
 
 extra_image_processor = dict(
@@ -118,7 +121,7 @@ sam11m_img_sam_dataset = dict(
     num_sample=float("inf"),
     num_ann=100,
     task_name="img_sam",
-    data_name="sam11m_img_sam",
+    data_name="img_sam_sam11m",
     expand2square=False,
     use_binary_cls=use_binary_cls,
 )
@@ -145,7 +148,7 @@ val_datasets = [
         pan_segmap_folder=img_genseg_data_root + "coco2017/panoptic_val2017",
         sem_segmap_folder=img_genseg_data_root + "coco2017/panoptic_semseg_val2017",
         task_name="img_genseg",
-        data_name="coco_img_genseg_panoptic",
+        data_name="img_genseg_coco_panoptic_val",
         data_mode="eval",
         postprocess_fn=dict(type=process_map_fn_factory, fn=img_genseg_postprocess_fn, task_name="panoptic_genseg"),
         extra_image_processor=extra_image_processor,
@@ -159,7 +162,7 @@ val_datasets = [
         pan_segmap_folder=img_genseg_data_root + "coco2017/panoptic_val2017",
         sem_segmap_folder=img_genseg_data_root + "coco2017/panoptic_semseg_val2017",
         task_name="img_genseg",
-        data_name="coco_img_genseg_panoptic",
+        data_name="img_genseg_coco_panoptic_semantic_val",
         data_mode="eval",
         postprocess_fn=dict(type=process_map_fn_factory, fn=img_genseg_postprocess_fn, task_name="semantic_genseg"),
         extra_image_processor=extra_image_processor,
@@ -171,7 +174,7 @@ val_datasets = [
         data_path=img_genseg_data_root + "coco2017/annotations/instances_val2017.json",
         image_folder=img_genseg_data_root + "coco2017/val2017",
         task_name="img_genseg",
-        data_name="coco_img_genseg_instance",
+        data_name="img_genseg_coco_instance_val",
         data_mode="eval",
         postprocess_fn=dict(type=process_map_fn_factory, fn=img_genseg_postprocess_fn, task_name="instance_genseg"),
         extra_image_processor=extra_image_processor,
@@ -180,20 +183,29 @@ val_datasets = [
     ),
 ]
 
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=dataloader_num_workers,
+    pin_memory=True,
+    dataset=dict(type=ConcatDataset, datasets=val_datasets),
+    sampler=dict(type=DefaultSampler, shuffle=False),
+    collate_fn=dict(type=x2sam_collate_fn),
+)
+
 val_evaluators = [
     dict(
         type=ImgGenSegEvaluator,
-        data_name="coco_img_genseg_panoptic",
+        data_name="img_genseg_coco_panoptic_val",
         distributed=True,
     ),
     dict(
         type=ImgGenSegEvaluator,
-        data_name="img_genseg_semantic",
+        data_name="img_genseg_coco_panoptic_semantic_val",
         distributed=True,
     ),
     dict(
         type=ImgGenSegEvaluator,
-        data_name="coco_img_genseg_instance",
+        data_name="img_genseg_coco_instance_val",
         distributed=True,
     ),
 ]
@@ -245,7 +257,8 @@ param_scheduler = [
 ]
 
 # train, val, test setting
-train_cfg = dict(type=TrainLoop, max_epochs=max_epochs)
+train_cfg = dict(type=TrainLoop, max_epochs=max_epochs, val_begin=val_interval, val_interval=val_interval)
+val_cfg = dict(type=ValLoop, dataloader=val_dataloader, evaluator=val_evaluator)
 
 #######################################################################
 #                           PART 5  Runtime                           #
@@ -261,7 +274,7 @@ visualizer = dict(
 custom_hooks = [
     dict(
         type=ModelInfoHook,
-        module_names=["llm", "connector", "segmentor.encoder", "segmentor.pixel_decoder", "segmentor.decoder"],
+        module_names=["segmentor.encoder", "segmentor.pixel_decoder", "segmentor.decoder"],
         display_params=True,
     ),
     dict(type=DatasetInfoHook),
@@ -273,7 +286,7 @@ default_hooks = dict(
     # record the time of every iteration.
     timer=dict(type=IterTimerHook),
     # print log every 10 iterations.
-    logger=dict(type=LoggerHook, log_metric_by_epoch=False, interval=logging_interval),
+    logger=dict(type=LoggerHook, log_metric_by_epoch=False, interval=log_interval),
     # enable the parameter scheduler.
     param_scheduler=dict(type=ParamSchedulerHook),
     # save checkpoint per `save_steps`.

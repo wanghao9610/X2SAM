@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 import torch
 import torch.nn.functional as F
@@ -79,6 +79,7 @@ def img_genseg_postprocess_fn(
         use_bg_embeds: Optional[bool] = False,
         return_coco_annotation: Optional[bool] = False,
         return_binary_maps: Optional[bool] = False,
+        thing_contiguous_ids: Optional[Set[int]] = None,
         **kwargs,
     ):
         if return_coco_annotation and return_binary_maps:
@@ -132,6 +133,12 @@ def img_genseg_postprocess_fn(
             pred_scores = scores_per_image * mask_scores_per_image
             pred_classes = labels_per_image
 
+            if thing_contiguous_ids is not None:
+                thing_ids = torch.tensor(list(thing_contiguous_ids), device=device, dtype=pred_classes.dtype)
+                is_thing = (pred_classes.unsqueeze(1) == thing_ids.unsqueeze(0)).any(dim=1)
+            else:
+                is_thing = torch.ones(num_queries, dtype=torch.bool, device=device)
+
             segmentation = torch.zeros((image_size[0], image_size[1])) - 1
 
             instance_maps, segments = [], []
@@ -139,7 +146,7 @@ def img_genseg_postprocess_fn(
             for j in range(num_queries):
                 score = pred_scores[j].item()
 
-                if not torch.all(pred_masks[j] == 0) and score >= threshold:
+                if not torch.all(pred_masks[j] == 0) and score >= threshold and is_thing[j]:
                     segmentation[pred_masks[j] == 1] = current_segment_id
                     segments.append(
                         {
@@ -161,7 +168,7 @@ def img_genseg_postprocess_fn(
                 segmentation = torch.stack(instance_maps, dim=0)
 
             # Return the instances for d2
-            keep = pred_scores >= threshold
+            keep = (pred_scores >= threshold) & is_thing
             instances = Instances(image_size)
             instances.pred_masks = pred_masks[keep]
             instances.scores = pred_scores[keep]
@@ -297,6 +304,10 @@ def img_genseg_postprocess_fn(
             use_bg_embeds=use_bg_embeds,
         )
     elif "instance" in task_name:
+        metadata = kwargs.pop("metadata", None)
+        thing_contiguous_ids = None
+        if metadata is not None and hasattr(metadata, "thing_dataset_id_to_contiguous_id"):
+            thing_contiguous_ids = set(metadata.thing_dataset_id_to_contiguous_id.values())
         return_coco_annotation = kwargs.pop("return_coco_annotation", True)
         return_binary_maps = kwargs.pop("return_binary_maps", False)
         return _instance_genseg_postprocess(
@@ -308,6 +319,7 @@ def img_genseg_postprocess_fn(
             use_bg_embeds,
             return_coco_annotation,
             return_binary_maps,
+            thing_contiguous_ids,
             **kwargs,
         )
     else:
