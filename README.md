@@ -39,7 +39,7 @@ We strongly recommend that everyone uses **English** to communicate in issues. T
 
 - **`2026-06-30`**: ✨ X-SAM is now supported in X2SAM! Training configs are available for [X-SAM-Phi3](x2sam/x2sam/configs/xsam/s3_train/xsam_phi3_mini_4k_instruct_siglip2_so400m_p14_384_sam_vit_large_m2f_e1_gpu16.py) and [X-SAM-Qwen3VL](x2sam/x2sam/configs/xsam/s3_train/xsam_qwen3_vl_4b_instruct_sam_vit_large_m2f_e1_gpu16_lora.py).
 - **`2026-06-18`**: 🎉🎉🎉 Congratulations! 🎉🎉🎉 X2SAM has been accepted by ECCV 2026!
-- **`2026-04-28`**: 🔥 X2SAM is now fully open-sourced! All training, evaluation, visualization, and demo code has been released. Head over to the [**Quickstart**](#checkered_flag-quickstart) section to get started.
+- **`2026-04-28`**: ✨ X2SAM is now fully open-sourced! All training, evaluation, visualization, and demo code has been released. Head over to the [**Quickstart**](#checkered_flag-quickstart) section to get started.
 - **`2026-04-27`**: 👏 The X2SAM technical report is now available! Check it out [**Here**](https://huggingface.co/hao9610/X2SAM/blob/main/X2SAM.pdf) for comprehensive technical details.
 - **`2026-03-20`**: 🫣 The X2SAM repository is now live. Paper and code updates are on the way, stay tuned!
 
