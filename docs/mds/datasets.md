@@ -21,19 +21,24 @@ datas
 │           ├── flickr30k
 │           └── GranDf_HA_images
 ├── img_genseg
-│   └── coco2017
+│   ├── coco2017
+│   │   ├── annotations
+│   │   ├── panoptic_semseg_train2017
+│   │   ├── panoptic_semseg_val2017
+│   │   ├── panoptic_train2017
+│   │   ├── panoptic_val2017
+│   │   ├── stuff_train2017_pixelmaps
+│   │   ├── stuff_val2017_pixelmaps
+│   │   ├── test2017
+│   │   ├── train2014 -> ../coco2014/train2014
+│   │   ├── train2017
+│   │   ├── val2014 -> ../coco2014/val2014
+│   │   └── val2017
+│   └── coco2014
 │       ├── annotations
-│       ├── panoptic_semseg_train2017
-│       ├── panoptic_semseg_val2017
-│       ├── panoptic_train2017
-│       ├── panoptic_val2017
-│       ├── stuff_train2017_pixelmaps
-│       ├── stuff_val2017_pixelmaps
-│       ├── test2017
-│       ├── train2014 -> ../coco2014/train2014
-│       ├── train2017
-│       ├── val2014 -> ../coco2014/val2014
-│       └── val2017
+│       ├── test2014
+│       ├── train2014
+│       └── val2014
 ├── img_intseg
 │   └── coco_int
 │       ├── annotations
