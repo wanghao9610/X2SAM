@@ -4,6 +4,7 @@ This is useful when doing distributed training.
 """
 
 import functools
+import os
 
 import numpy as np
 import torch
@@ -81,8 +82,9 @@ def get_local_rank() -> int:
         return 0
     if not dist.is_initialized():
         return 0
-    assert _LOCAL_PROCESS_GROUP is not None, _MISSING_LOCAL_PG_ERROR
-    return dist.get_rank(group=_LOCAL_PROCESS_GROUP)
+    if _LOCAL_PROCESS_GROUP is not None:
+        return dist.get_rank(group=_LOCAL_PROCESS_GROUP)
+    return int(os.environ.get("LOCAL_RANK", os.environ.get("SLURM_LOCALID", 0)))
 
 
 def get_local_size() -> int:
@@ -95,8 +97,9 @@ def get_local_size() -> int:
         return 1
     if not dist.is_initialized():
         return 1
-    assert _LOCAL_PROCESS_GROUP is not None, _MISSING_LOCAL_PG_ERROR
-    return dist.get_world_size(group=_LOCAL_PROCESS_GROUP)
+    if _LOCAL_PROCESS_GROUP is not None:
+        return dist.get_world_size(group=_LOCAL_PROCESS_GROUP)
+    return int(os.environ.get("LOCAL_WORLD_SIZE", 1))
 
 
 def is_main_process() -> bool:

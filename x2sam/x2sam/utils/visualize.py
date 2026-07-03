@@ -500,6 +500,14 @@ class Visualizer:
                 # `aux_output_img` exists but we are not concatenating; keep behavior consistent by saving
                 # the main prediction image.
                 output_img.save(output_file)
+        elif isinstance(aux_output_img, VisImage) and concat_aux_img:
+            # Mirror the on-disk concatenation behavior above so in-memory callers (e.g. video
+            # visualization loops) also get the vprompt/aux panel instead of silently dropping it.
+            output, aux_output = output_img.get_image(), aux_output_img.get_image()
+            if aux_output.shape != output.shape:
+                aux_output = cv2.resize(aux_output, (output.shape[1], output.shape[0]), interpolation=cv2.INTER_LINEAR)
+            concat = np.concatenate([aux_output, output], axis=1)
+            return VisImage(concat, scale=self.scale)
         else:
             return output_img
 

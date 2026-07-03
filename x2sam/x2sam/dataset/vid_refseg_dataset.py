@@ -491,6 +491,21 @@ class VidRefSegDataset(VidBaseDataset):
         return rets
 
     def _load_ann_data(self):
+        cache_dir = tmp_file = None
+        if self.data_mode == "eval":
+            base_tmp = tempfile.gettempdir()
+            cache_dir = osp.join(base_tmp, "dataset_cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            tmp_file = osp.join(cache_dir, f"{self.data_name}.json")
+            if comm.get_local_rank() != 0:
+                print_log(f"Waiting for {self.data_name} gt_json at {tmp_file}...", logger="current")
+                comm.synchronize()
+                print_log(f"Loading {self.data_name} gt_json from {tmp_file}...", logger="current")
+                with open(tmp_file, "r") as f:
+                    rets = json.load(f)
+                self._set_metadata(gt_json=tmp_file)
+                return rets
+
         if "yt" in self.data_name:
             rets = self._load_yt_ann_data()
         elif "davis" in self.data_name:
@@ -498,15 +513,10 @@ class VidRefSegDataset(VidBaseDataset):
         else:
             raise ValueError(f"Unsupported dataset: {self.data_name}")
 
-        if self.data_mode == "eval":
-            base_tmp = tempfile.gettempdir()
-            cache_dir = osp.join(base_tmp, "dataset_cache")
-            os.makedirs(cache_dir, exist_ok=True)
+        if tmp_file is not None:
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
-            tmp_file = osp.join(cache_dir, f"{self.data_name}.json")
-            if comm.is_main_process():
-                with open(tmp_file, "w") as f:
-                    json.dump(rets, f)
+            with open(tmp_file, "w") as f:
+                json.dump(rets, f)
             comm.synchronize()
             self._set_metadata(gt_json=tmp_file)
         else:

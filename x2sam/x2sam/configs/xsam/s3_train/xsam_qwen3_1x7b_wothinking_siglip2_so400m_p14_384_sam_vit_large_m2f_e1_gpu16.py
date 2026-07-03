@@ -2019,6 +2019,7 @@ custom_hooks = [
                 visualizer=visualizer,
                 every_n_iters=inf_interval,
                 image_inputs=generation_inputs,
+                image_task_names=infer_tasks,
                 generation_images=generation_images,
                 image_vprompt_masks=vprompt_masks,
                 system=SYSTEM,

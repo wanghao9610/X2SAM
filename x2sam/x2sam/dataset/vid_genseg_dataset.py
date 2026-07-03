@@ -825,6 +825,21 @@ class VidGenSegDataset(VidBaseDataset):
             assert "semantic" in self.data_name
             coco_data = self.convert_vspw_to_coco_format()
 
+        cache_dir = tmp_file = None
+        if self.data_mode == "eval" and "instance" in self.data_name:
+            base_tmp = tempfile.gettempdir()
+            cache_dir = osp.join(base_tmp, "dataset_cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            tmp_file = osp.join(cache_dir, f"{self.data_name}.json")
+            if comm.get_local_rank() != 0:
+                print_log(f"Waiting for {self.data_name} gt_json at {tmp_file}...", logger="current")
+                comm.synchronize()
+                print_log(f"Loading {self.data_name} gt_json from {tmp_file}...", logger="current")
+                with open(tmp_file, "r") as f:
+                    rets = json.load(f)
+                self._set_metadata(coco_data, gt_json=tmp_file)
+                return rets
+
         if "semantic" in self.data_name:
             rets = self._load_semantic_genseg_data(coco_data)
         elif "instance" in self.data_name:
@@ -834,15 +849,10 @@ class VidGenSegDataset(VidBaseDataset):
         else:
             raise ValueError(f"Invalid dataset type: {self.data_name}")
 
-        if self.data_mode == "eval" and "instance" in self.data_name:
-            base_tmp = tempfile.gettempdir()
-            cache_dir = osp.join(base_tmp, "dataset_cache")
-            os.makedirs(cache_dir, exist_ok=True)
+        if tmp_file is not None:
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
-            tmp_file = osp.join(cache_dir, f"{self.data_name}.json")
-            if comm.is_main_process():
-                with open(tmp_file, "w") as f:
-                    json.dump(rets, f)
+            with open(tmp_file, "w") as f:
+                json.dump(rets, f)
             comm.synchronize()
             self._set_metadata(coco_data, gt_json=tmp_file)
         else:

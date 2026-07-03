@@ -107,6 +107,21 @@ class ImgRefSegDataset(ImgBaseDataset):
         return coco_data
 
     def _load_ann_data(self):
+        cache_dir = temp_file = None
+        if self.data_mode == "eval":
+            base_temp = tempfile.gettempdir()
+            cache_dir = osp.join(base_temp, "dataset_cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            temp_file = osp.join(cache_dir, f"{self.data_name}.json")
+            if comm.get_local_rank() != 0:
+                print_log(f"Waiting for {self.data_name} gt_json at {temp_file}...", logger="current")
+                comm.synchronize()
+                print_log(f"Loading {self.data_name} gt_json from {temp_file}...", logger="current")
+                with open(temp_file, "r") as f:
+                    rets = json.load(f)
+                self._set_metadata(gt_json=temp_file)
+                return rets
+
         coco_data = self._convert_to_coco_format()
         coco_api = COCO(dataset=coco_data)
         img_ids = sorted(coco_api.getImgIds())
@@ -177,15 +192,10 @@ class ImgRefSegDataset(ImgBaseDataset):
                         }
                     )
 
-        if self.data_mode == "eval":
-            base_temp = tempfile.gettempdir()
-            cache_dir = osp.join(base_temp, "dataset_cache")
-            os.makedirs(cache_dir, exist_ok=True)
+        if temp_file is not None:
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
-            temp_file = osp.join(cache_dir, f"{self.data_name}.json")
-            if comm.is_main_process():
-                with open(temp_file, "w") as f:
-                    json.dump(rets, f)
+            with open(temp_file, "w") as f:
+                json.dump(rets, f)
             comm.synchronize()
             self._set_metadata(gt_json=temp_file)
         else:
@@ -274,6 +284,21 @@ class ImgGRefSegDataset(ImgRefSegDataset):
         return results if results else None
 
     def _load_ann_data(self):
+        cache_dir = temp_file = None
+        if self.data_split != "train":
+            base_temp = tempfile.gettempdir()
+            cache_dir = osp.join(base_temp, "dataset_cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            temp_file = osp.join(cache_dir, f"{self.data_name}.json")
+            if comm.get_local_rank() != 0:
+                print_log(f"Waiting for {self.data_name} gt_json at {temp_file}...", logger="current")
+                comm.synchronize()
+                print_log(f"Loading {self.data_name} gt_json from {temp_file}...", logger="current")
+                with open(temp_file, "r") as f:
+                    rets = json.load(f)
+                self._set_metadata(gt_json=temp_file)
+                return rets
+
         refer_api = REFER(self.data_root, self.dataset)
 
         # Get all image items that match the data split
@@ -322,15 +347,10 @@ class ImgGRefSegDataset(ImgRefSegDataset):
                     else:
                         self.woann_cnt += 1
 
-        if self.data_split != "train":
-            base_temp = tempfile.gettempdir()
-            cache_dir = osp.join(base_temp, "dataset_cache")
-            os.makedirs(cache_dir, exist_ok=True)
+        if temp_file is not None:
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
-            temp_file = osp.join(cache_dir, f"{self.data_name}.json")
-            if comm.is_main_process():
-                with open(temp_file, "w") as f:
-                    json.dump(rets, f)
+            with open(temp_file, "w") as f:
+                json.dump(rets, f)
             comm.synchronize()
             self._set_metadata(gt_json=temp_file)
         else:

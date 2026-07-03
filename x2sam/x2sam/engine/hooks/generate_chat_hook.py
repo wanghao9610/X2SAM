@@ -684,11 +684,17 @@ class GenerationChatHook(Hook):
                     colors = [random_color(rgb=True, maximum=1) for _ in range(len(_vprompt_masks))]
                 else:
                     colors = [random_color(rgb=True, maximum=1)]
+                vprompt_frame = (
+                    np.array(sample_video[sample_vprompt_index])
+                    if sample_vprompt_index is not None and 0 <= sample_vprompt_index < len(sample_video)
+                    else None
+                )
                 visualized_images = []
                 for frame, seg_output in zip(sample_video, seg_outputs[0]):
                     try:
                         visualized_image = self.visualizer.draw_predictions(
                             np.array(frame),
+                            aux_img_rgb=vprompt_frame,
                             data_name=data_name,
                             phrases=phrases,
                             colors=colors,

@@ -237,6 +237,22 @@ class ImgOVSegDataset(ImgGenSegDataset):
             with open(self.data_path, "r") as f:
                 coco_data = json.load(f)
 
+        cache_dir = temp_file = None
+        if self.data_mode == "eval" and "instance" in self.data_name:
+            base_temp = tempfile.gettempdir()
+            cache_dir = osp.join(base_temp, "dataset_cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            temp_file = osp.join(cache_dir, f"{self.data_name}.json")
+            if comm.get_local_rank() != 0:
+                print_log(f"Waiting for {self.data_name} gt_json at {temp_file}...", logger="current")
+                comm.synchronize()
+                print_log(f"Loading {self.data_name} gt_json from {temp_file}...", logger="current")
+                with open(temp_file, "r") as f:
+                    rets = json.load(f)
+                self._set_metadata(coco_data, gt_json=temp_file)
+                del coco_data
+                return rets
+
         if "panoptic" in self.data_name:
             rets = self._load_panoptic_data(coco_data)
         elif "semantic" in self.data_name:
@@ -246,15 +262,10 @@ class ImgOVSegDataset(ImgGenSegDataset):
         else:
             raise ValueError(f"Invalid dataset type: {self.data_name}")
 
-        if self.data_mode == "eval" and "instance" in self.data_name:
-            base_temp = tempfile.gettempdir()
-            cache_dir = osp.join(base_temp, "dataset_cache")
-            os.makedirs(cache_dir, exist_ok=True)
+        if temp_file is not None:
             print_log(f"Saving {self.data_name} gt_json to {cache_dir}...", logger="current")
-            temp_file = osp.join(cache_dir, f"{self.data_name}.json")
-            if comm.is_main_process():
-                with open(temp_file, "w") as f:
-                    json.dump(rets, f)
+            with open(temp_file, "w") as f:
+                json.dump(rets, f)
             comm.synchronize()
             self._set_metadata(coco_data, gt_json=temp_file)
         else:
