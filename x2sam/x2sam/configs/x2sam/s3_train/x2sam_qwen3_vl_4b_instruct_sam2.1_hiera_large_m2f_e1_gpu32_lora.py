@@ -143,7 +143,7 @@ save_total_limit = 2  # Maximum checkpoints to keep (-1 means unlimited)
 
 # Evaluate
 val_interval = 2000
-val_sample = 100  # Maximum samples per dataset during training evaluation; <=0 means full dataset, which will be very slow
+val_sample = -1  # Maximum samples per dataset during training evaluation; <=0 means full dataset, which will be very slow
 
 # Logging
 log_interval = 10
