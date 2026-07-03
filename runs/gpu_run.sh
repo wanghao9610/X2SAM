@@ -196,6 +196,7 @@ do
             --work-dir "$work_dir" \
             --pth_model latest \
             --seed 0 \
+            --rerun \
             "${extra[@]}"
     fi
 
@@ -249,6 +250,7 @@ do
             --concat-aux-img \
             --max-samples 200 \
             --seed 0 \
+            --rerun \
             "${extra[@]}" | { [ "$node_rank" = "0" ] && tee "$work_dir/visualize-${time}.log" || cat; }
     fi
 

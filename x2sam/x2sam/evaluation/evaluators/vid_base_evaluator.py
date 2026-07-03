@@ -56,5 +56,9 @@ class VidBaseEvaluator(BaseEvaluator):
     def support_loading(self):
         return self._support_loading
 
+    @support_loading.setter
+    def support_loading(self, value):
+        self._support_loading = value
+
     def reset(self):
         self._predictions = []

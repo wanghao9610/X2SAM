@@ -310,6 +310,9 @@ class ValLoop(BaseLoop):
             work_dir = getattr(self.runner, "work_dir", None)
             if data_name is not None and work_dir is not None and getattr(evaluator, "output_dir", None) is None:
                 evaluator.output_dir = osp.join(work_dir, "pred_data", data_name)
+            # Online val/test always evaluates in-memory predictions, never cached files.
+            if hasattr(evaluator, "support_loading"):
+                evaluator.support_loading = False
 
     @staticmethod
     def _get_unique_metainfo_value(data_batch: Sequence[dict], key: str):
@@ -448,8 +451,7 @@ class ValLoop(BaseLoop):
         # compute metrics
         metrics = {}
         for evaluator in self.evaluator:
-            eval_metrics = evaluator.evaluate()
-            if eval_metrics:
+            if eval_metrics := evaluator.evaluate():
                 metrics.update(eval_metrics)
 
         if self.val_loss:
@@ -539,8 +541,7 @@ class TestLoop(ValLoop):
         # compute metrics
         metrics = {}
         for evaluator in self.evaluator:
-            eval_metrics = evaluator.evaluate()
-            if eval_metrics:
+            if eval_metrics := evaluator.evaluate():
                 metrics.update(eval_metrics)
 
         if self.val_loss:
