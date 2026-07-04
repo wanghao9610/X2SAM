@@ -145,6 +145,14 @@ class VidVGDSegEvaluator(VidBaseEvaluator):
         convert_to_coco_json(self.data_name, cache_path, gt_image_anns, allow_cached=False)
         coco_api = COCO(cache_path)
 
+        gt_img_ids = sorted(coco_api.getImgIds())
+        pred_img_ids = sorted({pred["image_id"] for video_pred in predictions.values() for pred in video_pred})
+        if pred_img_ids != gt_img_ids:
+            print_log(
+                f"The number of images in predictions and ground truth is not the same. There are {len(pred_img_ids)} predictions and {len(gt_img_ids)} ground truth images.",
+                logger="current",
+            )
+
         coco_results = list(
             itertools.chain(*[pred["instances"] for _, video_pred in predictions.items() for pred in video_pred])
         )
@@ -177,7 +185,7 @@ class VidVGDSegEvaluator(VidBaseEvaluator):
                 coco_api,
                 new_coco_results,
                 "segm",
-                
+                img_ids=pred_img_ids,
             )
             if len(new_coco_results) > 0
             else None  # cocoapi does not handle empty results very well

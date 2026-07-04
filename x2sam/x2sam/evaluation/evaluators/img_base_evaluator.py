@@ -54,7 +54,7 @@ class ImgBaseEvaluator(BaseEvaluator):
     @property
     def support_loading(self):
         return self._support_loading
-
+        
     @support_loading.setter
     def support_loading(self, value):
         self._support_loading = value
