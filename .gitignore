@@ -2,4 +2,4 @@
 inits/
 datas/
 wkdrs/
-__pycache__/
+*/__pycache__
