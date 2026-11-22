@@ -2,7 +2,7 @@
 <h1>✨X2SAM✨</h1>
 <h3>Any Segmentation in Images and Videos</h3>
 
-[Hao Wang](https://wanghao9610.github.io)<sup>1,2</sup>, [Limeng Qiao](https://scholar.google.com/citations?user=3PFZAg0AAAAJ&hl)<sup>3</sup>, [Chi Zhang](https://scholar.google.com/citations?user=I0aKo_4AAAAJ&hl)<sup>3</sup>, [Guanglu Wan](https://scholar.google.com/citations?user=NRG_hpYAAAAJ&hl)<sup>3</sup>, [Lin Ma](https://forestlinma.com/)<sup>3</sup>, [Xiangyuan Lan](https://scholar.google.com/citations?user=c3iwWRcAAAAJ&hl)<sup>2</sup><sup>:email:</sup>, [Xiaodan Liang](https://scholar.google.com/citations?user=voxznZAAAAAJ&hl)<sup>1</sup><sup>:email:</sup>
+[Hao Wang](https://wanghao9610.github.io)<sup>1,2</sup>, [Limeng Qiao](https://scholar.google.com/citations?user=3PFZAg0AAAAJ&hl)<sup>3</sup>, [Chi Zhang](https://scholar.google.com/citations?user=I0aKo_4AAAAJ&hl)<sup>3</sup>, [Lin Ma](https://forestlinma.com/)<sup>3</sup>, [Guanglu Wan](https://scholar.google.com/citations?user=NRG_hpYAAAAJ&hl)<sup>3</sup>, [Xiangyuan Lan](https://scholar.google.com/citations?user=c3iwWRcAAAAJ&hl)<sup>2</sup><sup>:email:</sup>, [Xiaodan Liang](https://scholar.google.com/citations?user=voxznZAAAAAJ&hl)<sup>1</sup><sup>:email:</sup>
 
 <sup>1</sup> Sun Yat-sen University, <sup>2</sup> Peng Cheng Laboratory, <sup>3</sup> Meituan Inc.
 
@@ -26,6 +26,8 @@
     <img src='https://img.shields.io/badge/Demo-Gradio-gold?style=flat&logo=Gradio&logoColor=yellow' alt='Demo'>
   </a>
 </div>
+
+[**ECCV 2026 proceedings**](https://doi.org/10.1007/978-3-032-37152-2_6)
 
 ## :eyes: Notice
 
@@ -467,11 +469,16 @@ This project has referenced some excellent open-sourced repos ([xtuner](https://
 If you find X2SAM and X-SAM are helpful for your research or applications, please consider giving us a star 🌟 and citing the following papers by the following BibTex entry.
 
 ```bibtex
-@article{wang2026x2sam,
-  title={X2SAM: Any Segmentation in Images and Videos},
-  author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Wan, Guanglu and Ma, Lin and Lan, Xiangyuan and Liang, Xiaodan},
-  journal={arXiv preprint arXiv:2605.00891},
-  year={2026}
+@inproceedings{wang2026x2sam,
+  title={{X2SAM}: Any Segmentation in Images and Videos},
+  author={Wang, Hao and Qiao, Limeng and Zhang, Chi and Ma, Lin and Wan, Guanglu and Lan, Xiangyuan and Liang, Xiaodan},
+  booktitle={Computer Vision -- ECCV 2026},
+  series={Lecture Notes in Computer Science},
+  volume={17068},
+  pages={93--110},
+  year={2026},
+  publisher={Springer},
+  doi={10.1007/978-3-032-37152-2_6}
 }
 
 @inproceedings{wang2026xsam,
